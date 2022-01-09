@@ -43,3 +43,8 @@ actual design of the "game" system itself; I think I am going to shoot for a pub
 that care can register and receive notifications any time a music event is received. I hope this will let me write tests
 without the emulator at all, and instead let me do things like "C2, E2, G2" received and map that to a C+ chord. It's 
 tempting to look for some sort of package that can handle this mapping but I think I will learn more if I do it myself.
+
+Alright after playing with the midi api type definitions, looks like it's all byte / int buffers coming out of the MIDI
+events. I also learned that React renders at least twice by default in strict mode in an attempt to uncover issues, so I
+am going to spend some time properly setting up all the hooks / update dependencies so that no longer happens since it's
+causing the event listeners to the MIDI port to be added twice.
