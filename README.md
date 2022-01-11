@@ -48,3 +48,10 @@ Alright after playing with the midi api type definitions, looks like it's all by
 events. I also learned that React renders at least twice by default in strict mode in an attempt to uncover issues, so I
 am going to spend some time properly setting up all the hooks / update dependencies so that no longer happens since it's
 causing the event listeners to the MIDI port to be added twice.
+
+*1/10/2022*
+
+I experimented with different styles of detecting what chords and notes are being played. I'm going
+to try and have a "virtual" keyboard held in memory that updates based on the MIDI inputs, and any
+components that care can just query that keyboard to see what is currently pressed. I think this will
+make testing pretty convenient but there are lots of questions still to answer

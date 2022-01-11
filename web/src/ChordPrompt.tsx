@@ -1,19 +1,20 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import {MIDIPiano} from "./Music";
 
 function ChordPrompt() {
-  const onSuccess = (midi: WebMidi.MIDIAccess) => {
-    console.log("Hi", midi)
-    const input = midi.inputs.get(midi.inputs.keys().next().value)!!
-    console.log("Input", input)
+  const [loadedMidi, setLoadedMidi] = useState(false)
+  const [midiPiano, setMidiPiano] = useState<MIDIPiano>()
 
-    input.addEventListener("midimessage", onMidiMessage)
-  }
-
-  const onMidiMessage = (e: WebMidi.MIDIMessageEvent) => {
-    console.log(e) // Seems like the value at index 1 in the data field is the note?
-  }
-
-  navigator.requestMIDIAccess().then(onSuccess, (err: any) => console.log("OOPS", err))
+  useEffect(() => {
+    if (loadedMidi) return
+    navigator.requestMIDIAccess().then(
+      (midiAccess: WebMidi.MIDIAccess) => {
+        setMidiPiano(new MIDIPiano(midiAccess.inputs.get("input-0")!!))
+        setLoadedMidi(true)
+      },
+      (err: any) => console.log("OOPS", err)
+    )
+  }, [loadedMidi])
 
   return (
     <>
