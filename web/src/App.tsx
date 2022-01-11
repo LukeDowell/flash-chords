@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import ChordPrompt from "./ChordPrompt";
+import ChordPrompt from "./music/ChordPrompt";
 
 function App() {
   return (
