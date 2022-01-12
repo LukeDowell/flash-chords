@@ -17,7 +17,7 @@ Firefox Implementation Tracker - https://bugzilla.mozilla.org/show_bug.cgi?id=83
 
 ## Dev Journal
 
-*1/8/2022*
+**1/8/2022**
 
 I spent some time reading the MIDI spec and the MIDI api reference. Upon finding that firefox
 does not yet support the MIDI api but that there are in-flight tickets to test compatibility as of
@@ -35,7 +35,7 @@ Thank you Mr. Tobias Erichsen!
 I fired up both pieces of software, configured VMPK to point to the port created by loopMIDI and voila, I could see a 
 registered input in my console log of the MIDIAccess object returned by the MIDI api. 
 
-*N+1*
+**N+1**
 
 My aim today is to explore the MIDI api now that my emulator is hooked up; what do notes / chords look like coming out 
 of the piano. What would mapping a set of notes to a chord look like? I've also been thinking a little bit about the 
@@ -49,14 +49,14 @@ events. I also learned that React renders at least twice by default in strict mo
 am going to spend some time properly setting up all the hooks / update dependencies so that no longer happens since it's
 causing the event listeners to the MIDI port to be added twice.
 
-*1/10/2022*
+**1/10/2022**
 
 I experimented with different styles of detecting what chords and notes are being played. I'm going
 to try and have a "virtual" keyboard held in memory that updates based on the MIDI inputs, and any
 components that care can just query that keyboard to see what is currently pressed. I think this will
 make testing pretty convenient but there are lots of questions still to answer
 
-*1/11/2022*
+**1/11/2022**
 
 I presented the app idea to my teacher today. We ran through a bunch of examples of various chord
 symbols and how they might be composed into small problems for a computer to solve. Given a chord
@@ -86,3 +86,18 @@ Required Keys: **C3** - C#3 - D3 - D#3 - **E3** - F3 - F#3 - **G3**
 We have a match! This voicing is a valid representation of the Cmaj chord symbol. There are a lot
 of edge cases to consider with more complicated versions of a chord symbol, for example something like 
 "F -5/7 on C" (F major 7th flat five over C) but I'm gonna have future me figure that out.
+
+**1/12/2022**
+
+Reeee we have a bug! Sometimes the transposition of the active notes does not match the derived required
+notes from the root. As an example, for F major:
+
+Active Keys: F5, A5, C6, F6
+
+Transposed and duplicated removed to match the octave of the lowest root note: F5, A5, **C5**
+
+Derived required notes: F5, A5, **C6**
+
+For now, I am going to remove octave information all together and just compare the notes by themselves. This
+wont last since in the future I would like a mode to enforce that the only way you cannot voice a chord symbol
+is with the "standard" no-inversions or additions of a chord to hopefully influence the player to experiment.

@@ -88,6 +88,9 @@ export const lowerNote = (a: Note, b: Note) => {
 
 export const noteOctave = (n: Note): number => Number.parseInt(n.charAt(n.length - 1))
 
+// TODO
+export const removeOctave = (n: Note): string => ""
+
 export const isValidVoicing = (chord: Chord, activeNotes: Array<Note>): boolean => {
   const semitones = Array<number>()
   switch(chord.quality) {
@@ -105,12 +108,14 @@ export const isValidVoicing = (chord: Chord, activeNotes: Array<Note>): boolean 
       break;
   }
 
-  const lowestRootNote = activeNotes.filter((note) => note.includes(chord.root)).reduce(lowerNote)
+  const rootNotes = activeNotes.filter((note) => note.includes(chord.root))
+  const lowestRootNote = rootNotes.length > 1 ? rootNotes.reduce(lowerNote) : activeNotes[0]
   const transposedActiveNotesWithDuplicates =  activeNotes.map(
     (n) => `${n.length === 3 ? n.substring(0, 2) : n.charAt(0)}${noteOctave(lowestRootNote)}` as Note
   )
   const transposedActiveNotes: Array<Note> = Array.from(new Set<Note>(transposedActiveNotesWithDuplicates))
 
+  // We have a bug!
   const requiredNotes = [lowestRootNote]
   semitones.forEach((s) => {
     requiredNotes.push(KEYBOARD[KEYBOARD.indexOf(requiredNotes[requiredNotes.length - 1]) + semitones[requiredNotes.length - 1]])
