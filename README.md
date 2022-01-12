@@ -55,3 +55,34 @@ I experimented with different styles of detecting what chords and notes are bein
 to try and have a "virtual" keyboard held in memory that updates based on the MIDI inputs, and any
 components that care can just query that keyboard to see what is currently pressed. I think this will
 make testing pretty convenient but there are lots of questions still to answer
+
+*1/11/2022*
+
+I presented the app idea to my teacher today. We ran through a bunch of examples of various chord
+symbols and how they might be composed into small problems for a computer to solve. Given a chord
+with a root note and a quality and a set of keys, can we determine if the keys are a valid voicing of the given chord?
+
+Example:
+Chord: C major
+Keys: E2, G2, C3, E3
+
+1. Remove duplicate notes 
+
+    Keys: E2, G2, C3
+
+
+2. Transpose any non-root notes to come after the lowest root note
+
+    Keys: C3, E3, G3
+
+
+4. Depending on the quality, calculate the required notes that should follow the root by interval
+The quality is major, so we need a major third followed by a minor third, or 4 steps up the keyboard
+followed by 3 steps.
+
+Required Keys: **C3** - C#3 - D3 - D#3 - **E3** - F3 - F#3 - **G3**
+
+
+We have a match! This voicing is a valid representation of the Cmaj chord symbol. There are a lot
+of edge cases to consider with more complicated versions of a chord symbol, for example something like 
+"F -5/7 on C" (F major 7th flat five over C) but I'm gonna have future me figure that out.
