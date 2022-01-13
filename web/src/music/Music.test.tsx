@@ -1,4 +1,4 @@
-import {Chord, isValidVoicing, lowerNote, Note} from './Music'
+import {Chord, isValidVoicing, lowerNote, Note, sortNotes} from './Music'
 
 describe("Chord Voicings", () => {
   test.each([
@@ -25,5 +25,15 @@ describe("Music Note Utilities", () => {
   ])(
     `%s should be lower than %s`,
     (lower: Note, higher: Note) => expect(lowerNote(lower, higher)).toBe(lower)
+  )
+
+  test.each([
+    [["C3", "C2"] as Note[], ["C2", "C3"] as Note[]],
+    [["F#5", "G#4", "G6"] as Note[], ["G#4", "F#5", "G6"] as Note[]],
+    [["G4", "C4", "A#4"] as Note[], ["A#4", "C4", "G4"] as Note[]],
+    [["G4", "C4", "A#4", "A4"] as Note[], ["A4", "A#4", "C4", "G4"] as Note[]],
+  ])(
+    `%s should be sorted to %s`,
+    (unsorted: Note[], expected: Note[]) => expect(sortNotes(unsorted)).toStrictEqual(expected)
   )
 })

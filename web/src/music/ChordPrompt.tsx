@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {MIDIPiano, Chord} from "./Music";
+import {MIDIPiano, Chord, Note} from "./Music";
 
 function ChordPrompt() {
   const [loadedMidi, setLoadedMidi] = useState(false)
@@ -19,7 +19,7 @@ function ChordPrompt() {
     )
   }, [loadedMidi])
 
-  const onActiveKeys = (activeKeys: Array<string>, e: WebMidi.MIDIMessageEvent) => {
+  const onActiveKeys = (activeKeys: Array<Note>, e: WebMidi.MIDIMessageEvent) => {
 
   }
 

@@ -44,8 +44,8 @@ export const MIDI_NOTE_FLAG = {
 }
 
 export class MIDIPiano {
-  private activeNotes: Array<string> = Array()
-  private listeners: Array<(activeNotes: Array<string>, event: WebMidi.MIDIMessageEvent) => any> = Array()
+  private activeNotes: Array<Note> = Array()
+  private listeners: Array<(activeNotes: Array<Note>, event: WebMidi.MIDIMessageEvent) => any> = Array()
 
   constructor(midiInput: WebMidi.MIDIInput) {
     midiInput.addEventListener(
@@ -62,7 +62,7 @@ export class MIDIPiano {
     )
   }
 
-  addListener(callback: (activeNotes: Array<string>, event: WebMidi.MIDIMessageEvent) => any) {
+  addListener(callback: (activeNotes: Array<Note>, event: WebMidi.MIDIMessageEvent) => any) {
     this.listeners.push(callback)
   }
 }
@@ -88,8 +88,26 @@ export const lowerNote = (a: Note, b: Note) => {
 
 export const noteOctave = (n: Note): number => Number.parseInt(n.charAt(n.length - 1))
 
-// TODO
-export const removeOctave = (n: Note): string => ""
+export const removeOctave = (n: Note): string => `${n.length === 3 ? n.substring(0, 2) : n.charAt(0)}`
+
+export const sortNotes = (notes: Note[]): Note[] => notes.sort((a, b) => {
+  // Sort by octave first
+  if (noteOctave(a) < noteOctave(b)) return -1;
+  else if (noteOctave(a) > noteOctave(b)) return 1;
+
+  const baseA = removeOctave(a)
+  const baseB = removeOctave(b)
+
+  // Sort by note
+  if (baseA.charCodeAt(0) < baseB.charCodeAt(0)) return -1
+  else if (baseA.charCodeAt(0) > baseB.charCodeAt(0)) return 1
+
+  // If notes are the same, then sort by sharp if it exists
+  if (baseA.includes("#") && !baseB.includes("#")) return 1
+  else if (baseB.includes("#") && !baseA.includes("#")) return -1
+
+  return 1
+})
 
 export const isValidVoicing = (chord: Chord, activeNotes: Array<Note>): boolean => {
   const semitones = Array<number>()
@@ -110,16 +128,13 @@ export const isValidVoicing = (chord: Chord, activeNotes: Array<Note>): boolean 
 
   const rootNotes = activeNotes.filter((note) => note.includes(chord.root))
   const lowestRootNote = rootNotes.length > 1 ? rootNotes.reduce(lowerNote) : activeNotes[0]
-  const transposedActiveNotesWithDuplicates =  activeNotes.map(
-    (n) => `${n.length === 3 ? n.substring(0, 2) : n.charAt(0)}${noteOctave(lowestRootNote)}` as Note
-  )
-  const transposedActiveNotes: Array<Note> = Array.from(new Set<Note>(transposedActiveNotesWithDuplicates))
+  const dedupedNotesWithoutOctave = new Array(new Set(sortNotes(activeNotes).filter(rootNotes.includes).map(removeOctave)))
+  const transposedActiveNotes: Note[] = [lowestRootNote]
 
-  // We have a bug!
   const requiredNotes = [lowestRootNote]
   semitones.forEach((s) => {
     requiredNotes.push(KEYBOARD[KEYBOARD.indexOf(requiredNotes[requiredNotes.length - 1]) + semitones[requiredNotes.length - 1]])
   })
 
-  return requiredNotes.every((n) => transposedActiveNotes.includes(n))
+  return requiredNotes.every(transposedActiveNotes.includes)
 }

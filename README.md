@@ -68,20 +68,19 @@ Keys: E2, G2, C3, E3
 
 1. Remove duplicate notes 
 
-    Keys: E2, G2, C3
+        Keys: E2, G2, C3
 
 
 2. Transpose any non-root notes to come after the lowest root note
 
-    Keys: C3, E3, G3
+       Keys: C3, E3, G3
 
 
 4. Depending on the quality, calculate the required notes that should follow the root by interval
 The quality is major, so we need a major third followed by a minor third, or 4 steps up the keyboard
 followed by 3 steps.
 
-Required Keys: **C3** - C#3 - D3 - D#3 - **E3** - F3 - F#3 - **G3**
-
+       Required Keys: **C3** - C#3 - D3 - D#3 - **E3** - F3 - F#3 - **G3**
 
 We have a match! This voicing is a valid representation of the Cmaj chord symbol. There are a lot
 of edge cases to consider with more complicated versions of a chord symbol, for example something like 
@@ -92,12 +91,27 @@ of edge cases to consider with more complicated versions of a chord symbol, for 
 Reeee we have a bug! Sometimes the transposition of the active notes does not match the derived required
 notes from the root. As an example, for F major:
 
-Active Keys: F5, A5, C6, F6
+      Active Keys: F5, A5, C6, F6
 
-Transposed and duplicated removed to match the octave of the lowest root note: F5, A5, **C5**
+      Transposed and duplicated removed to match the octave of the lowest root note: F5, A5, **C5**
 
-Derived required notes: F5, A5, **C6**
+      Derived required notes: F5, A5, **C6**
 
 For now, I am going to remove octave information all together and just compare the notes by themselves. This
 wont last since in the future I would like a mode to enforce that the only way you cannot voice a chord symbol
 is with the "standard" no-inversions or additions of a chord to hopefully influence the player to experiment.
+
+**N+1**
+
+During some reading about chord symbols, I found a wikipedia article that has a pretty interesting suggestion
+for how to build out the Chord data structure. It suggests a chord is made of:
+
+    1. the root note (e.g. C♯),
+    2. the chord quality (e.g. minor or lowercase m, or the symbols o or + for diminished and augmented chords, respectively; chord quality is usually omitted for major chords),
+    3. whether the chord is a triad, seventh chord, or an extended chord (e.g. Δ7),
+    4. any altered notes (e.g. sharp five, or ♯5),
+    5. any added tones (e.g. add2), and
+    6. the bass note if it is not the root (e.g. a slash chord).
+
+I have been wondering about how to deal with suspended chords or sevenths, but this seems like a fine framework
+to go off of since it matches the domain anyway. DDD for the win!
