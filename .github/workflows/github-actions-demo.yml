@@ -21,7 +21,7 @@ jobs:
         run: |
           cd web
           npm test
-          npm run build
+          CI=false npm run build
           cp -a ./build/. ../app/src/main/resources/static/
 
       - name: "Build back end"
