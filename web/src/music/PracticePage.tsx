@@ -15,15 +15,20 @@ function PracticePage() {
 
   useEffect(() => {
     if (loadedMidi) return
-    navigator.requestMIDIAccess().then(
-      (midiAccess: WebMidi.MIDIAccess) => {
-        const piano = new MIDIPiano(midiAccess.inputs.get("input-0")!!)
-        piano.addListener(onActiveKeys)
-        setMidiPiano(piano)
-        setLoadedMidi(true)
-      },
-      (err: any) => console.log("OOPS", err)
-    )
+    try {
+      navigator.requestMIDIAccess().then(
+        (midiAccess: WebMidi.MIDIAccess) => {
+          const piano = new MIDIPiano(midiAccess.inputs.get("input-0")!!)
+          piano.addListener(onActiveKeys)
+          setMidiPiano(piano)
+          setLoadedMidi(true)
+        },
+        (err: any) => console.log("OOPS", err)
+      )
+    } catch (e) {
+      console.error("Unable to request MIDI access", e)
+      setLoadedMidi(true)
+    }
   }, [loadedMidi])
 
   const onActiveKeys = (activeKeys: Array<Note>, e: WebMidi.MIDIMessageEvent) => {
@@ -37,7 +42,7 @@ function PracticePage() {
 
   return (
     <>
-      <div className="chord-symbol-prompt">
+      <div className="chord-symbol-prompt" data-testid="chord-symbol-prompt">
         <h2>{ toChordSymbol(currentChord) }</h2>
       </div>
       <hr/>

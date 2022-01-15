@@ -12,6 +12,13 @@ jobs:
         with:
           token: ${{ secrets.DIGITALOCEAN_REGISTRY_KEY }}
 
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - run: |
+        npm install
+        npm test
+
       - name: "Build front end"
         run: |
           cd web && npm run build
