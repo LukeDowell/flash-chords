@@ -16,8 +16,8 @@ jobs:
         with:
           node-version: '14'
       - run: |
-        npm install
-        npm test
+          npm install
+          npm test
 
       - name: "Build front end"
         run: |
