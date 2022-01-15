@@ -126,15 +126,23 @@ export const isValidVoicing = (chord: Chord, activeNotes: Array<Note>): boolean 
       break;
   }
 
+  const sortedActiveNotes = sortNotes(activeNotes);
   const rootNotes = activeNotes.filter((note) => note.includes(chord.root))
-  const lowestRootNote = rootNotes.length > 1 ? rootNotes.reduce(lowerNote) : activeNotes[0]
-  const dedupedNotesWithoutOctave = new Array(new Set(sortNotes(activeNotes).filter(rootNotes.includes).map(removeOctave)))
+  const lowestRootNote = rootNotes.length > 1 ? activeNotes[0] : rootNotes.reduce(lowerNote)
+  const activeNotesWithoutOctave = sortedActiveNotes.filter((n) => !rootNotes.includes(n)).map(removeOctave)
+  const dedupedNotesWithoutOctave = Array.from(new Set(activeNotesWithoutOctave))
   const transposedActiveNotes: Note[] = [lowestRootNote]
-
-  const requiredNotes = [lowestRootNote]
-  semitones.forEach((s) => {
-    requiredNotes.push(KEYBOARD[KEYBOARD.indexOf(requiredNotes[requiredNotes.length - 1]) + semitones[requiredNotes.length - 1]])
+  dedupedNotesWithoutOctave.forEach((nextRequiredNote) => {
+    const closestNoteToRoot = KEYBOARD.slice(KEYBOARD.indexOf(lowestRootNote), KEYBOARD.length)
+      .find((n) => n.includes(nextRequiredNote))
+    transposedActiveNotes.push(closestNoteToRoot!!)
   })
 
-  return requiredNotes.every(transposedActiveNotes.includes)
+  const requiredNotes: Note[] = [lowestRootNote]
+  semitones.forEach((s) => {
+    const nextThirdIndex = KEYBOARD.indexOf(requiredNotes[requiredNotes.length - 1]) + s
+    requiredNotes.push(KEYBOARD[nextThirdIndex])
+  })
+
+  return requiredNotes.every((n) => transposedActiveNotes.includes(n))
 }
