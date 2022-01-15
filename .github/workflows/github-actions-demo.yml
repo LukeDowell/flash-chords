@@ -19,12 +19,14 @@ jobs:
 
       - name: "Build front end"
         run: |
+          cd web
           npm test
           npm run build
           cp -a ./build/. ../app/src/main/resources/static/
 
       - name: "Build back end"
         run: |
+          cd app
           ./gradlew build
           ./gradlew bootBuildImage
 
