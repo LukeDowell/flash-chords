@@ -1,10 +1,10 @@
 import React from 'react';
 import './App.css';
-import ChordPrompt from "./music/ChordPrompt";
+import PracticePage from "./music/PracticePage";
 
 function App() {
   return (
-    <ChordPrompt />
+    <PracticePage />
   );
 }
 

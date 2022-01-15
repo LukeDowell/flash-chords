@@ -29,12 +29,30 @@ export interface Chord {
   quality: ChordQuality
 }
 
+export const toChordSymbol = (c: Chord) => {
+  let quality;
+  switch (c.quality) {
+    case "Diminished":
+      quality = "dim"
+      break;
+    case "Minor":
+      quality = "min"
+      break;
+    case "Major":
+      quality = ""
+      break;
+    case "Augmented":
+      quality = "aug"
+      break;
+  }
+  return `${c.root}` + `${quality}`
+}
 export const generateRandomChord = (): Chord => {
   const roots = ["A","B","C","D","E","F","G"] as RootNote[]
   const qualities = ["Major","Minor","Augmented","Diminished"] as ChordQuality[]
   return {
-    root: roots[Math.floor(Math.random() * roots.length - 1)],
-    quality: qualities[Math.floor(Math.random() * qualities.length - 1)]
+    root: roots[Math.floor(Math.random() * roots.length)],
+    quality: qualities[Math.floor(Math.random() * qualities.length)]
   }
 }
 

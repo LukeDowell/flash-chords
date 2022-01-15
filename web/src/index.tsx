@@ -6,6 +6,10 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
+    <head>
+      <meta name="viewport" content="initial-scale=1, width=device-width" />
+      <title>Flash Chords</title>
+    </head>
     <App />
   </React.StrictMode>,
   document.getElementById('root')

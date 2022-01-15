@@ -115,3 +115,12 @@ for how to build out the Chord data structure. It suggests a chord is made of:
 
 I have been wondering about how to deal with suspended chords or sevenths, but this seems like a fine framework
 to go off of since it matches the domain anyway. DDD for the win!
+
+1/14/2022
+
+I got major and minor triads working just now. I was intending to continue on to getting 7ths to work
+as well, but I think I'm going to pivot and get a rudimentary UI working. I want a bass
+and treble cleff centered on the screen, and for the chord symbol to appear above it. The staff will
+display the keys that the user is currently pressing, and there will be some sort of success indicator
+once the user inputs the correct chord symbol. The staff should be a fun component to build, I'm looking
+forward to that. 

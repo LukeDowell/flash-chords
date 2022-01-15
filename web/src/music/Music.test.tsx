@@ -1,6 +1,6 @@
 import {Chord, isValidVoicing, lowerNote, Note, sortNotes} from './Music'
 
-describe("Chord Voicings", () => {
+describe("Triad Chord Voicings", () => {
   test.each([
     [["C1", "E1", "G1"] as Note[], { root: "C", quality: "Major" } as Chord],
     [["C2", "E2", "G2", "C3"] as Note[], { root: "C", quality: "Major" } as Chord],
@@ -9,6 +9,15 @@ describe("Chord Voicings", () => {
     [["C1", "D#1", "G1", "C2"] as Note[], { root: "C", quality: "Minor" } as Chord],
     [["G1", "A#1", "D2"] as Note[], { root: "G", quality: "Minor" } as Chord],
     [["F5", "A5", "C6"] as Note[], { root: "F", quality: "Major" } as Chord],
+  ])(
+    '%s should be a valid voicing of %s',
+    (keys: Note[], chord: Chord) => expect(isValidVoicing(chord, keys)).toBe(true)
+  )
+})
+
+describe("Seventh Chord Voicings", () => {
+  test.each([
+    [["C1", "E1", "G1", "B2"] as Note[], { root: "C", quality: "Major", seventh: true } as Chord],
   ])(
     '%s should be a valid voicing of %s',
     (keys: Note[], chord: Chord) => expect(isValidVoicing(chord, keys)).toBe(true)
