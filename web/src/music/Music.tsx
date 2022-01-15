@@ -47,6 +47,7 @@ export const toChordSymbol = (c: Chord) => {
   }
   return `${c.root}` + `${quality}`
 }
+
 export const generateRandomChord = (): Chord => {
   const roots = ["A","B","C","D","E","F","G"] as RootNote[]
   const qualities = ["Major","Minor","Augmented","Diminished"] as ChordQuality[]
