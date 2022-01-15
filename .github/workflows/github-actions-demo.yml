@@ -15,13 +15,13 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
-      - run: |
-          npm install
-          npm test
+      - run: npm install
 
       - name: "Build front end"
         run: |
-          cd web && npm run build
+          cd web
+          npm test
+          npm run build
           cp -a ./build/. ../app/src/main/resources/static/
 
       - name: "Build back end"
