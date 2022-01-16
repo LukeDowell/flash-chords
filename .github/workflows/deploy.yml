@@ -75,4 +75,4 @@ jobs:
       - name: Push to Registry
         run: |
           doctl registry login --expiry-seconds 600
-          docker push ${{secrets.CONTAINER_REPO}}:${{github.run_id}}
+          docker push registry.digitalocean.com/dowell:latest
