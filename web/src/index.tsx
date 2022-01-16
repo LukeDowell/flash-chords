@@ -3,13 +3,11 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {CssBaseline} from "@mui/material";
 
 ReactDOM.render(
   <React.StrictMode>
-    <head>
-      <meta name="viewport" content="initial-scale=1, width=device-width" />
-      <title>Flash Chords</title>
-    </head>
+    <CssBaseline />
     <App />
   </React.StrictMode>,
   document.getElementById('root')

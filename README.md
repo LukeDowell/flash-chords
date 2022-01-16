@@ -158,3 +158,14 @@ smart alec-y.
 I also found out that my voicing validator is bad and that some combos don't work, like E major. Added a test case,
 and I will add several more as well. Just kidding I clearly need this app to be done, I was just wrong on what notes
 were in E major. The work is validated!
+
+
+**1/16/2022**
+
+Whew super long day / late night, took a lot longer than I would have liked to get the pipeline working
+and pushing to DO. The buildpack for native spring boot app is 25 minutes which seems insane, I posted in
+the paketo slack asking some questions to see if I can cache anything to speed that up.
+
+I brought in MUI and am going to start putting together the practice page MVP with the chord prompt and
+staff. Maybe after that we finally hop over to Spring and start putting together some statistic / user
+features.
