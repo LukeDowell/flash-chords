@@ -70,15 +70,13 @@ export class MIDIPiano {
     midiInput.addEventListener(
       "midimessage",
       (e: WebMidi.MIDIMessageEvent) => {
-        if (e.data[0] !== 254) console.log(e.data)
         const note = KEYBOARD[e.data[1] - 21]
         if (e.data[0] === MIDI.KEY_DOWN && e.data[2] !== 0) {
           this.activeNotes.push(note)
         } else if (e.data[0] === MIDI.KEY_UP || (e.data[0] === MIDI.KEY_DOWN && e.data[2] === 0)) {
-          console.log("Removing {}", e.data[2])
           this.activeNotes = Array.from(new Set(this.activeNotes.filter((i) => i !== note)))
         }
-        this.listeners.forEach((c) => c.call(c, this.activeNotes, e))
+        if (e.data[0] !== 254) this.listeners.forEach((c) => c.call(c, this.activeNotes, e))
       }
     )
   }
@@ -156,7 +154,7 @@ export const isValidVoicing = (chord: Chord, activeNotes: Array<Note>): boolean 
   const transposedActiveNotes: Note[] = [lowestRootNote]
   const notesAboveRoot: Note[] = KEYBOARD.slice(KEYBOARD.indexOf(lowestRootNote), KEYBOARD.length)
   dedupedNotesWithoutOctave.forEach((nextRequiredNote) => {
-    const closestNoteToRoot =notesAboveRoot.find((n) => n.includes(nextRequiredNote))
+    const closestNoteToRoot = notesAboveRoot.find((n) => n.includes(nextRequiredNote))
     transposedActiveNotes.push(closestNoteToRoot!!)
   })
 

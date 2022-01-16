@@ -51,7 +51,7 @@ function PracticePage() {
         <h2>{ toChordSymbol(currentChord) }</h2>
       </div>
       <hr/>
-      { chordRecords.length > 0 && Date.now() - chordRecords[chordRecords.length - 1].time <= 3000 &&
+      { chordRecords.length > 0 && Date.now() - chordRecords[chordRecords.length - 1].time <= 1000 &&
         <h2>Correct!</h2>
       }
     </>
