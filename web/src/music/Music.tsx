@@ -59,7 +59,8 @@ export const generateRandomChord = (): Chord => {
 
 export const MIDI = {
   KEY_DOWN: 144,
-  KEY_UP: 128
+  KEY_UP: 128,
+  HEARTBEAT: 254
 }
 
 export class MIDIPiano {
@@ -71,12 +72,13 @@ export class MIDIPiano {
       "midimessage",
       (e: WebMidi.MIDIMessageEvent) => {
         const note = KEYBOARD[e.data[1] - 21]
-        if (e.data[0] === MIDI.KEY_DOWN && e.data[2] !== 0) {
+        const flag = e.data[0];
+        if (flag === MIDI.KEY_DOWN && e.data[2] !== 0) {
           this.activeNotes.push(note)
-        } else if (e.data[0] === MIDI.KEY_UP || (e.data[0] === MIDI.KEY_DOWN && e.data[2] === 0)) {
+        } else if (flag === MIDI.KEY_UP || (flag === MIDI.KEY_DOWN && e.data[2] === 0)) {
           this.activeNotes = Array.from(new Set(this.activeNotes.filter((i) => i !== note)))
         }
-        if (e.data[0] !== 254) this.listeners.forEach((c) => c.call(c, this.activeNotes, e))
+        if (flag !== MIDI.HEARTBEAT) this.listeners.forEach((c) => c.call(c, this.activeNotes, e))
       }
     )
   }

@@ -35,8 +35,7 @@ jobs:
 
       - name: "Tag Image"
         run:
-          docker tag dev.dowell/flashchords \
-          registry.digitalocean.com/dowell/flashchords:${{github.run_id}}
+          docker tag dev.dowell/flashchords registry.digitalocean.com/dowell/flashchords:${{github.run_id}}
 
       - name: "Push to docker registry"
         run: |
