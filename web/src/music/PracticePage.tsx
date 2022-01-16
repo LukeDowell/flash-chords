@@ -18,7 +18,11 @@ function PracticePage() {
     try {
       navigator.requestMIDIAccess().then(
         (midiAccess: WebMidi.MIDIAccess) => {
-          const piano = new MIDIPiano(midiAccess.inputs.get("input-0")!!)
+          if (midiAccess.inputs.size === 0) {
+            return;
+          }
+          const midiInput = midiAccess.inputs.keys().next().value;
+          const piano = new MIDIPiano(midiAccess.inputs.get(midiInput)!!)
           piano.addListener(onActiveKeys)
           setMidiPiano(piano)
           setLoadedMidi(true)
@@ -32,6 +36,7 @@ function PracticePage() {
   }, [loadedMidi])
 
   const onActiveKeys = (activeKeys: Array<Note>, e: WebMidi.MIDIMessageEvent) => {
+    console.log(activeKeys)
     if (isValidVoicing(currentChord, activeKeys)) {
       chordRecords.push({ targetChord: currentChord, playedNotes: activeKeys, time: Date.now()})
       let newChord = generateRandomChord()
@@ -49,15 +54,6 @@ function PracticePage() {
       { chordRecords.length > 0 && Date.now() - chordRecords[chordRecords.length - 1].time <= 3000 &&
         <h2>Correct!</h2>
       }
-      <div className="previous-chord-stats">
-        { chordRecords.length > 0 &&
-          <div>
-            <p>{chordRecords[chordRecords.length - 1].targetChord}</p>
-            <p>{chordRecords[chordRecords.length - 1].playedNotes}</p>
-            <p>{chordRecords[chordRecords.length - 1].time}</p>
-          </div>
-        }
-      </div>
     </>
   )
 }

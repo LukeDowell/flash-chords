@@ -148,3 +148,13 @@ brick a hardware device, so the entire API has been removed or will not be imple
 Additionally, WedMIDI support on WebKit is labelled as "not considering". This is a good lesson in doing compatibility
 research first, although I'm glad I have gotten this far anyway. I'm going to continue development since android mobile
 and desktops are still supported, I just need to get an android tablet.
+
+**N+1**
+
+So I just sat down at the piano and plugged a laptop into it. I found out there are some oddities between a real
+piano and my MIDI emulator version, which is to be expected. For example, my piano doesn't leverage the "NOTE_OFF"
+flag in MIDI. Instead it just says the note is still playing at an intensity of 0, which if you ask me is a little
+smart alec-y. 
+
+I also found out that my voicing validator is bad and that some combos don't work, like E major. Added a test case,
+and I will add several more as well.
