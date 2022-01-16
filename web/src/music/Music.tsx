@@ -147,6 +147,7 @@ export const isValidVoicing = (chord: Chord, activeNotes: Array<Note>): boolean 
 
   const sortedActiveNotes = sortNotes(activeNotes);
   const rootNotes = activeNotes.filter((note) => note.includes(chord.root))
+  if (rootNotes.length === 0) return false
   const lowestRootNote = rootNotes.length > 1 ? activeNotes[0] : rootNotes.reduce(lowerNote)
   const activeNotesWithoutOctave = sortedActiveNotes.filter((n) => !rootNotes.includes(n)).map(removeOctave)
   const dedupedNotesWithoutOctave = Array.from(new Set(activeNotesWithoutOctave))

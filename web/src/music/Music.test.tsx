@@ -13,6 +13,16 @@ describe("Triad Chord Voicings", () => {
     '%s should be a valid voicing of %s',
     (keys: Note[], chord: Chord) => expect(isValidVoicing(chord, keys)).toBe(true)
   )
+
+  test.each([
+    [[] as Note[], { root: "C", quality: "Major" } as Chord],
+    [["C1", "E1", "D1"] as Note[], { root: "C", quality: "Major" } as Chord],
+    [["G1", "A#1", "A2"] as Note[], { root: "G", quality: "Minor" } as Chord],
+    [["F5", "A5", "G6"] as Note[], { root: "F", quality: "Major" } as Chord],
+  ])(
+    '%s should NOT be a valid voicing of %s',
+    (keys: Note[], chord: Chord) => expect(isValidVoicing(chord, keys)).toBe(false)
+  )
 })
 
 describe("Seventh Chord Voicings", () => {
