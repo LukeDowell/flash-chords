@@ -117,7 +117,7 @@ for how to build out the Chord data structure. It suggests a chord is made of:
 I have been wondering about how to deal with suspended chords or sevenths, but this seems like a fine framework
 to go off of since it matches the domain anyway. DDD for the win!
 
-1/14/2022
+**1/14/2022**
 
 I got major and minor triads working just now. I was intending to continue on to getting 7ths to work
 as well, but I think I'm going to pivot and get a rudimentary UI working. I want a bass
@@ -125,3 +125,19 @@ and treble cleff centered on the screen, and for the chord symbol to appear abov
 display the keys that the user is currently pressing, and there will be some sort of success indicator
 once the user inputs the correct chord symbol. The staff should be a fun component to build, I'm looking
 forward to that. 
+
+**1/15/2022**
+
+Today I bought a domain name and deployed the app to the web. My pipeline is:
+
+Github actions builds the front and back end, places the built frontend code into the resources/static directory of
+the backend Spring app, then creates a container image using buildpacks. This image is pushed to the digitalocean container
+registry, which is then deployed on their app platform. SSL is automatically configured apparently which is super tight,
+I thought I was going to have to run an nginx + let's encrypt node.
+
+Next I have to create some form of notification if the user is running an unsupported browser since the application
+basically does nothing without a MIDI connection. After that I'm going to plop in material UI and start building the UI
+that I outlined above. I also just realized typing this that I can actually test this app for real, holy crap.
+Aaaand R.I.P, it doesn't work. It has to be something with the requestMIDIAccess() call, but I thought it was 
+supported in chrome and safari by default. I'm going to figure out how to access the console logs on an ipad 
+and fix it.
