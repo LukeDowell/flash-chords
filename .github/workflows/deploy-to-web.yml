@@ -1,5 +1,8 @@
-name: Flash Chords Build
-on: [push]
+name: Deploy Flash Chords to Web
+on:
+  push:
+    branches:
+      - deploy
 jobs:
   Build-Web-App:
     runs-on: ubuntu-latest

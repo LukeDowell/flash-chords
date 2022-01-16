@@ -1,0 +1,13 @@
+name: Run Backend Tests
+on: [push]
+jobs:
+  Test-Backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: "Test back end"
+        run: |
+          cd app
+          ./gradlew test
