@@ -141,3 +141,10 @@ that I outlined above. I also just realized typing this that I can actually test
 Aaaand R.I.P, it doesn't work. It has to be something with the requestMIDIAccess() call, but I thought it was 
 supported in chrome and safari by default. I'm going to figure out how to access the console logs on an ipad 
 and fix it.
+
+Okay bad news, neither chrome nor safari on iOS support navigator.requestMIDIAccess. I read up on it a little
+bit and the MIDI api is apparently pretty trash security-wise. There are MIDI commands that could theoretically
+brick a hardware device, so the entire API has been removed or will not be implemented in a bunch of browsers.
+Additionally, WedMIDI support on WebKit is labelled as "not considering". This is a good lesson in doing compatibility
+research first, although I'm glad I have gotten this far anyway. I'm going to continue development since android mobile
+and desktops are still supported, I just need to get an android tablet.
