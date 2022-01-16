@@ -30,7 +30,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '11'
-          cache: 'app/gradle'
+          cache: 'gradle'
 
       - name: Test Backend
         run: |
@@ -77,7 +77,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '11'
-          cache: 'app/gradle'
+          cache: 'gradle'
 
       - name: Build Backend
         run: |
