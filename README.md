@@ -1,7 +1,6 @@
 Chord Notation Practice
 =====================
-[![Run Backend Tests](https://github.com/LukeDowell/chord-notation/actions/workflows/run-tests-frontend.yml/badge.svg?branch=main)](https://github.com/LukeDowell/chord-notation/actions/workflows/run-tests-frontend.yml)
-[![Run Frontend Tests](https://github.com/LukeDowell/chord-notation/actions/workflows/run-tests-backend.yml/badge.svg?branch=main)](https://github.com/LukeDowell/chord-notation/actions/workflows/run-tests-backend.yml)
+[![Tests](https://github.com/LukeDowell/chord-notation/actions/workflows/push.yml/badge.svg)](https://github.com/LukeDowell/chord-notation/actions/workflows/push.yml)
 
 ## Features
 

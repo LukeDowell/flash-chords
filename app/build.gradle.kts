@@ -52,4 +52,14 @@ tasks.withType<Test> {
 tasks.withType<BootBuildImage> {
 	builder = "paketobuildpacks/builder:tiny"
 	environment = mapOf("BP_NATIVE_IMAGE" to "true")
+	buildCache {
+		volume {
+			name = "native-image-build-cache"
+		}
+	}
+	launchCache {
+		volume {
+			name = "native-image-launch-cache"
+		}
+	}
 }

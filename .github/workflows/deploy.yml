@@ -68,7 +68,7 @@ jobs:
           ./gradlew bootBuildImage --no-daemon --imageName dev.dowell/flashchords
 
       - name: Tag Image
-        run:
+        run: |
           docker tag dev.dowell/flashchords ${{secrets.CONTAINER_REPO}}:${{github.run_id}}
           docker tag dev.dowell/flashchords ${{secrets.CONTAINER_REPO}}:latest
 
