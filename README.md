@@ -157,4 +157,5 @@ flag in MIDI. Instead it just says the note is still playing at an intensity of 
 smart alec-y. 
 
 I also found out that my voicing validator is bad and that some combos don't work, like E major. Added a test case,
-and I will add several more as well.
+and I will add several more as well. Just kidding I clearly need this app to be done, I was just wrong on what notes
+were in E major. The work is validated!

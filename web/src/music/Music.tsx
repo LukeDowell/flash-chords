@@ -154,9 +154,9 @@ export const isValidVoicing = (chord: Chord, activeNotes: Array<Note>): boolean 
   const activeNotesWithoutOctave = sortedActiveNotes.filter((n) => !rootNotes.includes(n)).map(removeOctave)
   const dedupedNotesWithoutOctave = Array.from(new Set(activeNotesWithoutOctave))
   const transposedActiveNotes: Note[] = [lowestRootNote]
+  const notesAboveRoot: Note[] = KEYBOARD.slice(KEYBOARD.indexOf(lowestRootNote), KEYBOARD.length)
   dedupedNotesWithoutOctave.forEach((nextRequiredNote) => {
-    const closestNoteToRoot = KEYBOARD.slice(KEYBOARD.indexOf(lowestRootNote), KEYBOARD.length)
-      .find((n) => n.includes(nextRequiredNote))
+    const closestNoteToRoot =notesAboveRoot.find((n) => n.includes(nextRequiredNote))
     transposedActiveNotes.push(closestNoteToRoot!!)
   })
 
