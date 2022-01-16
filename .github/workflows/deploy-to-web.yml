@@ -1,4 +1,4 @@
-name: Deploy Flash Chords to Web
+name: Deploy to Web
 on:
   push:
     branches:
