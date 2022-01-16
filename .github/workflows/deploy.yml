@@ -69,8 +69,8 @@ jobs:
 
       - name: Tag Image
         run: |
-          docker tag dev.dowell/flashchords ${{secrets.CONTAINER_REPO}}:${{github.run_id}}
-          docker tag dev.dowell/flashchords ${{secrets.CONTAINER_REPO}}:latest
+          docker tag dev.dowell/flashchords registry.digitalocean.com/dowell/flashchords:${{github.run_id}}
+          docker tag dev.dowell/flashchords registry.digitalocean.com/dowell/flashchords:latest
 
       - name: Push to Registry
         run: |
