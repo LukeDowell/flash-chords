@@ -15,7 +15,7 @@ jobs:
           node-version: '14'
       - run: cd web && npm install
 
-      - name: "Test front end"
+      - name: Test Frontend
         run: |
           cd web
           npm test
@@ -26,17 +26,18 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: "Test Backend"
-        uses: actions/setup-java@v2
+      - uses: actions/setup-java@v2
         with:
           distribution: 'zulu'
           java-version: '11'
           cache: 'app/gradle'
+
+      - name: Test Backend
         run: |
           cd app
           ./gradlew test --no-daemon
 
-      - name: "Upload Build"
+      - name: Upload Build
         uses: actions/upload-artifact@v2
         with:
           name: built-jar
@@ -62,7 +63,7 @@ jobs:
           node-version: '14'
       - run: cd web && npm install
 
-      - name: "Build Frontend"
+      - name: Build Frontend
         run: |
           cd web
           CI=false npm run build
@@ -72,21 +73,22 @@ jobs:
         with:
           name: built-jar
 
-      - name: "Build Backend"
-        uses: actions/setup-java@v2
+      - uses: actions/setup-java@v2
         with:
           distribution: 'zulu'
           java-version: '11'
           cache: 'app/gradle'
+
+      - name: Build Backend
         run: |
           cd app
           ./gradlew bootBuildImage --no-daemon --imageName dev.dowell/flashchords
 
-      - name: "Tag Image"
+      - name: Tag Image
         run:
           docker tag dev.dowell/flashchords ${{secrets.CONTAINER_REPO}}:${{github.run_id}}
 
-      - name: "Push to Registry"
+      - name: Push to Registry
         run: |
           doctl registry login --expiry-seconds 600
           docker push ${{secrets.CONTAINER_REPO}}:${{github.run_id}}
