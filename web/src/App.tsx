@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import './App.css';
 import {AppBar, Box, Container, IconButton, Paper, Toolbar, Typography} from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
-import {Chord, Note} from "./music/Music";
+import {Note} from "./music/Music";
 import MIDIPiano from "./music/MIDIPiano";
 import PracticePage from "./music/PracticePage";
 import {Keyboard} from "./music/Keyboard";
@@ -18,7 +18,7 @@ function App() {
     if (hasLoadedMidi) return
     try {
       navigator.requestMIDIAccess().then((m) => {
-        console.log("Successfully retr ieved MIDIAccess")
+        console.log("Successfully retrieved MIDIAccess")
         setIsCompatibleBrowser(true)
         setMidiAccess(m)
         if (m.inputs.size === 0) return
@@ -27,7 +27,7 @@ function App() {
         const firstInput = m.inputs.get(firstInputKey)
         if (firstInput) {
           const piano = new MIDIPiano(firstInput)
-          piano.addListener(setActiveNotes)
+          piano.setListener("App", setActiveNotes)
           setMidiPiano(piano)
           setHasLoadedMidi(true)
         } else throw new Error(`${firstInputKey} not a valid MIDI input id!`)
@@ -36,10 +36,6 @@ function App() {
       console.error(e)
     }
   }, [hasLoadedMidi, midiPiano])
-
-  const onValidVoicing = (activeNotes: Note[], chord: Chord) => {
-    console.log(`Correctly voiced ${chord} with notes ${activeNotes}`)
-  }
 
   return <>
     <Box sx={{flexGrow: 1}}>
@@ -71,7 +67,7 @@ function App() {
         <h1>Your browser supports MIDI access, but a MIDI device could not be found</h1>
       </Paper>
       || (midiPiano && isCompatibleBrowser) &&
-      <PracticePage piano={midiPiano} onValidVoicing={onValidVoicing}/>
+      <PracticePage piano={midiPiano}/>
       }
     </div>
     <Container style={{minWidth: "fit-content"}}>

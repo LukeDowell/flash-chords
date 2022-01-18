@@ -20,37 +20,36 @@ const StyledComponent = styled('div')({
   }
 })
 
-function PracticePage({
-                        piano, initialChord = generateRandomChord(), onValidVoicing = () => {
-  }
-                      }: Props) {
+export default function PracticePage({
+                        piano,
+                        initialChord = generateRandomChord(),
+                        onValidVoicing = () => {}}: Props) {
   const [currentChord, setCurrentChord] = useState<Chord>(initialChord)
-  const [hasAddedListener, setHasAddedListener] = useState(false)
   const [timeOfLastSuccess, setTimeOfLastSuccess] = useState(Date.now() - 1000)
   const [shouldDisplaySuccess, setShouldDisplaySuccess] = useState(false)
 
   useEffect(() => {
-    if (!hasAddedListener) {
-      piano.addListener(onActiveNotes)
-      setHasAddedListener(true)
-    }
-  }, [piano])
+    piano.setListener("PracticePage", onActiveNotes)
+  }, [currentChord])
 
   useInterval(() => {
     const inTimeWindow = Date.now() - timeOfLastSuccess <= 1000
-    console.log(`${inTimeWindow} --- ${shouldDisplaySuccess}`)
     if (!inTimeWindow && shouldDisplaySuccess) {
-      console.log('display to false')
       setShouldDisplaySuccess(false)
       let newChord = generateRandomChord()
-      while (newChord === currentChord) newChord = generateRandomChord()
+      while (newChord == currentChord) {
+        newChord = generateRandomChord()
+      }
       setCurrentChord(newChord)
     }
   }, 100)
 
-  const onActiveNotes = (activeNotes: Note[]) => {
+  function onActiveNotes(activeNotes: Note[]) {
+    if (activeNotes.length >= 3) {
+      console.log(`Checking voicing of ${toChordSymbol(currentChord)}`)
+    }
     if (isValidVoicing(currentChord, activeNotes)) {
-      onValidVoicing(activeNotes, currentChord)
+      console.log(`Valid voicing of ${toChordSymbol(currentChord)}`)
       setTimeOfLastSuccess(Date.now())
       setShouldDisplaySuccess(true)
     }
@@ -63,5 +62,3 @@ function PracticePage({
     }
   </StyledComponent>
 }
-
-export default PracticePage;

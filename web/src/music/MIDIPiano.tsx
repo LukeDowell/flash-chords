@@ -2,7 +2,7 @@ import {KEYBOARD, MIDI, Note} from "./Music";
 
 export default class MIDIPiano {
   private activeNotes: Note[] = []
-  private listeners: Array<(activeNotes: Note[]) => any> = Array()
+  private listeners: Map<string, (activeNotes: Note[]) => any> = new Map()
 
   constructor(midiInput: WebMidi.MIDIInput) {
     midiInput.addEventListener(
@@ -15,12 +15,19 @@ export default class MIDIPiano {
         } else if (flag === MIDI.KEY_UP || (flag === MIDI.KEY_DOWN && e.data[2] === 0)) {
           this.activeNotes = Array.from(new Set(this.activeNotes.filter((i) => i !== note)))
         }
-        if (flag !== MIDI.HEARTBEAT) this.listeners.forEach((c) => c.call(c, this.activeNotes))
+        if (flag !== MIDI.HEARTBEAT) this.notifyListeners()
       }
     )
   }
 
-  addListener(callback: (activeNotes: Note[]) => any) {
-    this.listeners.push(callback)
+  notifyListeners() {
+    this.listeners.forEach((v, k) => v.call(v, this.activeNotes))
+  }
+
+  setListener(key: string, callback: (activeNotes: Note[]) => any) {
+    this.listeners = new Map([
+      ...this.listeners,
+      [key, callback]
+    ])
   }
 }

@@ -210,3 +210,57 @@ Instead of a cleff I decided to go with a visual representation of the virtual k
 settled on using the styled engine that material comes with. It seems to be based on the `styled-components`
 library so leaving MUI shouldn't be too tough. I have the keyboard all laid out, I just need to find
 some pleasing way to get the black keys positioned correctly.
+
+**1/18/2022**
+
+I'm having a weird problem. Only the first chord on the Practice page is being checked; after that,
+no matter what chord displays, the only correct one will be the initial chord. At first I thought
+it was some mistake of me closing over a variable or something but now I am not so sure. I added
+some logs and I see that, after the first chord, it performs the voicing check twice. Once for
+the original chord, and once for the new one. 
+
+```
+Checking voicing of D
+Checking voicing of Caug
+Checking voicing of D
+Checking voicing of Ddim
+Checking voicing of D
+Checking voicing of Ddim
+```
+
+So then I thought that I was double registering active note listeners and that the first one
+registered would close over the initial chord value, and since it would be checked first it would
+always return true and move the app along. The issue persists, however, even when adding this code:
+
+```typescript
+  useEffect(() => {
+    piano['listeners'] = []
+    piano.addListener((activeNotes) => onActiveNotes(activeNotes))
+  }, [currentChord])
+```
+
+I changed the listener field in the MIDI piano class to be a map, and updated the set function
+to look like this:
+
+```typescript
+setListener(key: string, callback: (activeNotes: Note[]) => any) {
+ this.listeners = new Map([
+   ...this.listeners,
+   [key, callback]
+ ])
+}
+```
+
+My issue was not resolved, I still like that change though since it allows me to avoid wiping out 
+other listeners on accident. Now I'm wondering if maybe the entire component is rendering twice
+from App or something, since my test case to cover this scenario is passing.
+
+It does seem like there are two versions of the app, and one of them always holds on to the initial
+chord / isn't updated. My suspicions now turn to the `useInterval` utility I found, I'm going to 
+remove it and see if the issue persists.
+
+That didn't change anything. What a pickle. I can set a breakpoint at the voicing check in PracticePage,
+and see that `currentChord` evaluates to whatever the very first chord was, yet I can go inspect the
+react component using dev tools and see that currentChord is some new, expected value. I must have 
+some wild misconception about how closures / functions in TS work, I have been assuming that the 
+`currentChord` value in the voicing check function will be reevaluated each time.

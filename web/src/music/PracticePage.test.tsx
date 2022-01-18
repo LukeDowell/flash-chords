@@ -29,4 +29,16 @@ describe("the practice page", () => {
     const expected = await screen.findByTestId('CheckIcon')
     expect(expected).toBeInTheDocument()
   })
+
+  it('should not accept the same chord symbol twice in a row', async () => {
+    const initialChord: Chord = {root: "C", quality: "Major"}
+    render(<PracticePage piano={midiPiano} initialChord={initialChord}/>)
+
+    midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"]))
+    await new Promise((r) => setTimeout(r, 1100))
+    midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"]))
+
+    const hopefullyNoCheckIcon = await screen.queryByTestId('CheckIcon')
+    expect(hopefullyNoCheckIcon).not.toBeInTheDocument()
+  })
 })
