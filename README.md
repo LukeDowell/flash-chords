@@ -188,8 +188,8 @@ Also, crap, "chord notation" is not the commonly used term. It's "chord symbol".
 
 **1/17/2022**
 
-I read a little bit about the utility classes that come with TypeScript today. In particular, I am pretty
-interested in Partial. It let me do this:
+I read a little bit about the utility classes that come with TypeScript today. In particular, I am partial to Partial.
+It let me do this:
 
 ```typescript
 mockRequestMIDIAccess.mockImplementation((): Promise<Partial<WebMidi.MIDIAccess>> => {
