@@ -56,7 +56,6 @@ function PracticePage({
     }
   }
 
-
   return <StyledComponent>
     <h2>{toChordSymbol(currentChord)}</h2>
     {shouldDisplaySuccess &&

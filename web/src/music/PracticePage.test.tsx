@@ -18,11 +18,12 @@ describe("the practice page", () => {
   })
 
   it('should render', () => {
-    render(<PracticePage piano={midiPiano} onValidVoicing={() => {}}/>)
+    render(<PracticePage piano={midiPiano} onValidVoicing={() => {
+    }}/>)
   })
 
   it('should display feedback when the user correctly voices a chord', async () => {
-    const initialChord: Chord = { root: "C", quality: "Major"}
+    const initialChord: Chord = {root: "C", quality: "Major"}
     render(<PracticePage piano={midiPiano} initialChord={initialChord}/>)
     midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"]))
     const expected = await screen.findByTestId('CheckIcon')

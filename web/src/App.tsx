@@ -74,8 +74,8 @@ function App() {
       <PracticePage piano={midiPiano} onValidVoicing={onValidVoicing}/>
       }
     </div>
-    <Container style={{ minWidth: "fit-content"}}>
-      <Keyboard activeNotes={activeNotes} />
+    <Container style={{minWidth: "fit-content"}}>
+      <Keyboard activeNotes={activeNotes}/>
     </Container>
   </>;
 }
