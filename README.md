@@ -4,6 +4,8 @@ Chord Notation Practice
 
 https://flashchords.app/
 
+<img alt="feature demonstration" src="https://puu.sh/IDt30/ccdb38dda1.gif" width="1000" />
+
 ## Features
 
 * Display chord notation, give feedback on whether or not it was input correctly
