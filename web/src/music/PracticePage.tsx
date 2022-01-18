@@ -7,54 +7,37 @@ interface ChordResult {
   time: number
 }
 
-function PracticePage() {
-  const [loadedMidi, setLoadedMidi] = useState(false)
-  const [midiPiano, setMidiPiano] = useState<MIDIPiano>()
-  const [currentChord, setCurrentChord] = useState<Chord>(generateRandomChord())
-  const [chordRecords, setChordRecords] = useState<ChordResult[]>([])
+export interface Props {
+  piano: MIDIPiano,
+  onValidVoicing?: (activeNotes: Note[], chord: Chord) => any
+}
+
+function PracticePage({piano, onValidVoicing = () => {}}: Props) {
+  const [chordResults, setChordResults] = useState<ChordResult[]>([])
+  const [currentChord, setCurrentChord] = useState<Chord>(generateRandomChord)
 
   useEffect(() => {
-    if (loadedMidi) return
-    try {
-      navigator.requestMIDIAccess().then(
-        (midiAccess: WebMidi.MIDIAccess) => {
-          if (midiAccess.inputs.size === 0) {
-            return;
-          }
-          const midiInput = midiAccess.inputs.keys().next().value;
-          const piano = new MIDIPiano(midiAccess.inputs.get(midiInput)!!)
-          piano.addListener(onActiveKeys)
-          setMidiPiano(piano)
-          setLoadedMidi(true)
-        },
-        (err: any) => console.log("OOPS", err)
-      )
-    } catch (e) {
-      console.error("Unable to request MIDI access", e)
-      setLoadedMidi(true)
-    }
-  }, [loadedMidi])
+    piano.addListener(onActiveNotes)
+  }, [piano])
 
-  const onActiveKeys = (activeKeys: Array<Note>, e: WebMidi.MIDIMessageEvent) => {
-    console.log(activeKeys)
-    if (isValidVoicing(currentChord, activeKeys)) {
-      chordRecords.push({ targetChord: currentChord, playedNotes: activeKeys, time: Date.now()})
+  const onActiveNotes = (activeNotes: Note[], e: WebMidi.MIDIMessageEvent) => {
+    console.log(activeNotes)
+    if (isValidVoicing(currentChord, activeNotes)) {
+      const chordResult = { targetChord: currentChord, playedNotes: activeNotes, time: Date.now()}
+      setChordResults([...chordResults, chordResult])
       let newChord = generateRandomChord()
       while(newChord === currentChord) newChord = generateRandomChord()
+      onValidVoicing(activeNotes, currentChord)
       setCurrentChord(newChord)
     }
   }
 
   return (
-    <>
+    <div className="practice-page-root">
       <div className="chord-symbol-prompt" data-testid="chord-symbol-prompt">
         <h2>{ toChordSymbol(currentChord) }</h2>
       </div>
-      <hr/>
-      { chordRecords.length > 0 && Date.now() - chordRecords[chordRecords.length - 1].time <= 1000 &&
-        <h2>Correct!</h2>
-      }
-    </>
+    </div>
   )
 }
 

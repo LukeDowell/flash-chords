@@ -3,3 +3,6 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
+
+export const mockRequestMIDIAccess = jest.fn().mockImplementation(() => new Error("Not Implemented!"))
+global.navigator.requestMIDIAccess = mockRequestMIDIAccess;

@@ -64,8 +64,8 @@ export const MIDI = {
 }
 
 export class MIDIPiano {
-  private activeNotes: Array<Note> = Array()
-  private listeners: Array<(activeNotes: Array<Note>, event: WebMidi.MIDIMessageEvent) => any> = Array()
+  private activeNotes: Note[] = []
+  private listeners: Array<(activeNotes: Note[], event: WebMidi.MIDIMessageEvent) => any> = Array()
 
   constructor(midiInput: WebMidi.MIDIInput) {
     midiInput.addEventListener(
@@ -83,7 +83,7 @@ export class MIDIPiano {
     )
   }
 
-  addListener(callback: (activeNotes: Array<Note>, event: WebMidi.MIDIMessageEvent) => any) {
+  addListener(callback: (activeNotes: Note[], event: WebMidi.MIDIMessageEvent) => any) {
     this.listeners.push(callback)
   }
 }
@@ -149,18 +149,22 @@ export const isValidVoicing = (chord: Chord, activeNotes: Array<Note>): boolean 
 
   const sortedActiveNotes = sortNotes(activeNotes);
   const rootNotes = activeNotes.filter((note) => note.includes(chord.root))
+
   if (rootNotes.length === 0) return false
+
   const lowestRootNote = rootNotes.length > 1 ? activeNotes[0] : rootNotes.reduce(lowerNote)
   const activeNotesWithoutOctave = sortedActiveNotes.filter((n) => !rootNotes.includes(n)).map(removeOctave)
   const dedupedNotesWithoutOctave = Array.from(new Set(activeNotesWithoutOctave))
   const transposedActiveNotes: Note[] = [lowestRootNote]
   const notesAboveRoot: Note[] = KEYBOARD.slice(KEYBOARD.indexOf(lowestRootNote), KEYBOARD.length)
+
   dedupedNotesWithoutOctave.forEach((nextRequiredNote) => {
     const closestNoteToRoot = notesAboveRoot.find((n) => n.includes(nextRequiredNote))
     transposedActiveNotes.push(closestNoteToRoot!!)
   })
 
   const requiredNotes: Note[] = [lowestRootNote]
+
   semitones.forEach((s) => {
     const nextThirdIndex = KEYBOARD.indexOf(requiredNotes[requiredNotes.length - 1]) + s
     requiredNotes.push(KEYBOARD[nextThirdIndex])

@@ -169,3 +169,39 @@ the paketo slack asking some questions to see if I can cache anything to speed t
 I brought in MUI and am going to start putting together the practice page MVP with the chord prompt and
 staff. Maybe after that we finally hop over to Spring and start putting together some statistic / user
 features.
+
+**N+1**
+
+Cruising along on MUI. Moved some stuff out of PracticePage into App, I figure there should be some
+global context holder for something like physical hardware so that is what I'll do. I may even check out
+the Context API react provides but I'm guessing I won't use it.
+
+I ran into a question that I have had before, and that is "If I am using MUI already, do I commit and 
+use their Grid system as well?" and I think the answer to that is heck no. I'm going to just use flex 
+directly with the `styled` engine. The benefits that are listed in the documentation do not outweigh 
+having my layout tied to a bunch of MUI components. It also makes the JSX super messy imo.
+
+The plan right now is to center the chord notation, provide some basic stats on your "session" thus far,
+add a notification if the user is running an unsupported browser, then hop over to Spring. 
+
+Also, crap, "chord notation" is not the commonly used term. It's "chord symbol". x_x
+
+**1/17/2022**
+
+I read a little bit about the utility classes that come with TypeScript today. In particular, I am pretty
+interested in Partial. It let me do this:
+
+```typescript
+mockRequestMIDIAccess.mockImplementation((): Promise<Partial<WebMidi.MIDIAccess>> => {
+      return Promise.resolve({
+        inputs: new Map<string, WebMidi.MIDIInput>([])
+      })
+    })
+```
+
+If the Partial type wrapper is omitted, typescript gets upset because you haven't implemented all the 
+required members of WebMidi.MIDIAccess (which in this case is pretty messy and would be displeasing to do)
+
+The warnings for unsupported browsers / no midi devices are done. I should have some kind of retry for the
+missing input devices since someone could just plug one in, but I'll do that later. For now I'm going to
+throw some Cleff component together and call it a day.
