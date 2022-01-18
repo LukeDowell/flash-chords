@@ -1,15 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import {AppBar, Box, IconButton, Paper, Toolbar, Typography} from "@mui/material";
+import {AppBar, Box, Container, IconButton, Paper, Toolbar, Typography} from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import {Chord, MIDIPiano, Note} from "./music/Music";
 import PracticePage from "./music/PracticePage";
+import {Keyboard} from "./music/Keyboard";
 
 function App() {
   const [hasLoadedMidi, setHasLoadedMidi] = useState(false)
   const [midiPiano, setMidiPiano] = useState<MIDIPiano | undefined>(undefined)
   const [midiAccess, setMidiAccess] = useState<WebMidi.MIDIAccess | undefined>(undefined)
   const [isCompatibleBrowser, setIsCompatibleBrowser] = useState(false)
+  const [activeNotes, setActiveNotes] = useState<Note[]>([])
 
   useEffect(() => {
     if (hasLoadedMidi) return
@@ -23,7 +25,9 @@ function App() {
         const firstInputKey = m.inputs.keys().next().value
         const firstInput = m.inputs.get(firstInputKey)
         if (firstInput) {
-          setMidiPiano(new MIDIPiano(firstInput))
+          const piano = new MIDIPiano(firstInput)
+          piano.addListener(setActiveNotes)
+          setMidiPiano(piano)
           setHasLoadedMidi(true)
         } else throw new Error(`${firstInputKey} not a valid MIDI input id!`)
       })
@@ -69,6 +73,9 @@ function App() {
       <PracticePage piano={midiPiano} onValidVoicing={onValidVoicing}/>
       }
     </div>
+    <Container style={{ minWidth: "fit-content"}}>
+      <Keyboard activeNotes={activeNotes} />
+    </Container>
   </>;
 }
 

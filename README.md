@@ -205,3 +205,8 @@ required members of WebMidi.MIDIAccess (which in this case is pretty messy and w
 The warnings for unsupported browsers / no midi devices are done. I should have some kind of retry for the
 missing input devices since someone could just plug one in, but I'll do that later. For now I'm going to
 throw some Cleff component together and call it a day.
+
+Instead of a cleff I decided to go with a visual representation of the virtual keyboard. Along the way I 
+settled on using the styled engine that material comes with. It seems to be based on the `styled-components`
+library so leaving MUI shouldn't be too tough. I have the keyboard all laid out, I just need to find
+some pleasing way to get the black keys positioned correctly.

@@ -1,25 +1,39 @@
-import React, {useState} from 'react'
-import {KEYBOARD, MIDIPiano, Note} from "./Music";
+import React from 'react'
+import {KEYBOARD, Note} from "./Music";
+import styled from "@emotion/styled";
 
-export interface KeyProps {
-  note: Note,
-  onPress: (n: Note) => void
+interface Props {
+  activeNotes: Note[],
 }
 
-export const Key = ({note, onPress}: KeyProps) => {
-  const [isPressed, setIsPressed] = useState(false)
-  return <div className={`${note}-key-root`}>
-  </div>
-}
+export const Keyboard = ({activeNotes}: Props) => {
+  const keys = KEYBOARD.map((note) => {
+    const isSharp = note.includes("#")
+    const Key = styled('div')({
+      display: "flex",
+      width: "35px", // ~1/88th
+      height: isSharp ? "50%" : "100%",
+      backgroundColor: isSharp ? "black" : "white",
+      color: "grey",
+      border: "1px solid black",
+      alignItems: "end",
+      justifyContent: "center",
+    })
+    return <Key key={note}>{note}</Key>
+  })
 
-interface KeyboardProps {
-  midiPiano: MIDIPiano,
-  onKeyPress: (n: Note) => void
-}
+  const StyledKeyboard = styled('div')({
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignContent: "flex-start",
+    height: "250px",
+    width: "100%",
+    border: "4px solid grey",
+    backgroundColor: "slategray"
+  })
 
-export const Keyboard = ({midiPiano, onKeyPress}: KeyboardProps) => {
-  const keys = KEYBOARD.map((note) => <Key key={note} note={note} onPress={onKeyPress}/>)
-  return <div className="keyboard-root">
+  return <StyledKeyboard>
     {keys}
-  </div>
+  </StyledKeyboard>
 }
