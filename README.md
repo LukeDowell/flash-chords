@@ -2,6 +2,8 @@ Chord Notation Practice
 =====================
 [![Tests](https://github.com/LukeDowell/chord-notation/actions/workflows/push.yml/badge.svg)](https://github.com/LukeDowell/chord-notation/actions/workflows/push.yml)
 
+https://flashchords.app/
+
 ## Features
 
 * Display chord notation, give feedback on whether or not it was input correctly
