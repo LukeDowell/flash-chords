@@ -12,7 +12,10 @@ export interface Props {
   onValidVoicing?: (activeNotes: Note[], chord: Chord) => any
 }
 
-function PracticePage({piano, onValidVoicing = () => {}}: Props) {
+function PracticePage({
+                        piano, onValidVoicing = () => {
+  }
+                      }: Props) {
   const [chordResults, setChordResults] = useState<ChordResult[]>([])
   const [currentChord, setCurrentChord] = useState<Chord>(generateRandomChord)
 
@@ -23,10 +26,10 @@ function PracticePage({piano, onValidVoicing = () => {}}: Props) {
   const onActiveNotes = (activeNotes: Note[], e: WebMidi.MIDIMessageEvent) => {
     console.log(activeNotes)
     if (isValidVoicing(currentChord, activeNotes)) {
-      const chordResult = { targetChord: currentChord, playedNotes: activeNotes, time: Date.now()}
+      const chordResult = {targetChord: currentChord, playedNotes: activeNotes, time: Date.now()}
       setChordResults([...chordResults, chordResult])
       let newChord = generateRandomChord()
-      while(newChord === currentChord) newChord = generateRandomChord()
+      while (newChord === currentChord) newChord = generateRandomChord()
       onValidVoicing(activeNotes, currentChord)
       setCurrentChord(newChord)
     }
@@ -35,7 +38,7 @@ function PracticePage({piano, onValidVoicing = () => {}}: Props) {
   return (
     <div className="practice-page-root">
       <div className="chord-symbol-prompt" data-testid="chord-symbol-prompt">
-        <h2>{ toChordSymbol(currentChord) }</h2>
+        <h2>{toChordSymbol(currentChord)}</h2>
       </div>
     </div>
   )

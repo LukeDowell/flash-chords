@@ -49,8 +49,8 @@ export const toChordSymbol = (c: Chord) => {
 }
 
 export const generateRandomChord = (): Chord => {
-  const roots = ["A","B","C","D","E","F","G"] as RootNote[]
-  const qualities = ["Major","Minor","Augmented","Diminished"] as ChordQuality[]
+  const roots = ["A", "B", "C", "D", "E", "F", "G"] as RootNote[]
+  const qualities = ["Major", "Minor", "Augmented", "Diminished"] as ChordQuality[]
   return {
     root: roots[Math.floor(Math.random() * roots.length)],
     quality: qualities[Math.floor(Math.random() * qualities.length)]
@@ -132,7 +132,7 @@ export const sortNotes = (notes: Note[]): Note[] => notes.sort((a, b) => {
 
 export const isValidVoicing = (chord: Chord, activeNotes: Array<Note>): boolean => {
   const semitones = Array<number>()
-  switch(chord.quality) {
+  switch (chord.quality) {
     case "Diminished":
       semitones.push(3, 3)
       break;

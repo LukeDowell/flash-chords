@@ -2,26 +2,26 @@ import {Chord, isValidVoicing, lowerNote, Note, sortNotes} from './Music'
 
 describe("Triad Chord Voicings", () => {
   test.each([
-    [["C1", "E1", "G1"] as Note[], { root: "C", quality: "Major" } as Chord],
-    [["C2", "E2", "G2", "C3"] as Note[], { root: "C", quality: "Major" } as Chord],
-    [["C1", "E5", "F5", "G5", "E6"] as Note[], { root: "C", quality: "Major" } as Chord],
-    [["C1", "D#1", "G1"] as Note[], { root: "C", quality: "Minor" } as Chord],
-    [["C1", "D#1", "G1", "C2"] as Note[], { root: "C", quality: "Minor" } as Chord],
-    [["G1", "A#1", "D2"] as Note[], { root: "G", quality: "Minor" } as Chord],
-    [["F5", "A5", "C6"] as Note[], { root: "F", quality: "Major" } as Chord],
-    [["E5", "G#5", "B6"] as Note[], { root: "E", quality: "Major" } as Chord],
-    [["G5", "B5", "D#6"] as Note[], { root: "G", quality: "Augmented" } as Chord],
-    [["B2", "D2", "F2"] as Note[], { root: "B", quality: "Diminished" } as Chord],
+    [["C1", "E1", "G1"] as Note[], {root: "C", quality: "Major"} as Chord],
+    [["C2", "E2", "G2", "C3"] as Note[], {root: "C", quality: "Major"} as Chord],
+    [["C1", "E5", "F5", "G5", "E6"] as Note[], {root: "C", quality: "Major"} as Chord],
+    [["C1", "D#1", "G1"] as Note[], {root: "C", quality: "Minor"} as Chord],
+    [["C1", "D#1", "G1", "C2"] as Note[], {root: "C", quality: "Minor"} as Chord],
+    [["G1", "A#1", "D2"] as Note[], {root: "G", quality: "Minor"} as Chord],
+    [["F5", "A5", "C6"] as Note[], {root: "F", quality: "Major"} as Chord],
+    [["E5", "G#5", "B6"] as Note[], {root: "E", quality: "Major"} as Chord],
+    [["G5", "B5", "D#6"] as Note[], {root: "G", quality: "Augmented"} as Chord],
+    [["B2", "D2", "F2"] as Note[], {root: "B", quality: "Diminished"} as Chord],
   ])(
     '%s should be a valid voicing of %s',
     (keys: Note[], chord: Chord) => expect(isValidVoicing(chord, keys)).toBe(true)
   )
 
   test.each([
-    [[] as Note[], { root: "C", quality: "Major" } as Chord],
-    [["C1", "E1", "D1"] as Note[], { root: "C", quality: "Major" } as Chord],
-    [["G1", "A#1", "A2"] as Note[], { root: "G", quality: "Minor" } as Chord],
-    [["F5", "A5", "G6"] as Note[], { root: "F", quality: "Major" } as Chord],
+    [[] as Note[], {root: "C", quality: "Major"} as Chord],
+    [["C1", "E1", "D1"] as Note[], {root: "C", quality: "Major"} as Chord],
+    [["G1", "A#1", "A2"] as Note[], {root: "G", quality: "Minor"} as Chord],
+    [["F5", "A5", "G6"] as Note[], {root: "F", quality: "Major"} as Chord],
   ])(
     '%s should NOT be a valid voicing of %s',
     (keys: Note[], chord: Chord) => expect(isValidVoicing(chord, keys)).toBe(false)
@@ -30,7 +30,7 @@ describe("Triad Chord Voicings", () => {
 
 describe("Seventh Chord Voicings", () => {
   test.each([
-    [["C1", "E1", "G1", "B2"] as Note[], { root: "C", quality: "Major", seventh: true } as Chord],
+    [["C1", "E1", "G1", "B2"] as Note[], {root: "C", quality: "Major", seventh: true} as Chord],
   ])(
     '%s should be a valid voicing of %s',
     (keys: Note[], chord: Chord) => expect(isValidVoicing(chord, keys)).toBe(true)

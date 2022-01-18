@@ -9,11 +9,11 @@ describe('the flash chords app', () => {
   })
 
   it('should render', () => {
-    render(<App />)
+    render(<App/>)
   })
 
   it('should display a message when the browser does not support MIDI', () => {
-    render(<App />)
+    render(<App/>)
     expect(screen.getByText(/Your browser does not provide MIDI access, please use Chrome, Safari or Edge on a desktop or android device/)).toBeInTheDocument()
   })
 
@@ -24,7 +24,7 @@ describe('the flash chords app', () => {
       })
     })
 
-    render(<App />)
+    render(<App/>)
     const expectedElement = await screen.findByText(/Your browser supports MIDI access, but a MIDI device could not be found/)
     expect(expectedElement).toBeInTheDocument()
   })
