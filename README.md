@@ -266,3 +266,18 @@ and see that `currentChord` evaluates to whatever the very first chord was, yet 
 react component using dev tools and see that currentChord is some new, expected value. I must have 
 some wild misconception about how closures / functions in TS work, I have been assuming that the 
 `currentChord` value in the voicing check function will be reevaluated each time.
+
+I have been rescued by a coworker (Thank you Michael!). The issue was that I was never cleaning up
+the initial `onActiveNotes` callback provided to the MIDIPiano, so it closed over the first chord
+value and never updated. The piano setup useEffect now looks like this:
+
+```typescript
+  useEffect(() => {
+    const onActiveNotes = ...
+    piano.setListener("PracticePage", onActiveNotes)
+
+    return () => {
+      piano.removeListener("PracticePage")
+    }
+  }, [currentChord])
+```

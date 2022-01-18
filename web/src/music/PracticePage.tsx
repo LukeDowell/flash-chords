@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Chord, generateRandomChord, isValidVoicing, Note, toChordSymbol} from "./Music";
 import MIDIPiano from "./MIDIPiano";
 import styled from "@emotion/styled";
@@ -8,7 +8,6 @@ import {useInterval} from "../utility";
 export interface Props {
   piano: MIDIPiano,
   initialChord?: Chord,
-  onValidVoicing?: (activeNotes: Note[], chord: Chord) => any
 }
 
 const StyledComponent = styled('div')({
@@ -21,15 +20,24 @@ const StyledComponent = styled('div')({
 })
 
 export default function PracticePage({
-                        piano,
-                        initialChord = generateRandomChord(),
-                        onValidVoicing = () => {}}: Props) {
+                                       piano,
+                                       initialChord = generateRandomChord()
+                                     }: Props) {
   const [currentChord, setCurrentChord] = useState<Chord>(initialChord)
   const [timeOfLastSuccess, setTimeOfLastSuccess] = useState(Date.now() - 1000)
   const [shouldDisplaySuccess, setShouldDisplaySuccess] = useState(false)
 
   useEffect(() => {
+    const onActiveNotes = (activeNotes: Note[]) => {
+      if (isValidVoicing(currentChord, activeNotes)) {
+        setTimeOfLastSuccess(Date.now())
+        setShouldDisplaySuccess(true)
+      }
+    }
     piano.setListener("PracticePage", onActiveNotes)
+    return () => {
+      piano.removeListener("PracticePage")
+    }
   }, [currentChord])
 
   useInterval(() => {
@@ -43,17 +51,6 @@ export default function PracticePage({
       setCurrentChord(newChord)
     }
   }, 100)
-
-  function onActiveNotes(activeNotes: Note[]) {
-    if (activeNotes.length >= 3) {
-      console.log(`Checking voicing of ${toChordSymbol(currentChord)}`)
-    }
-    if (isValidVoicing(currentChord, activeNotes)) {
-      console.log(`Valid voicing of ${toChordSymbol(currentChord)}`)
-      setTimeOfLastSuccess(Date.now())
-      setShouldDisplaySuccess(true)
-    }
-  }
 
   return <StyledComponent>
     <h2>{toChordSymbol(currentChord)}</h2>

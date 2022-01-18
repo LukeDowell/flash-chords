@@ -24,6 +24,10 @@ export default class MIDIPiano {
     this.listeners.forEach((v, k) => v.call(v, this.activeNotes))
   }
 
+  removeListener(key: string) {
+    this.listeners.delete(key)
+  }
+
   setListener(key: string, callback: (activeNotes: Note[]) => any) {
     this.listeners = new Map([
       ...this.listeners,
