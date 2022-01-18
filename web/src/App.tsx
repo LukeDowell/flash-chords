@@ -2,7 +2,8 @@ import React, {useEffect, useState} from 'react';
 import './App.css';
 import {AppBar, Box, Container, IconButton, Paper, Toolbar, Typography} from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
-import {Chord, MIDIPiano, Note} from "./music/Music";
+import {Chord, Note} from "./music/Music";
+import MIDIPiano from "./music/MIDIPiano";
 import PracticePage from "./music/PracticePage";
 import {Keyboard} from "./music/Keyboard";
 
@@ -17,7 +18,7 @@ function App() {
     if (hasLoadedMidi) return
     try {
       navigator.requestMIDIAccess().then((m) => {
-        console.log("Successfully retrieved MIDIAccess")
+        console.log("Successfully retr ieved MIDIAccess")
         setIsCompatibleBrowser(true)
         setMidiAccess(m)
         if (m.inputs.size === 0) return

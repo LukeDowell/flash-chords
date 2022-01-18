@@ -1,47 +1,68 @@
 import React, {useEffect, useState} from 'react';
-import {Chord, generateRandomChord, isValidVoicing, MIDIPiano, Note, toChordSymbol} from "./Music";
-
-interface ChordResult {
-  targetChord: Chord,
-  playedNotes: Note[],
-  time: number
-}
+import {Chord, generateRandomChord, isValidVoicing, Note, toChordSymbol} from "./Music";
+import MIDIPiano from "./MIDIPiano";
+import styled from "@emotion/styled";
+import CheckIcon from '@mui/icons-material/Check'
+import {useInterval} from "../utility";
 
 export interface Props {
   piano: MIDIPiano,
+  initialChord?: Chord,
   onValidVoicing?: (activeNotes: Note[], chord: Chord) => any
 }
 
+const StyledComponent = styled('div')({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  "h2": {
+    fontSize: 50
+  }
+})
+
 function PracticePage({
-                        piano, onValidVoicing = () => {
+                        piano, initialChord = generateRandomChord(), onValidVoicing = () => {
   }
                       }: Props) {
-  const [chordResults, setChordResults] = useState<ChordResult[]>([])
-  const [currentChord, setCurrentChord] = useState<Chord>(generateRandomChord)
+  const [currentChord, setCurrentChord] = useState<Chord>(initialChord)
+  const [hasAddedListener, setHasAddedListener] = useState(false)
+  const [timeOfLastSuccess, setTimeOfLastSuccess] = useState(Date.now() - 1000)
+  const [shouldDisplaySuccess, setShouldDisplaySuccess] = useState(false)
 
   useEffect(() => {
-    piano.addListener(onActiveNotes)
+    if (!hasAddedListener) {
+      piano.addListener(onActiveNotes)
+      setHasAddedListener(true)
+    }
   }, [piano])
 
-  const onActiveNotes = (activeNotes: Note[], e: WebMidi.MIDIMessageEvent) => {
-    console.log(activeNotes)
-    if (isValidVoicing(currentChord, activeNotes)) {
-      const chordResult = {targetChord: currentChord, playedNotes: activeNotes, time: Date.now()}
-      setChordResults([...chordResults, chordResult])
+  useInterval(() => {
+    const inTimeWindow = Date.now() - timeOfLastSuccess <= 1000
+    console.log(`${inTimeWindow} --- ${shouldDisplaySuccess}`)
+    if (!inTimeWindow && shouldDisplaySuccess) {
+      console.log('display to false')
+      setShouldDisplaySuccess(false)
       let newChord = generateRandomChord()
       while (newChord === currentChord) newChord = generateRandomChord()
-      onValidVoicing(activeNotes, currentChord)
       setCurrentChord(newChord)
+    }
+  }, 100)
+
+  const onActiveNotes = (activeNotes: Note[]) => {
+    if (isValidVoicing(currentChord, activeNotes)) {
+      onValidVoicing(activeNotes, currentChord)
+      setTimeOfLastSuccess(Date.now())
+      setShouldDisplaySuccess(true)
     }
   }
 
-  return (
-    <div className="practice-page-root">
-      <div className="chord-symbol-prompt" data-testid="chord-symbol-prompt">
-        <h2>{toChordSymbol(currentChord)}</h2>
-      </div>
-    </div>
-  )
+
+  return <StyledComponent>
+    <h2>{toChordSymbol(currentChord)}</h2>
+    {shouldDisplaySuccess &&
+    <CheckIcon style={{color: "green"}}/>
+    }
+  </StyledComponent>
 }
 
 export default PracticePage;
