@@ -76,3 +76,8 @@ jobs:
         run: |
           doctl registry login --expiry-seconds 600
           docker push registry.digitalocean.com/dowell/flashchords:latest
+
+      - name: Create Deployment
+        run: doctl apps create-deployment $APP_ID
+        env:
+          APP_ID: ${{ secrets.DIGITALOCEAN_APP_ID }}
