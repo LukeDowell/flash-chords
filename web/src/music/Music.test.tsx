@@ -1,4 +1,4 @@
-import {Chord, isValidVoicing, lowerNote, Note, sortNotes} from './Music'
+import {Chord, isValidVoicing, lowerNote, Note, sortNotes, symbolToChord} from './Music'
 
 describe("Triad Chord Voicings", () => {
   test.each([
@@ -30,9 +30,18 @@ describe("Triad Chord Voicings", () => {
 
 describe("Seventh Chord Voicings", () => {
   test.each([
-    [["C1", "E1", "G1", "B2"] as Note[], {root: "C", quality: "Major", seventh: true} as Chord],
+    [["C1", "E1", "G1", "B2"] as Note[], {root: "C", quality: "Major", seventh: "Minor"} as Chord],
+    [["C1", "E1", "G1", "B2"] as Note[], {root: "G#", quality: "Major", length: "seventh"} as Chord],
+    [["A#2", "C#3", "E#", "G#"] as Note[], {root: "A#", quality: "Minor", length: "seventh"} as Chord],
   ])(
     '%s should be a valid voicing of %s',
+    (keys: Note[], chord: Chord) => expect(isValidVoicing(chord, keys)).toBe(true)
+  )
+
+  test.each([
+    [["C1", "E1", "G1"] as Note[], {root: "C", quality: "Major", length: "seventh"} as Chord],
+  ])(
+    '%s should NOT be a valid voicing of %s',
     (keys: Note[], chord: Chord) => expect(isValidVoicing(chord, keys)).toBe(true)
   )
 })
@@ -57,5 +66,25 @@ describe("Music Note Utilities", () => {
   ])(
     `%s should be sorted to %s`,
     (unsorted: Note[], expected: Note[]) => expect(sortNotes(unsorted)).toStrictEqual(expected)
+  )
+
+  test.each([
+    ["C", { root: "C", quality: "Major"} as Chord],
+    ["F#m", { root: "F#", quality: "Minor"} as Chord],
+    ["F#7", { root: "F#", quality: "Major", seventh: "Minor"} as Chord]
+  ])(
+    `%s should be parsed to %s`,
+    (symbol: string, expectedChord: Chord) => expect(symbolToChord(symbol)).toStrictEqual(expectedChord)
+  )
+
+  test.each([
+    ["C", { root: "C", quality: "Minor"} as Chord],
+    ["", { root: "F#", quality: "Minor"} as Chord],
+    ["lelelel", { root: "F#", quality: "Minor"} as Chord],
+    [":^)", { root: "F#", quality: "Minor"} as Chord],
+    ["Fm#7", { root: "F#", quality: "Major", seventh: "Minor"} as Chord]
+  ])(
+    `%s should NOT be parsed to %s`,
+    (symbol: string, expectedChord: Chord) => expect(symbolToChord(symbol)).not.toStrictEqual(expectedChord)
   )
 })

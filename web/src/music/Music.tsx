@@ -20,13 +20,17 @@ export const KEYBOARD: Note[] = [
   "C8",
 ]
 
-export type RootNote = "A" | "B" | "C" | "D" | "E" | "F" | "G"
+export type RootNote = "A" | "B" | "C" | "D" | "E" | "F" | "G" |
+                       "A#" | "B#" | "C#" | "D#" | "E#" | "F#" | "G#" |
+                       "A\u266d" | "B\u266d" | "C\u266d" | "D\u266d" | "E\u266d" | "F\u266d" | "G\u266d"
 
 export type ChordQuality = "Major" | "Minor" | "Augmented" | "Diminished"
 
 export interface Chord {
-  root: RootNote,
+  root: RootNote
   quality: ChordQuality
+  seventh?: "Major" | "Minor"
+  bassNote?: RootNote
 }
 
 export const toChordSymbol = (c: Chord) => {
@@ -53,8 +57,27 @@ export const generateRandomChord = (): Chord => {
   const qualities = ["Major", "Minor", "Augmented", "Diminished"] as ChordQuality[]
   return {
     root: roots[Math.floor(Math.random() * roots.length)],
-    quality: qualities[Math.floor(Math.random() * qualities.length)]
+    quality: qualities[Math.floor(Math.random() * qualities.length)],
   }
+}
+
+export const hasAccidental = (s: string): boolean => s.includes("#") || s.includes("\u266D")
+export const symbolToChord = (symbol: string): Chord | undefined => {
+  const validExpressions = [
+    // Triad
+    /^[a-gA-G][#\u266D]?(?:dim|m|aug)?$/g,
+
+    // Seventh TODO unicode characters for delta (major major) and the weird o?
+    /^[a-gA-G][#\u266D]?(?:dim|m|aug|maj)?7$/g,
+  ]
+
+  if (!validExpressions.find((e) => e.test(symbol))) return
+
+  return undefined
+}
+
+export const chordToSymbol = (chord: Chord): string => {
+  return ""
 }
 
 export const MIDI = {
@@ -106,6 +129,9 @@ export const sortNotes = (notes: Note[]): Note[] => notes.sort((a, b) => {
 })
 
 export const isValidVoicing = (chord: Chord, activeNotes: Array<Note>): boolean => {
+  if (activeNotes.length < 3) return false
+  if (chord.seventh && activeNotes.length < 4) return false
+
   const semitones = Array<number>()
   switch (chord.quality) {
     case "Diminished":
@@ -120,6 +146,15 @@ export const isValidVoicing = (chord: Chord, activeNotes: Array<Note>): boolean 
     case "Augmented":
       semitones.push(4, 4)
       break;
+  }
+
+  switch (chord.seventh) {
+    case "Major":
+      semitones.push(4)
+      break
+    case "Minor":
+      semitones.push(3)
+      break
   }
 
   const sortedActiveNotes = sortNotes(activeNotes);
