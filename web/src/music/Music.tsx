@@ -20,9 +20,28 @@ export const KEYBOARD: Note[] = [
   "C8",
 ]
 
-export type RootNote = "A" | "B" | "C" | "D" | "E" | "F" | "G" |
-                       "A#" | "B#" | "C#" | "D#" | "E#" | "F#" | "G#" |
-                       "A\u266d" | "B\u266d" | "C\u266d" | "D\u266d" | "E\u266d" | "F\u266d" | "G\u266d"
+export type RootNote = "A" | "B" | "C" | "D" | "E" | "F" | "G"
+
+export type Accidental = {
+  symbol: "#" | "\u266d",
+
+  /**
+   * Semitone modifier. This is the amount of half steps
+   * from the base note.
+   */
+  mod: -1 | 1
+}
+
+export type Accidentals = {
+  FLAT: {
+    symbol: "#",
+    mod: "1"
+  },
+  SHARP: {
+    symbol: "\u266d",
+    mod: "-1"
+  }
+}
 
 export type ChordQuality = "Major" | "Minor" | "Augmented" | "Diminished"
 
@@ -40,7 +59,7 @@ export const toChordSymbol = (c: Chord) => {
       quality = "dim"
       break;
     case "Minor":
-      quality = "min"
+      quality = "m"
       break;
     case "Major":
       quality = ""

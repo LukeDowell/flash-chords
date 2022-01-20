@@ -32,8 +32,12 @@ function App() {
           setHasLoadedMidi(true)
         } else throw new Error(`${firstInputKey} not a valid MIDI input id!`)
       })
-    } catch (e) {
-      console.error(e)
+    } catch (e: any) {
+      if (e instanceof TypeError) {
+        console.log("Unable to hook MIDI access, likely incompatible browser")
+        setIsCompatibleBrowser(false)
+      } else if (e?.message.includes(" not a valid MIDI input id!"))
+      console.debug(e)
     }
   }, [hasLoadedMidi, midiPiano])
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import {render, screen} from "@testing-library/react";
+import {act, render, screen} from "@testing-library/react";
 import PracticePage from "./PracticePage";
 import MIDIPiano from "./MIDIPiano";
 import {Chord} from "./Music";
@@ -25,7 +25,9 @@ describe("the practice page", () => {
     const initialChord: Chord = {root: "C", quality: "Major"}
     render(<PracticePage piano={midiPiano} initialChord={initialChord}/>)
 
-    midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"]))
+    await act(async () => {
+      midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"]))
+    })
 
     const expected = await screen.findByTestId('CheckIcon')
     expect(expected).toBeInTheDocument()
@@ -35,9 +37,11 @@ describe("the practice page", () => {
     const initialChord: Chord = {root: "C", quality: "Major"}
     render(<PracticePage piano={midiPiano} initialChord={initialChord}/>)
 
-    midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"]))
-    await new Promise((r) => setTimeout(r, 1100))
-    midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"]))
+    await act(async () => {
+      midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"]))
+      await new Promise((r) => setTimeout(r, 1100))
+      midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"]))
+    })
 
     const hopefullyNoCheckIcon = await screen.queryByTestId('CheckIcon')
     expect(hopefullyNoCheckIcon).not.toBeInTheDocument()

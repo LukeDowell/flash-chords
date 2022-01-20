@@ -13,6 +13,7 @@ describe('the flash chords app', () => {
   })
 
   it('should display a message when the browser does not support MIDI', () => {
+    mockRequestMIDIAccess.mockReturnValue(undefined)
     render(<App/>)
     expect(screen.getByText(/Your browser does not provide MIDI access, please use Chrome, Safari or Edge on a desktop or android device/)).toBeInTheDocument()
   })
