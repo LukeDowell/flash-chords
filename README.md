@@ -343,3 +343,5 @@ will be equal to
 
 Question for teacher: is writing a G#maj7 as `"G#1", "C1", "D#2", "G2"` completely illegal? The "G2" obviously
 is but what about the "C1"? should that be a B# instead?
+
+How does my type system handle someone trying to create an augmented 7th?

@@ -92,8 +92,12 @@ export const chordToSymbol = (c: Chord) => {
   let seventh = ""
   switch (c.seventh) {
     case "Major":
-      if (c.quality === "Diminished") seventh = "\u00f87" // ø
-      else seventh = "M7"
+      if (c.quality === "Diminished") {
+        seventh = "\u00f87"
+        quality = ""
+      } // ø
+      else if (c.quality !== "Minor") seventh = "M7"
+      else seventh = "7"
       break;
     case "Minor":
       if (c.quality === "Diminished") {
@@ -112,12 +116,16 @@ export const generateRandomChord = (): Chord => {
   const qualities = ["Major", "Minor", "Augmented", "Diminished"] as ChordQuality[]
   const accidentals = [FLAT, SHARP, undefined] as Accidental[]
   const addedThirds = ["Major", "Minor", undefined]
-  return {
-    root: roots[Math.floor(Math.random() * roots.length)],
-    quality: qualities[Math.floor(Math.random() * qualities.length)],
-    accidental: accidentals[Math.floor(Math.random() * accidentals.length)],
-    addedThird: addedThirds[Math.floor(Math.random() * addedThirds.length)],
-  } as Chord
+
+  const root = roots[Math.floor(Math.random() * roots.length)]
+  const quality = qualities[Math.floor(Math.random() * qualities.length)]
+  const accidental = accidentals[Math.floor(Math.random() * accidentals.length)]
+  let seventh = undefined
+  if (quality !== "Augmented") {
+    seventh = addedThirds[Math.floor(Math.random() * addedThirds.length)]
+  }
+
+  return { root, quality, accidental, seventh } as Chord
 }
 
 export const symbolToChord = (symbol: string): Chord | undefined => {
