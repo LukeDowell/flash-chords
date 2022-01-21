@@ -1,5 +1,5 @@
 import React from 'react'
-import {KEYBOARD, Note} from "./Music";
+import {KEYBOARD, Note, noteToSymbol, SHARP} from "./Music";
 import styled from "@emotion/styled";
 
 interface Props {
@@ -44,17 +44,16 @@ const SpookyNoWidthFloat = styled('div')({
 
 export const Keyboard = ({activeNotes}: Props) => {
   const keys = KEYBOARD.map((note) => {
-    const isSharp = note.includes("#")
 
     const activeStyle = activeNotes.includes(note) ? {
       backgroundColor: "lightblue"
     } : {}
 
-    return isSharp ?
-      <SpookyNoWidthFloat key={note}>
+    return note.accidental === SHARP ?
+      <SpookyNoWidthFloat key={noteToSymbol(note)}>
         <BlackKey style={activeStyle}>{note}</BlackKey>
       </SpookyNoWidthFloat>
-      : <Key key={note} style={activeStyle}>{note}</Key>
+      : <Key key={noteToSymbol(note)} style={activeStyle}>{noteToSymbol(note)}</Key>
   })
 
   return <StyledKeyboard>{keys}</StyledKeyboard>

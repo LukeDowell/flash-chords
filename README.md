@@ -283,3 +283,25 @@ value and never updated. The piano setup useEffect now looks like this:
     }
   }, [currentChord])
 ```
+
+I decided I am adding seventh support before moving to the backend, I want to actually use this app and
+sevenths are gonna be required. I will also try and add some options to influence the generation of 
+chords.
+
+I have been sloshing the chord data structure around in my head. The fact that a chord can be
+a triad OR a seventh makes things hard, at least it seems to if I try and think of it that way.
+The description of a chord from the wiki that I wrote about earlier is nice in an academic sense
+but it is kind of grating against the code I already have. I came across a music theory video 
+where they organized their description of sevenths by "added thirds", which would be layered on 
+top of a diminished, minor, or major triad. I like thinking of it this way because it neatly fits 
+into the array of semitones I currently base the validation code on. I can even handle the weird 
+case of something trying to create an "augmented" seventh by adding a guard clause and just ignoring 
+the 'extra' added third. 
+
+I'm also just realizing that there is no reason a user shouldn't be able to use a flat note as a 
+chord root, and I haven't accounted for that at all. Since it's a weird unicode symbol I think I
+will have to make sure I add some button for it in any future "chord builder" components.
+
+Ok just to make this refactor bigger and bigger, I'm also going to change the validator to accept
+a chord with a root note of A-G and any accidental. I'll leave the keyboard as is, since those
+"Notes" map to physical keys

@@ -2,7 +2,7 @@ import React from 'react';
 import {act, render, screen} from "@testing-library/react";
 import PracticePage from "./PracticePage";
 import MIDIPiano from "./MIDIPiano";
-import {Chord} from "./Music";
+import {Chord, toNote} from "./Music";
 
 const mockedMidiInput: Partial<WebMidi.MIDIInput> = {
   addEventListener: jest.fn().mockImplementation(() => {
@@ -26,7 +26,7 @@ describe("the practice page", () => {
     render(<PracticePage piano={midiPiano} initialChord={initialChord}/>)
 
     await act(async () => {
-      midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"]))
+      midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"].map(toNote)))
     })
 
     const expected = await screen.findByTestId('CheckIcon')
@@ -38,9 +38,9 @@ describe("the practice page", () => {
     render(<PracticePage piano={midiPiano} initialChord={initialChord}/>)
 
     await act(async () => {
-      midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"]))
+      midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"].map(toNote)))
       await new Promise((r) => setTimeout(r, 1100))
-      midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"]))
+      midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"].map(toNote)))
     })
 
     const hopefullyNoCheckIcon = await screen.queryByTestId('CheckIcon')
