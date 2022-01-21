@@ -156,17 +156,22 @@ export const symbolToChord = (symbol: string): Chord | undefined => {
       } else if (a === "m") {
         seventh = "Minor"
         quality = "Minor"
-      } else {
-        seventh = "Minor"
-        quality = "Major"
       }
+    } else {
+      seventh = "Minor"
+      quality = "Major"
     }
+  } else if (symbol.includes("dim")) {
+    quality = "Diminished"
+  } else if (symbol.includes("m")) {
+    quality = "Minor"
+  } else if (symbol.includes("aug")) {
+    quality = "Augmented"
+  } else {
+    quality = "Major"
   }
-  else if (symbol.includes("dim")) quality = "Diminished"
-  else if (symbol.includes("m")) quality = "Minor"
-  else if (symbol.includes("aug")) quality = "Augmented"
-  else quality = "Major"
 
+  // @ts-ignore
   return { root, quality, accidental, seventh }
 }
 
