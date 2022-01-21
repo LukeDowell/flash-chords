@@ -49,9 +49,9 @@ export const Keyboard = ({activeNotes}: Props) => {
       backgroundColor: "lightblue"
     } : {}
 
-    return note.accidental === SHARP ?
+    return note.accidental?.symbol === SHARP.symbol ?
       <SpookyNoWidthFloat key={noteToSymbol(note)}>
-        <BlackKey style={activeStyle}>{note}</BlackKey>
+        <BlackKey style={activeStyle}>{noteToSymbol(note)}</BlackKey>
       </SpookyNoWidthFloat>
       : <Key key={noteToSymbol(note)} style={activeStyle}>{noteToSymbol(note)}</Key>
   })

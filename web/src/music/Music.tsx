@@ -10,7 +10,7 @@ export interface Note {
 
 export const hasAccidental = (s: string): boolean => s.includes("#") || s.includes("\u266D")
 
-export const noteToSymbol = (n: Note) => `${n.root}${n?.accidental?.symbol}${n.octave || ""}`
+export const noteToSymbol = (n: Note) => `${n.root}${n?.accidental?.symbol || ""}${n.octave || ""}`
 
 export const toNote = (s: string): Note => {
   const root = s.charAt(0)
