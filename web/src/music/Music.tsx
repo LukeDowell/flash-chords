@@ -11,6 +11,7 @@ export interface Note {
 export const hasAccidental = (s: string): boolean => s.includes("#") || s.includes("\u266D")
 
 export const noteToSymbol = (n: Note) => `${n.root}${n?.accidental?.symbol}${n.octave || ""}`
+
 export const toNote = (s: string): Note => {
   const root = s.charAt(0)
   if (s.length === 1) return {root} as Note
@@ -175,7 +176,7 @@ export const isValidVoicing = (chord: Chord, activeNotes: Array<Note>): boolean 
   }
 
   const sortedActiveNotes = sortNotes(activeNotes);
-  const rootNotes = activeNotes.filter((n) => n.root === chord.root && n.accidental === chord.accidental)
+  const rootNotes = activeNotes.filter((n) => n.root === chord.root && isDeepStrictEqual(n.accidental, chord.accidental))
 
   if (rootNotes.length === 0) return false
 
@@ -183,19 +184,17 @@ export const isValidVoicing = (chord: Chord, activeNotes: Array<Note>): boolean 
   const nonRootActiveNotes = sortedActiveNotes
     .filter((n) => !rootNotes.some((r) => r.root === n.root && r.accidental === n.accidental))
   const uniqueNonRootActiveNotes = Array.from(new Set(nonRootActiveNotes))
-  const transposedActiveNotes: Note[] = [lowestRootNote]
   const rootNoteKeyIndex = KEYBOARD.findIndex((k) => isDeepStrictEqual(k, lowestRootNote))
   const notesAboveRoot: Note[] = KEYBOARD.slice(rootNoteKeyIndex, KEYBOARD.length)
 
-  uniqueNonRootActiveNotes.forEach((active) => {
-    const closestNoteToRoot = notesAboveRoot.find((n) => {
+  // Transpose active notes to be in sequence following the lowest root note
+  let transposedActiveNotes = uniqueNonRootActiveNotes.map(
+    (active) => notesAboveRoot.find((n) => {
       return n.root === active.root && isDeepStrictEqual(n.accidental, active.accidental)
-    })
-    transposedActiveNotes.push(closestNoteToRoot!!)
-  })
+    }))
+  transposedActiveNotes = [lowestRootNote, ...transposedActiveNotes]
 
   const requiredNotes: Note[] = [lowestRootNote]
-
   semitones.forEach((s) => {
     const nextThirdIndex = KEYBOARD.findIndex((k) => isDeepStrictEqual(k, requiredNotes[requiredNotes.length - 1])) + s
     requiredNotes.push(KEYBOARD[nextThirdIndex])

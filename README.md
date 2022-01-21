@@ -288,6 +288,8 @@ I decided I am adding seventh support before moving to the backend, I want to ac
 sevenths are gonna be required. I will also try and add some options to influence the generation of 
 chords.
 
+**1/20/2022**
+
 I have been sloshing the chord data structure around in my head. The fact that a chord can be
 a triad OR a seventh makes things hard, at least it seems to if I try and think of it that way.
 The description of a chord from the wiki that I wrote about earlier is nice in an academic sense
@@ -305,3 +307,39 @@ will have to make sure I add some button for it in any future "chord builder" co
 Ok just to make this refactor bigger and bigger, I'm also going to change the validator to accept
 a chord with a root note of A-G and any accidental. I'll leave the keyboard as is, since those
 "Notes" map to physical keys
+
+Another thing to start noodling about is the fact that there will be a preferred way of naming the
+notes of a chord, even if that results in not using the "standard" piano key layout. For example,
+a C dominant 7th is C, E, G, and B♭. It makes sense to call it a B♭ instead of an A# because the 
+seventh is a half step down, rather than being a half step up. I'll have to figure out some way of 
+intelligently separating between the two. Perhaps by key is the simplest way.
+
+Just found yet another uncovered case. The G#maj7 chord is composed of G#, B#, D# and F##. The F## is 
+because it's actually a "normal" G, but it's a crime to have a sharp and natural version of a note on
+the same cleff. I wonder if I can deal with this by writing my own note equality function, maybe any
+note is equal as long it ends up on the same physical key. For example,
+
+```typescript
+{
+  root: "G"
+  accidental: {
+    symbol: "#",
+    mod: 1
+  }
+} as Note
+```
+
+will be equal to
+
+```typescript
+{
+  root: "F"
+  accidental: {
+    symbol: "##",
+    mod: 2
+  }
+} as Note
+```
+
+Question for teacher: is writing a G#maj7 as `"G#1", "C1", "D#2", "G2"` completely illegal? The "G2" obviously
+is but what about the "C1"? should that be a B# instead?

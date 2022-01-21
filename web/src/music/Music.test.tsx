@@ -18,31 +18,30 @@ describe("Triad Chord Voicings", () => {
   )
 
   test.each([
-    [[].map(toNote), {root: "C", quality: "Major"} as Chord],
-    [["C1", "E1", "D1"].map(toNote), {root: "C", quality: "Major"} as Chord],
-    [["G1", "A#1", "A2"].map(toNote), {root: "G", quality: "Minor"} as Chord],
-    [["F5", "A5", "G6"].map(toNote), {root: "F", quality: "Major"} as Chord],
+    [[], {root: "C", quality: "Major"} as Chord],
+    [["C1", "E1", "D1"], {root: "C", quality: "Major"} as Chord],
+    [["G1", "A#1", "A2"], {root: "G", quality: "Minor"} as Chord],
+    [["F5", "A5", "G6"], {root: "F", quality: "Major"} as Chord],
   ])(
     '%s should NOT be a valid voicing of %s',
-    (keys: Note[], chord: Chord) => expect(isValidVoicing(chord, keys)).toBe(false)
+    (keys, chord) => expect(isValidVoicing(chord, keys.map(toNote))).toBe(false)
   )
 })
 
 describe("Seventh Chord Voicings", () => {
   test.each([
-    [["C1", "E1", "G1", "B2"].map(toNote), {root: "C", quality: "Major", seventh: "Minor"} as Chord],
-    [["C1", "E1", "G1", "B2"].map(toNote), {root: "G", accidental: SHARP, quality: "Major", seventh: "Major"} as Chord],
-    [["A#2", "C#3", "E#", "G#"].map(toNote), {root: "A", quality: "Minor", seventh: "Major"} as Chord],
+    [["C1", "E1", "G1", "A#2"], {root: "C", quality: "Major", seventh: "Minor"} as Chord],
+    [["G#1", "C1", "D#2", "G2"], {root: "G", accidental: SHARP, quality: "Major", seventh: "Major"} as Chord],
   ])(
     '%s should be a valid voicing of %s',
-    (keys: Note[], chord: Chord) => expect(isValidVoicing(chord, keys)).toBe(true)
+    (keys, chord) => expect(isValidVoicing(chord, keys.map(toNote))).toBe(true)
   )
 
   test.each([
-    [["C1", "E1", "G1"].map(toNote), {root: "C", quality: "Major", length: "seventh"} as Chord],
+    [["C1", "E1", "G1"], {root: "C", quality: "Major", seventh: "Minor"} as Chord],
   ])(
     '%s should NOT be a valid voicing of %s',
-    (keys: Note[], chord: Chord) => expect(isValidVoicing(chord, keys)).toBe(true)
+    (keys, chord) => expect(isValidVoicing(chord, keys.map(toNote))).toBe(false)
   )
 })
 
