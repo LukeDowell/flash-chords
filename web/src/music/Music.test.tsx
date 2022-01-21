@@ -1,4 +1,15 @@
-import {Chord, isValidVoicing, lowerNote, Note, SHARP, sortNotes, symbolToChord, toNote} from './Music'
+import {
+  Chord,
+  chordToSymbol,
+  FLAT,
+  isValidVoicing,
+  lowerNote,
+  Note,
+  SHARP,
+  sortNotes,
+  symbolToChord,
+  toNote
+} from './Music'
 
 describe("Triad Chord Voicings", () => {
   test.each([
@@ -74,6 +85,17 @@ describe("Music Note Utilities", () => {
   ])(
     `%s should be parsed to %s`,
     (symbol: string, expectedChord: Chord) => expect(symbolToChord(symbol)).toStrictEqual(expectedChord)
+  )
+
+  test.each([
+    [{ root: "C", quality: "Major"} as Chord, "C",],
+    [{ root: "F", accidental: SHARP,  quality: "Minor"} as Chord, "F#m"],
+    [{ root: "B", accidental: FLAT, quality: "Diminished", seventh: "Minor"} as Chord, "B\u266do7"],
+    [{ root: "F", accidental: SHARP, quality: "Major", seventh: "Minor"} as Chord, "F#7"],
+    [{ root: "A", accidental: SHARP, quality: "Major", seventh: "Major"} as Chord, "A#M7"],
+  ])(
+    `%s should be written as %s`,
+    (chord, expectedString) => expect(chordToSymbol(chord)).toStrictEqual(expectedString)
   )
 
   test.each([

@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Chord, generateRandomChord, isValidVoicing, Note, toChordSymbol} from "./Music";
+import {Chord, generateRandomChord, isValidVoicing, Note, chordToSymbol} from "./Music";
 import MIDIPiano from "./MIDIPiano";
 import styled from "@emotion/styled";
 import CheckIcon from '@mui/icons-material/Check'
@@ -53,7 +53,7 @@ export default function PracticePage({
   }, 100)
 
   return <StyledComponent>
-    <h2>{toChordSymbol(currentChord)}</h2>
+    <h2>{chordToSymbol(currentChord)}</h2>
     {shouldDisplaySuccess &&
     <CheckIcon style={{color: "green"}}/>
     }

@@ -75,7 +75,7 @@ export interface Chord {
   bassNote?: Note
 }
 
-export const toChordSymbol = (c: Chord, withOctave: boolean = false) => {
+export const chordToSymbol = (c: Chord) => {
   let quality = "";
   switch (c.quality) {
     case "Diminished":
@@ -89,15 +89,22 @@ export const toChordSymbol = (c: Chord, withOctave: boolean = false) => {
       break;
   }
 
-  let addedNotes = ""
+  let seventh = ""
   switch (c.seventh) {
     case "Major":
+      if (c.quality === "Diminished") seventh = "\u00f87" // ø
+      else seventh = "M7"
       break;
     case "Minor":
+      if (c.quality === "Diminished") {
+        seventh = "o7"
+        quality = ""
+      }
+      else seventh = "7"
       break;
   }
 
-  return `${c.root}${quality}${addedNotes}`
+  return `${c.root}${c.accidental?.symbol||""}${quality}${seventh}`
 }
 
 export const generateRandomChord = (): Chord => {
@@ -118,13 +125,49 @@ export const symbolToChord = (symbol: string): Chord | undefined => {
     // Triad
     /^[a-gA-G][#\u266D]?(?:dim|m|aug)?$/g,
 
-    // Seventh TODO unicode characters for delta (major major) and the weird o?
-    /^[a-gA-G][#\u266D]?(?:dim|m|aug|maj)?7$/g,
+    // Seventh
+    /^[a-gA-G][#\u266D]?[mMo\u00f8]?7$/g,
   ]
 
-  if (!validExpressions.find((e) => e.test(symbol))) return
+  if (!validExpressions.find((e) => e.test(symbol))) return undefined
 
-  return undefined
+  const root = symbol.charAt(0) as Root
+  let accidental: Accidental | undefined = undefined
+  if (hasAccidental(symbol)) {
+    if (symbol.charAt(1) === "\u266d") accidental = FLAT
+    else accidental = SHARP
+  }
+
+  // Seventh
+  let seventh: "Major" | "Minor" | undefined = undefined
+  let quality: ChordQuality;
+  if (symbol.charAt(symbol.length - 1) === "7") {
+    if (/[mMo\u00f8]/g.test(symbol)) {
+      const a = symbol.charAt(symbol.length - 2)
+      if (a === "\u00f8") {
+        seventh = "Major"
+        quality = "Diminished"
+      } else if (a === "M") {
+        seventh = "Major"
+        quality = "Major"
+      } else if (a === "o") {
+        seventh = "Minor"
+        quality = "Diminished"
+      } else if (a === "m") {
+        seventh = "Minor"
+        quality = "Minor"
+      } else {
+        seventh = "Minor"
+        quality = "Major"
+      }
+    }
+  }
+  else if (symbol.includes("dim")) quality = "Diminished"
+  else if (symbol.includes("m")) quality = "Minor"
+  else if (symbol.includes("aug")) quality = "Augmented"
+  else quality = "Major"
+
+  return { root, quality, accidental, seventh }
 }
 
 export const lowerNote = (a: Note, b: Note) => {
