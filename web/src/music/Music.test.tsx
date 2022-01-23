@@ -42,6 +42,7 @@ describe("Triad Chord Voicings", () => {
 describe("Seventh Chord Voicings", () => {
   test.each([
     [["C1", "E1", "G1", "A#2"], {root: "C", quality: "Major", seventh: "Minor"} as Chord],
+    [["C1", "E1", "G1", "B\u266d2"], {root: "C", quality: "Major", seventh: "Minor"} as Chord],
     [["G#1", "C1", "D#2", "G2"], {root: "G", accidental: SHARP, quality: "Major", seventh: "Major"} as Chord],
   ])(
     '%s should be a valid voicing of %s',

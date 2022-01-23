@@ -19,15 +19,15 @@ export const toNote = (s: string): Note => {
   let accidental: undefined | Accidental
   if (hasAccidental(s)) {
     const a = s.charAt(1)
-    if (a === "\u266d") accidental = { symbol: "\u266d", mod: -1 }
-    else accidental = { symbol: "#", mod: 1 }
+    if (a === "\u266d") accidental = {symbol: "\u266d", mod: -1}
+    else accidental = {symbol: "#", mod: 1}
   }
 
   let octave: undefined | number
   if (/[0-9]/g.test(s) && !accidental) octave = parseInt(s.charAt(1))
   else if (/[0-9]/g.test(s) && accidental) octave = parseInt(s.charAt(2))
 
-  return { root, accidental, octave } as Note
+  return {root, accidental, octave} as Note
 }
 
 /**
@@ -103,12 +103,11 @@ export const chordToSymbol = (c: Chord) => {
       if (c.quality === "Diminished") {
         seventh = "o7"
         quality = ""
-      }
-      else seventh = "7"
+      } else seventh = "7"
       break;
   }
 
-  return `${c.root}${c.accidental?.symbol||""}${quality}${seventh}`
+  return `${c.root}${c.accidental?.symbol || ""}${quality}${seventh}`
 }
 
 export const generateRandomChord = (): Chord => {
@@ -125,7 +124,7 @@ export const generateRandomChord = (): Chord => {
     seventh = addedThirds[Math.floor(Math.random() * addedThirds.length)]
   }
 
-  return { root, quality, accidental, seventh } as Chord
+  return {root, quality, accidental, seventh} as Chord
 }
 
 export const symbolToChord = (symbol: string): Chord | undefined => {
@@ -180,7 +179,7 @@ export const symbolToChord = (symbol: string): Chord | undefined => {
   }
 
   // @ts-ignore
-  return { root, quality, accidental, seventh }
+  return {root, quality, accidental, seventh}
 }
 
 export const lowerNote = (a: Note, b: Note) => {
@@ -202,9 +201,23 @@ export const sortNotes = (notes: Note[]): Note[] => notes.sort((a, b) => {
   return 1
 })
 
-export const isValidVoicing = (chord: Chord, activeNotes: Array<Note>): boolean => {
-  if (activeNotes.length < 3) return false
-  if (chord.seventh && activeNotes.length < 4) return false
+export const isValidVoicing = (chord: Chord, activeNotesWithFlats: Array<Note>): boolean => {
+  if (activeNotesWithFlats.length < 3) return false
+  if (chord.seventh && activeNotesWithFlats.length < 4) return false
+
+  // Standardize all notes onto the same notation that the keyboard uses
+  const activeNotes = activeNotesWithFlats.map((n) => {
+    if (isDeepStrictEqual(n.accidental, FLAT)) {
+      const newRoot = n.root === "A" ?  String.fromCharCode(71) : String.fromCharCode(n.root.charCodeAt(0) - 1)
+      const newOctave = n.root === "C" && n.octave ? n.octave - 1 : n.octave
+      return {
+        ...n,
+        octave: newOctave,
+        root: newRoot,
+        accidental: SHARP,
+      } as Note
+    } else return n
+  })
 
   const semitones = Array<number>()
   switch (chord.quality) {
