@@ -11,8 +11,8 @@ export default class MIDIPiano {
   private activeNotes: Note[] = []
   private listeners: Map<string, (activeNotes: Note[]) => any> = new Map()
 
-  constructor(midiInput: WebMidi.MIDIInput) {
-    midiInput.addEventListener(
+  constructor(midiInput?: WebMidi.MIDIInput) {
+    midiInput?.addEventListener(
       "midimessage",
       (e: WebMidi.MIDIMessageEvent) => {
         const note: Note = KEYBOARD[e.data[1] - 21]

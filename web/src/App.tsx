@@ -9,6 +9,7 @@ const StyledRoot = styled('div')({
   display: "flex",
   flexDirection: "column",
   textAlign: "center",
+  justifyContent: "space-between"
 })
 
 function App() {
@@ -57,11 +58,9 @@ function App() {
 
 
   return <StyledRoot>
+    <PracticePage piano={midiPiano || new MIDIPiano()}/>
     {errorMessage.length > 0 &&
     <h3>{errorMessage}</h3>
-    }
-    {errorMessage.length === 0 && midiPiano &&
-    <PracticePage piano={midiPiano}/>
     }
   </StyledRoot>
 }
