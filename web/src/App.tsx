@@ -1,18 +1,23 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import {AppBar, Box, Container, IconButton, Paper, Toolbar, Typography} from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu';
 import {Note} from "./music/Music";
 import MIDIPiano from "./music/MIDIPiano";
-import PracticePage from "./music/PracticePage";
-import {Keyboard} from "./music/Keyboard";
+import PracticePage from "./practice/PracticePage";
+import {styled} from "@mui/material";
+
+const StyledRoot = styled('div')({
+  display: "flex",
+  flexDirection: "column",
+  textAlign: "center",
+})
 
 function App() {
   const [hasLoadedMidi, setHasLoadedMidi] = useState(false)
   const [midiPiano, setMidiPiano] = useState<MIDIPiano | undefined>(undefined)
   const [midiAccess, setMidiAccess] = useState<WebMidi.MIDIAccess | undefined>(undefined)
   const [isCompatibleBrowser, setIsCompatibleBrowser] = useState(false)
-  const [activeNotes, setActiveNotes] = useState<Note[]>([])
+  const [errorMessage, setErrorMessage] = useState<string>("")
+  const [, setActiveNotes] = useState<Note[]>([])
 
   useEffect(() => {
     if (hasLoadedMidi) return
@@ -37,47 +42,27 @@ function App() {
         console.log("Unable to hook MIDI access, likely incompatible browser")
         setIsCompatibleBrowser(false)
       } else if (e?.message.includes(" not a valid MIDI input id!"))
-      console.debug(e)
+        console.debug(e)
     }
   }, [hasLoadedMidi, midiPiano])
 
-  return <>
-    <Box sx={{flexGrow: 1}}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{mr: 2}}
-          >
-            <MenuIcon/>
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
-            Flash Chords
-          </Typography>
-        </Toolbar>
-      </AppBar>
-    </Box>
-    <div className="app-content">
-      {!midiAccess && !isCompatibleBrowser &&
-      <Paper>
-        <h1>Your browser does not provide MIDI access, please use Chrome, Safari or Edge on a desktop or android
-          device</h1>
-      </Paper>
-      || (!midiPiano && midiAccess && isCompatibleBrowser) &&
-      <Paper>
-        <h1>Your browser supports MIDI access, but a MIDI device could not be found</h1>
-      </Paper>
-      || (midiPiano && isCompatibleBrowser) &&
-      <PracticePage piano={midiPiano}/>
-      }
-    </div>
-    <Container style={{minWidth: "fit-content"}}>
-      <Keyboard activeNotes={activeNotes}/>
-    </Container>
-  </>;
+  useEffect(() => {
+    if (!midiAccess && !isCompatibleBrowser) {
+      setErrorMessage("Your browser does not provide MIDI access, please use Chrome, Safari or Edge on a desktop or android device")
+    } else if (!midiPiano && midiAccess && isCompatibleBrowser) {
+      setErrorMessage("Your browser supports MIDI access, but a MIDI device could not be found")
+    }
+  }, [isCompatibleBrowser, midiPiano, midiAccess])
+
+
+  return <StyledRoot>
+    {errorMessage.length > 0 &&
+    <h3>{errorMessage}</h3>
+    }
+    {errorMessage.length === 0 && midiPiano &&
+    <PracticePage piano={midiPiano}/>
+    }
+  </StyledRoot>
 }
 
 export default App;

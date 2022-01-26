@@ -1,5 +1,5 @@
 import React from 'react'
-import {KEYBOARD, Note, noteToSymbol, SHARP} from "./Music";
+import {KEYBOARD, Note, noteToSymbol, SHARP} from "../music/Music";
 import styled from "@emotion/styled";
 
 interface Props {

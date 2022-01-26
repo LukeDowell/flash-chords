@@ -345,3 +345,25 @@ Question for teacher: is writing a G#maj7 as `"G#1", "C1", "D#2", "G2"` complete
 is but what about the "C1"? should that be a B# instead?
 
 How does my type system handle someone trying to create an augmented 7th?
+
+**1/25/2022**
+
+Took a bit of a break. Usually when I hit my initial MVP is when I place whatever project into the graveyard
+of all my other abandoned projects, but I think this one is worth working on a bit more. I have some logos
+and favicon options to use thanks to my girlfriend, honestly a little silly I waited this long to ask for 
+them since everyone knows that is step 1 of starting any project.
+
+I am gonna stick around the frontend a bit more. I am not sure why I felt the rush to get into that, 
+perhaps just to validate the existence of the spring app and the fact I am paying to host a spring app
+where I could just serve the static site for free, but oh well. I have almost no experience doing actual
+mobile-first development so I'm going to try getting started on that. I'll be targeting android phones
+and tablets since iOS unfortunately doesn't support Web MIDI. 
+
+I'm curious what organizing this will be like. I know the idea is your base CSS is all for mobile, small
+screen devices and you use media queries to scale up. I threw these together in Whimsical, and this will
+be what I work towards for now.
+
+<img alt="feature demonstration" src="https://puu.sh/IEVdV/be0ad30fac.png" width="1000" />
+
+I have no doubt that the settings design is a UX sin of the highest order, I'm gonna see how it 
+feels first though.

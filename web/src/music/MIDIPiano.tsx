@@ -1,4 +1,4 @@
-import {KEYBOARD, Note, toNote} from "./Music";
+import {KEYBOARD, Note} from "./Music";
 
 export const MIDI = {
   KEY_DOWN: 144,

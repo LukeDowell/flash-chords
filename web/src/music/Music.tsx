@@ -208,7 +208,7 @@ export const isValidVoicing = (chord: Chord, activeNotesWithFlats: Array<Note>):
   // Standardize all notes onto the same notation that the keyboard uses
   const activeNotes = activeNotesWithFlats.map((n) => {
     if (isDeepStrictEqual(n.accidental, FLAT)) {
-      const newRoot = n.root === "A" ?  String.fromCharCode(71) : String.fromCharCode(n.root.charCodeAt(0) - 1)
+      const newRoot = n.root === "A" ? String.fromCharCode(71) : String.fromCharCode(n.root.charCodeAt(0) - 1)
       const newOctave = n.root === "C" && n.octave ? n.octave - 1 : n.octave
       return {
         ...n,

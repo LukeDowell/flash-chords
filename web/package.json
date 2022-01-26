@@ -9,7 +9,6 @@
     "@mui/material": "^5.2.8",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.4.0",
     "@types/material-ui": "^0.21.12",
     "@types/node": "^16.11.19",
@@ -48,6 +47,8 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/dom": "^8.11.3",
+    "@testing-library/user-event": "^13.5.0",
     "ts-jest": "^27.1.3"
   }
 }
