@@ -7,6 +7,7 @@ import {useInterval} from "../utility";
 import {Settings} from "@mui/icons-material";
 import {DEFAULT_PRACTICE_SETTINGS, PracticeSettings} from "./PracticeSettings";
 import {isDeepStrictEqual} from "util";
+import flashchordsLogo from '../images/icon.png'
 
 export interface Props {
   piano: MIDIPiano,
@@ -22,14 +23,17 @@ const StyledRoot = styled('div')({
   ".prompt-header": {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-between ",
+    padding: "1rem 1rem 0 1rem",
+    width: "100%",
     ".logo": {
       width: "4rem",
       height: "4rem",
     },
     ".button": {
-      width: "4rem",
+      width: "3rem",
       height: "4rem",
+      color: "grey"
     }
   },
 
@@ -48,8 +52,13 @@ const ChordSymbolPrompt = styled('div')({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  "h2": {
-    fontSize: 50
+  ".current-chord-symbol": {
+    fontSize: "5rem",
+    marginTop: "0",
+    marginBottom: "0"
+  },
+  ".timer": {
+
   }
 })
 
@@ -87,16 +96,15 @@ export default function PracticePage({
 
   return <StyledRoot>
     <div className="prompt-header">
-      <img src="%PUBLIC_URL%/images/logo.png" className="logo" alt="flashchords logo"/>
+      <img src={flashchordsLogo} className="logo" alt="flashchords logo"/>
       <Settings className="button"/>
     </div>
     <ChordSymbolPrompt>
       <h2 className="current-chord-symbol">{chordToSymbol(currentChord)}</h2>
       {shouldDisplaySuccess &&
-      <CheckIcon style={{color: "green"}}/>
-      }
+      <CheckIcon style={{color: "green"}}/>}
     </ChordSymbolPrompt>
-    <div className="">
+    <div className="prompt-statistics">
 
     </div>
   </StyledRoot>

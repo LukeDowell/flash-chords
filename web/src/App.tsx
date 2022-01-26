@@ -35,6 +35,7 @@ function App() {
           piano.setListener("App", setActiveNotes)
           setMidiPiano(piano)
           setHasLoadedMidi(true)
+          setErrorMessage("")
         } else throw new Error(`${firstInputKey} not a valid MIDI input id!`)
       })
     } catch (e: any) {
