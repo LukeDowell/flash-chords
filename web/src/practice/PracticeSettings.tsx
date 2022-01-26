@@ -1,12 +1,36 @@
-export interface PracticeSettings {
-  /** Whether or not the chord voicing is timed */
-  timerEnabled: boolean,
+import {Checkbox, FormControlLabel, FormGroup, styled} from "@mui/material";
+import {DEFAULT_PRACTICE_SETTINGS, Settings} from "./Settings";
 
-  /** The amount of time in milliseconds a user has to correctly input a voicing */
-  timerValue: number
+
+export interface Props {
+  settings?: Settings,
+  onSettingsUpdate?: (settings: Settings) => void
 }
 
-export const DEFAULT_PRACTICE_SETTINGS = {
-  timerEnabled: false,
-  timerValue: 10000
+const StyledRoot = styled('div')({
+  display: "flex",
+  flexDirection: "column",
+  width: "80%",
+  border: "2px solid black"
+})
+
+export function PracticeSettings({
+                                   settings = DEFAULT_PRACTICE_SETTINGS,
+                                   onSettingsUpdate = () => {
+                                   }
+                                 }: Props) {
+  return <StyledRoot>
+    <FormGroup>
+      <FormControlLabel control={
+        <Checkbox checked={settings?.timerEnabled}
+                  onClick={() => onSettingsUpdate({...settings, timerEnabled: !settings?.timerEnabled})}/>
+      } label="Timer Enabled"/>
+      <FormControlLabel control={
+        <Checkbox defaultChecked/>
+      } label="Triads"/>
+      <FormControlLabel control={
+        <Checkbox defaultChecked/>
+      } label="Sevenths"/>
+    </FormGroup>
+  </StyledRoot>
 }

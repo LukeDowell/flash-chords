@@ -1,4 +1,5 @@
-import {KEYBOARD, Note} from "./Music";
+import {Note} from "./Note";
+import {KEYBOARD} from "./VoicingValidator";
 
 export const MIDI = {
   KEY_DOWN: 144,

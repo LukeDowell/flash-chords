@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import {Note} from "./music/Music";
 import MIDIPiano from "./music/MIDIPiano";
 import PracticePage from "./practice/PracticePage";
 import {styled} from "@mui/material";
+import {Note} from "./music/Note";
 
 const StyledRoot = styled('div')({
   display: "flex",

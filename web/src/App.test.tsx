@@ -12,10 +12,11 @@ describe('the flash chords app', () => {
     render(<App/>)
   })
 
-  it('should display a message when the browser does not support MIDI', () => {
+  it('should display a message when the browser does not support MIDI', async () => {
     mockRequestMIDIAccess.mockReturnValue(undefined)
     render(<App/>)
-    expect(screen.getByText(/Your browser does not provide MIDI access, please use Chrome, Safari or Edge on a desktop or android device/)).toBeInTheDocument()
+    const errorMessage = await screen.findByText(/Your browser does not provide MIDI access, please use Chrome, Safari or Edge on a desktop or android device/)
+    expect(errorMessage).toBeInTheDocument()
   })
 
   it('should display a message when a valid MIDI input was unable to be found', async () => {
