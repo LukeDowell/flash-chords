@@ -24,7 +24,6 @@ function App() {
     if (hasLoadedMidi) return
     try {
       navigator.requestMIDIAccess().then((m) => {
-        console.log("Successfully retrieved MIDIAccess")
         setIsCompatibleBrowser(true)
         setMidiAccess(m)
         if (m.inputs.size === 0) return
@@ -41,7 +40,6 @@ function App() {
       })
     } catch (e: any) {
       if (e instanceof TypeError) {
-        console.log("Unable to hook MIDI access, likely incompatible browser")
         setIsCompatibleBrowser(false)
       } else if (e?.message.includes(" not a valid MIDI input id!"))
         console.debug(e)

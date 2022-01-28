@@ -85,10 +85,11 @@ describe("the practice page", () => {
   it('should fail a chord voicing after the timer ends', async () => {
     const practiceSettings = {
       timerEnabled: true,
-      timerValue: 250
+      timerSeconds: 1
     }
-
     render(<PracticePage piano={midiPiano} initialSettings={practiceSettings}/>)
+
+    await act(async () => await new Promise((r) => setTimeout(r, 1250)))
 
     const element = await screen.findByText(/Voicings attempted: 1/)
     expect(element).toBeInTheDocument()

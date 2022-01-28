@@ -367,3 +367,20 @@ be what I work towards for now.
 
 I have no doubt that the settings design is a UX sin of the highest order, I'm gonna see how it 
 feels first though.
+
+**1/26/2022**
+
+I need to wrap up the mvp mockup settings, but after that things will be looking pretty useful. I don't
+think I am going to move to user based stuff quite yet, I am realizing I need to figure out what those
+features look like in the mockup phase first.
+
+It would be nice to start creating a feature that helps you memorize the circle of 5ths. Adding key signature
+information will be interesting. A good data set of keys, their diatonic chords,
+and maybe mode information? In my mind's eye I see a little circle of 5ths graphic making some sort of indicator
+as you progress through the exercise. I want to pair visual learning with the flash card style. I'm lacking
+feedback on the chord symbol practice itself as well, if the user fails a note we should at least tell them
+what the correct notes would have been.
+
+First though I'm going to add more settings around chord qualities, have the settings persist in the
+browser, and better statistics views. Maybe we start going a little crazy with widgets as the browser
+window scales up, we can put the keyboard back in!

@@ -1,12 +1,13 @@
 import {Accidental, FLAT, hasAccidental, Note, Root, SHARP} from "./Note";
 
 export type ChordQuality = "Major" | "Minor" | "Augmented" | "Diminished"
+export type SeventhQuality = "Major" | "Minor"
 
 export interface Chord {
   root: Root
   quality: ChordQuality
   accidental?: Accidental
-  seventh?: "Major" | "Minor"
+  seventh?: SeventhQuality
   bassNote?: Note
 }
 
