@@ -88,7 +88,10 @@ export function PracticeSettings({
 
       <FormControlLabel control={
         <Checkbox checked={settings?.halfDiminishedEnabled}
-                  onClick={() => onSettingsUpdate({...settings, halfDiminishedEnabled: !settings?.halfDiminishedEnabled})}/>
+                  onClick={() => onSettingsUpdate({
+                    ...settings,
+                    halfDiminishedEnabled: !settings?.halfDiminishedEnabled
+                  })}/>
       } label="Half Diminished"/>
 
       <FormControlLabel control={

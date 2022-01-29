@@ -1,4 +1,6 @@
 import {Accidental, FLAT, hasAccidental, Note, Root, SHARP} from "./Note";
+import _ from "lodash";
+import {KEYBOARD} from "./MIDIPiano";
 
 export type ChordQuality = "Major" | "Minor" | "Augmented" | "Diminished"
 export type SeventhQuality = "Major" | "Minor"
@@ -9,6 +11,61 @@ export interface Chord {
   accidental?: Accidental
   seventh?: SeventhQuality
   bassNote?: Note
+}
+
+export const requiredNotesForChord = (c: Chord): Note[] => {
+  const semitones: number[] = []
+  switch (c.quality) {
+    case "Diminished":
+      semitones.push(3, 3)
+      break;
+    case "Minor":
+      semitones.push(3, 4)
+      break;
+    case "Major":
+      semitones.push(4, 3)
+      break;
+    case "Augmented":
+      semitones.push(4, 4)
+      break;
+  }
+
+  switch (c.seventh) {
+    case "Major":
+      semitones.push(4)
+      break
+    case "Minor":
+      semitones.push(3)
+      break
+  }
+
+  const requiredNotes: Note[] = [{root: c.root, accidental: c.accidental}]
+  semitones.forEach((s) => {
+    const previousNoteIndex = KEYBOARD.findIndex((k) => {
+      const previousNote = requiredNotes[requiredNotes.length - 1]
+      return k.root === previousNote.root && _.isEqual(k.accidental, previousNote.accidental)
+    })
+    requiredNotes.push(KEYBOARD[previousNoteIndex + s])
+  })
+
+  return requiredNotes
+}
+
+export const generateRandomChord = (): Chord => {
+  const roots = ["A", "B", "C", "D", "E", "F", "G"] as Root[]
+  const qualities = ["Major", "Minor", "Augmented", "Diminished"] as ChordQuality[]
+  const accidentals = [FLAT, SHARP, undefined] as Accidental[]
+  const addedThirds = ["Major", "Minor", undefined]
+
+  const root = roots[Math.floor(Math.random() * roots.length)]
+  const quality = qualities[Math.floor(Math.random() * qualities.length)]
+  const accidental = accidentals[Math.floor(Math.random() * accidentals.length)]
+  let seventh = undefined
+  if (quality !== "Augmented") {
+    seventh = addedThirds[Math.floor(Math.random() * addedThirds.length)]
+  }
+
+  return {root, quality, accidental, seventh} as Chord
 }
 
 export const chordToSymbol = (c: Chord) => {
@@ -44,23 +101,6 @@ export const chordToSymbol = (c: Chord) => {
   }
 
   return `${c.root}${c.accidental?.symbol || ""}${quality}${seventh}`
-}
-
-export const generateRandomChord = (): Chord => {
-  const roots = ["A", "B", "C", "D", "E", "F", "G"] as Root[]
-  const qualities = ["Major", "Minor", "Augmented", "Diminished"] as ChordQuality[]
-  const accidentals = [FLAT, SHARP, undefined] as Accidental[]
-  const addedThirds = ["Major", "Minor", undefined]
-
-  const root = roots[Math.floor(Math.random() * roots.length)]
-  const quality = qualities[Math.floor(Math.random() * qualities.length)]
-  const accidental = accidentals[Math.floor(Math.random() * accidentals.length)]
-  let seventh = undefined
-  if (quality !== "Augmented") {
-    seventh = addedThirds[Math.floor(Math.random() * addedThirds.length)]
-  }
-
-  return {root, quality, accidental, seventh} as Chord
 }
 
 export const symbolToChord = (symbol: string): Chord | undefined => {

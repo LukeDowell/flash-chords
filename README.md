@@ -384,3 +384,29 @@ what the correct notes would have been.
 First though I'm going to add more settings around chord qualities, have the settings persist in the
 browser, and better statistics views. Maybe we start going a little crazy with widgets as the browser
 window scales up, we can put the keyboard back in!
+
+**1/27/2022**
+
+I finished up the settings and iterated on the mockups.
+
+<img alt="mockups v2" src="https://puu.sh/IFtmJ/fc093b35cd.png" width="1250" />
+
+I'm pumped for the table tracking the previous set of chords. That's going to lead me into 
+figuring out how best to represent the required notes for a given chord, IE A#2 vs Bb2 
+
+Still thinking about what sort of stats would be most useful. I feel like there needs to be
+a complimentary activity to the chord symbol practice activity in order to make stats interesting
+/ useful. "What kinds of chords do I fail most?", "After practicing the diatonic chords of a given
+key, how much more likely am I to successfully voice those chords?"
+
+Something I might find useful at this point in my piano career is a diatonic chord activity. The user 
+would be presented with some format of the circle of 5ths. They could choose a key, and then they
+could play through the key a few different ways. 
+
+* Triads or Sevenths
+* Go through the scale in order, backwards, randomly
+* Prompted on the roman numeral for the key
+
+For feedback, I'd like to be able to show the user other visual information about the chord. Specifically,
+the roman numeral, the symbol, and what the closed position chord looks like on a cleff. Maybe there can
+be something where we "flip" the card, check the answer? Sounds kind of corny even writing it out.

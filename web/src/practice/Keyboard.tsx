@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from "@emotion/styled";
-import {KEYBOARD} from "../music/VoicingValidator";
 import {Note, noteToSymbol, SHARP} from "../music/Note";
+import {KEYBOARD} from "../music/MIDIPiano";
 
 interface Props {
   activeNotes: Note[],

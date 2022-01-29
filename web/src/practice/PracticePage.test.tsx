@@ -3,7 +3,7 @@ import {act, render, screen} from "@testing-library/react";
 import PracticePage from "./PracticePage";
 import MIDIPiano from "../music/MIDIPiano";
 import userEvent from "@testing-library/user-event";
-import {Chord} from "../music/Chord";
+import {Chord, chordToSymbol} from "../music/Chord";
 import {toNote} from "../music/Note";
 
 const mockedMidiInput: Partial<WebMidi.MIDIInput> = {
@@ -70,16 +70,20 @@ describe("the practice page", () => {
     expect(screen.queryByTestId('SettingsIcon')).not.toBeInTheDocument()
   })
 
-  it('should show basic statistics about chord practice', async () => {
+  it('should show the correct notes for a chord if the user fails to enter a vaid voicing in time', async () => {
     const initialChord: Chord = {root: "C", quality: "Major"}
-    render(<PracticePage piano={midiPiano} initialChord={initialChord}/>)
+    const settings = {
+      timerEnabled: true,
+      timerSeconds: 1
+    }
 
-    act(() => midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"].map(toNote))))
+    render(<PracticePage piano={midiPiano} initialChord={initialChord} initialSettings={settings}/>)
 
-    const expectedAttempts = await screen.findByText(/Voicings attempted: 1/)
-    const expectedValidVoicings = await screen.findByText(/Valid voicings: 1/)
-    expect(expectedAttempts).toBeInTheDocument()
-    expect(expectedValidVoicings).toBeInTheDocument()
+    await act(() => new Promise((r) => setTimeout(r, 1300)))
+
+    const expected = await screen.findByText(chordToSymbol(initialChord))
+    expect(expected).toBeInTheDocument()
+    expect(screen.getByText(/C, E, G/)).toBeInTheDocument()
   })
 
   it('should fail a chord voicing after the timer ends', async () => {
@@ -89,10 +93,10 @@ describe("the practice page", () => {
     }
     render(<PracticePage piano={midiPiano} initialSettings={practiceSettings}/>)
 
-    await act(async () => await new Promise((r) => setTimeout(r, 1250)))
+    await act(() => new Promise((r) => setTimeout(r, 1250)))
 
-    const element = await screen.findByText(/Voicings attempted: 1/)
-    expect(element).toBeInTheDocument()
+    const expected = await screen.findByText(/Voicings attempted: 1/);
+    expect(expected).toBeInTheDocument()
     expect(screen.getByText(/Valid voicings: 0/)).toBeInTheDocument()
   })
 })

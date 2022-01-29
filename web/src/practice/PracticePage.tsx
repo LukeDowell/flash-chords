@@ -158,7 +158,7 @@ export const generateChordFromSettings = (settings: Settings) => {
   const addedThirds: Array<SeventhQuality | undefined> = [undefined]
 
   if (!settings.majorEnabled && !settings.minorEnabled) {
-      qualities.push("Major")
+    qualities.push("Major")
   } else {
     if (settings.minorEnabled) qualities.push("Minor")
     if (settings.majorEnabled) qualities.push("Major")
