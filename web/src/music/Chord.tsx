@@ -1,4 +1,4 @@
-import {Accidental, FLAT, hasAccidental, Note, Root, SHARP} from "./Note";
+import {Accidental, FLAT, hasAccidental, Note, Root, SHARP, standardizeNote} from "./Note";
 import _ from "lodash";
 import {KEYBOARD} from "./MIDIPiano";
 
@@ -11,44 +11,6 @@ export interface Chord {
   accidental?: Accidental
   seventh?: SeventhQuality
   bassNote?: Note
-}
-
-export const requiredNotesForChord = (c: Chord): Note[] => {
-  const semitones: number[] = []
-  switch (c.quality) {
-    case "Diminished":
-      semitones.push(3, 3)
-      break;
-    case "Minor":
-      semitones.push(3, 4)
-      break;
-    case "Major":
-      semitones.push(4, 3)
-      break;
-    case "Augmented":
-      semitones.push(4, 4)
-      break;
-  }
-
-  switch (c.seventh) {
-    case "Major":
-      semitones.push(4)
-      break
-    case "Minor":
-      semitones.push(3)
-      break
-  }
-
-  const requiredNotes: Note[] = [{root: c.root, accidental: c.accidental}]
-  semitones.forEach((s) => {
-    const previousNoteIndex = KEYBOARD.findIndex((k) => {
-      const previousNote = requiredNotes[requiredNotes.length - 1]
-      return k.root === previousNote.root && _.isEqual(k.accidental, previousNote.accidental)
-    })
-    requiredNotes.push(KEYBOARD[previousNoteIndex + s])
-  })
-
-  return requiredNotes
 }
 
 export const generateRandomChord = (): Chord => {
@@ -123,7 +85,7 @@ export const symbolToChord = (symbol: string): Chord | undefined => {
 
   // Seventh
   let seventh: "Major" | "Minor" | undefined = undefined
-  let quality: ChordQuality;
+  let quality: ChordQuality = "Major"
   if (symbol.charAt(symbol.length - 1) === "7") {
     if (/[mMo\u00f8]/g.test(symbol)) {
       const a = symbol.charAt(symbol.length - 2)
@@ -154,6 +116,60 @@ export const symbolToChord = (symbol: string): Chord | undefined => {
     quality = "Major"
   }
 
-  // @ts-ignore
   return {root, quality, accidental, seventh}
+}
+
+export const requiredNotesForChord = (c: Chord): Note[] => {
+  const semitones: number[] = []
+  switch (c.quality) {
+    case "Diminished":
+      semitones.push(3, 3)
+      break;
+    case "Minor":
+      semitones.push(3, 4)
+      break;
+    case "Major":
+      semitones.push(4, 3)
+      break;
+    case "Augmented":
+      semitones.push(4, 4)
+      break;
+  }
+
+  switch (c.seventh) {
+    case "Major":
+      semitones.push(4)
+      break
+    case "Minor":
+      semitones.push(3)
+      break
+  }
+
+  // TODO find some way to 'change back' the format of the chord
+  const requiredNotes: Note[] = [standardizeNote({root: c.root, accidental: c.accidental})]
+  semitones.forEach((s) => {
+    const previousNoteIndex = KEYBOARD.findIndex((k) => {
+      const previousNote = requiredNotes[requiredNotes.length - 1]
+      return k.root === previousNote.root && _.isEqual(k.accidental, previousNote.accidental)
+    })
+    requiredNotes.push(KEYBOARD[previousNoteIndex + s])
+  })
+
+  return requiredNotes
+}
+
+export const isValidVoicing = (chord: Chord, nonNormalizedActiveNotes: Array<Note>): boolean => {
+  if (nonNormalizedActiveNotes.length < 3) return false
+  if (chord.seventh && nonNormalizedActiveNotes.length < 4) return false
+
+  const activeNotes = nonNormalizedActiveNotes.map(standardizeNote)
+
+  const rootNotes = activeNotes.filter((n) => n.root === chord.root && _.isEqual(n.accidental, chord.accidental))
+  if (rootNotes.length === 0) return false
+
+  // For every required note, we must find a matching (sans octave) note in the activeNotes parameter
+  return requiredNotesForChord(chord).every((requiredNote) => activeNotes.some((activeNote) => {
+      return requiredNote.root === activeNote.root && _.isEqual(requiredNote.accidental, activeNote.accidental)
+    })
+  )
 }

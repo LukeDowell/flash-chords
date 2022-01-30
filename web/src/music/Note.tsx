@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 export type Root = "A" | "B" | "C" | "D" | "E" | "F" | "G"
 
 export interface Note {
@@ -66,3 +68,24 @@ export const sortNotes = (notes: Note[]): Note[] => notes.sort((a, b) => {
 
   return 1
 })
+
+export const notesToString = (notes: Note[]): string => notes.map((n) => {
+  return `${n.root}${n.accidental?.symbol || ""}${n?.octave || ""}`
+}).join(", ")
+
+/**
+ * Standardize all notes onto the same notation that the keyboard uses
+ * @param n
+ */
+export const standardizeNote = (n: Note): Note => {
+  if (_.isEqual(n.accidental, FLAT)) {
+    const newRoot = n.root === "A" ? String.fromCharCode(71) : String.fromCharCode(n.root.charCodeAt(0) - 1)
+    const newOctave = n.root === "C" && n.octave ? n.octave - 1 : n.octave
+    return {
+      ...n,
+      octave: newOctave,
+      root: newRoot,
+      accidental: SHARP,
+    } as Note
+  } else return n
+}
