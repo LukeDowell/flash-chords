@@ -410,3 +410,37 @@ could play through the key a few different ways.
 For feedback, I'd like to be able to show the user other visual information about the chord. Specifically,
 the roman numeral, the symbol, and what the closed position chord looks like on a cleff. Maybe there can
 be something where we "flip" the card, check the answer? Sounds kind of corny even writing it out.
+
+**1/29/2022**
+
+I was able to massively simplify the voicing validator today by basically just moving some code around and 
+realizing I could delete a bunch. The transposition of the active notes into an ordered list was unnecessary.
+In the future, if I want to create a mode that accepts anything except the most basic voicing of a chord,
+then I'll need to do something like that again. For now, it's nice and simple to remove all the octave 
+information from the comparator. 
+
+I'm going to roll my own table for the voicing history stuff. I looked at some table components, in MUI and elsewhere,
+and they are all huge overkill for what I need right now. I'm always a little grossed out by using the table
+libraries, I know they are flexible and need to meet the use cases of a bunch of different domains, but ugh are they
+gross to work with.
+
+The app is coming along however it's still not quite useful enough for me to enjoy using it on my own. Soon, though. SOON.
+
+Ha! Just ran into my first flat/sharp bug while putting the table together
+
+<img alt="flat bug!" src="https://puu.sh/IFRcV/671f61aed5.png" />
+
+A lot of the flat keys are wrong. In moving around some of the validation code I lost the "standardization"
+from flats to sharps for the keyboard. It's a little sneaky because all code that relies on the validator
+will still be fine, so all the chord generation / validation tests passed. This gets by because it only
+fails when coming up with the required notes for a chord that has failed validation. 
+
+I may just copy paste that validation code for now and noodle on how to solve this best. 
+
+** 1/30/2022 **
+
+Ah jeez something about the chord required notes code is borked. I get super weird results seemingly
+randomly. I'm going to start adding a ton of diverse, manually validated chords as test cases all over.
+I'm trying a sort of 'tiered' testing strategy where my core tests use the explicit data structures,
+and then higher order tests use the convenience parser / toString code for chords and notes. I may 
+regret it but I'm curious to see how it feels.
