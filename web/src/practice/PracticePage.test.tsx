@@ -4,7 +4,7 @@ import PracticePage from "./PracticePage";
 import MIDIPiano from "../music/MIDIPiano";
 import userEvent from "@testing-library/user-event";
 import {Chord, chordToSymbol, symbolToChord} from "../music/Chord";
-import {SHARP, toNote} from "../music/Note";
+import {toNote} from "../music/Note";
 
 const mockedMidiInput: Partial<WebMidi.MIDIInput> = {
   addEventListener: jest.fn().mockImplementation(() => {
@@ -86,7 +86,7 @@ describe("the practice page", () => {
     expect(screen.getByText(/C, E, G/)).toBeInTheDocument()
   })
 
-  it.skip('should fail a chord voicing after the timer ends', async () => {
+  it('should fail a chord voicing after the timer ends', async () => {
     const practiceSettings = {
       timerEnabled: true,
       timerSeconds: 1

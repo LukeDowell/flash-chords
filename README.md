@@ -437,10 +437,40 @@ fails when coming up with the required notes for a chord that has failed validat
 
 I may just copy paste that validation code for now and noodle on how to solve this best. 
 
-** 1/30/2022 **
+**1/30/2022**
 
 Ah jeez something about the chord required notes code is borked. I get super weird results seemingly
 randomly. I'm going to start adding a ton of diverse, manually validated chords as test cases all over.
 I'm trying a sort of 'tiered' testing strategy where my core tests use the explicit data structures,
 and then higher order tests use the convenience parser / toString code for chords and notes. I may 
 regret it but I'm curious to see how it feels.
+
+Activity idea: Arpegios based on interval, or patterns of different intervals. Move up and down a key alternating 
+4ths and 5ths or something like that. I'd want to have a cleff display instead of any kind of symbol, and
+it would be neat to auto generate the notes and have it scroll.
+
+Still bug squashing today. I am going through the app and any time I see an invalid chord somewhere, either in a
+different failing test or generated on the homepage, I'm manually checking it's notes and adding it to 
+the test suite. The failures are wracking up but it has gotten pretty easy to add them with the 
+dynamic tests.
+
+**1/31/2022**
+
+I'm running into some oddities around comparisons of objects with optional fields, particularly if that
+optional field can be a number. I have a few tests failing with the output including stuff like this:
+
+```
+    Object {
+      "accidental": Object {
+        "mod": 1,
+        "symbol": "#",
+      },
+-     "octave": undefined,
++     "octave": 1,
+      "root": "G",
+    },
+```
+
+Notes can have octave information or not, and if they have it, it's a number. A decent amount of my code doesn't
+care about octave information so I omit it. This results in either it being undefined or 1, the default value 
+for number. Using `toEqual(expected)` in jest isn't pruning these fields like I thought it would.

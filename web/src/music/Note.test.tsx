@@ -1,24 +1,57 @@
-import {lowerNote, Note, sortNotes, toNote} from "./Note";
+import {FLAT, lowerNote, Note, SHARP, sortNotes, standardizeNote, toNote} from "./Note";
 
 describe('Musical Notes', () => {
   test.each([
-    ["A0", 'C#3'].map(toNote),
-    ["G#1", 'G#7'].map(toNote),
-    ["E4", 'F4'].map(toNote),
-    ["C1", 'C2'].map(toNote),
-    ["C1", 'C1'].map(toNote),
+    ["A0", 'C#3'],
+    ["G#1", 'G#7'],
+    ["E4", 'F4'],
+    ["C1", 'C2'],
+    ["C1", 'C1'],
   ])(
     `%s should be lower than %s`,
-    (lower: Note, higher: Note) => expect(lowerNote(lower, higher)).toBe(lower)
+    (lower: string, higher: string) => expect(lowerNote(toNote(lower), toNote(higher))).toEqual(toNote(lower))
   )
 
   test.each([
-    [["C3", "C2"].map(toNote), ["C2", "C3"].map(toNote)],
-    [["F#5", "G#4", "G6"].map(toNote), ["G#4", "F#5", "G6"].map(toNote)],
-    [["G4", "C4", "A#4"].map(toNote), ["A#4", "C4", "G4"].map(toNote)],
-    [["G4", "C4", "A#4", "A4"].map(toNote), ["A4", "A#4", "C4", "G4"].map(toNote)],
+    [["C3", "C2"], ["C2", "C3"]],
+    [["F#5", "G#4", "G6"], ["G#4", "F#5", "G6"]],
+    [["G4", "C4", "A#4"], ["A#4", "C4", "G4"]],
+    [["G4", "C4", "A#4", "A4"], ["A4", "A#4", "C4", "G4"]],
   ])(
     `%s should be sorted to %s`,
-    (unsorted: Note[], expected: Note[]) => expect(sortNotes(unsorted)).toStrictEqual(expected)
+    (unsorted: string[], expected: string[]) => {
+      const unsortedNotes = unsorted.map(toNote)
+      const expectedNotes = expected.map(toNote)
+      expect(sortNotes(unsortedNotes)).toEqual(expectedNotes)
+    }
+  )
+
+  test.each([
+    ["F\u266d", "E"],
+    ["C\u266d", "B"],
+    ["C#", "C#"],
+    ["D\u266d", "C#"],
+  ])(
+    `%s should be standardized to %s`,
+    (unstandard, standard) => expect(standardizeNote(toNote(unstandard))).toEqual(toNote(standard))
+  )
+
+  test.each([
+    ["C2", {root: "C", octave: 2} as Note],
+    ["C\u266d2", {root: "C", octave: 2, accidental: FLAT} as Note],
+    ["F#5", {root: "F", octave: 5, accidental: SHARP} as Note],
+  ])(
+    `%s should be parsed to %s`,
+    (input: string, expectedNote: Note) => expect(toNote(input)).toEqual(expectedNote)
+  )
+
+  test.each([
+    [""],
+    ["        "],
+    ["C\u266d2, G2, C#"],
+    ["F#53"],
+  ])(
+    `%s should be unable to be parsed`,
+    (input: string) => expect(() => toNote(input)).toThrow()
   )
 })

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import MIDIPiano from "../music/MIDIPiano";
 import styled from "@emotion/styled";
 import CheckIcon from '@mui/icons-material/Check'
@@ -8,7 +8,7 @@ import {PracticeSettings} from "./PracticeSettings";
 import flashchordsLogo from '../images/icon.svg'
 import {DEFAULT_PRACTICE_SETTINGS, Settings} from "./Settings";
 import {LinearProgress} from "@mui/material";
-import {Chord, ChordQuality, chordToSymbol, generateRandomChord, SeventhQuality, isValidVoicing} from "../music/Chord";
+import {Chord, ChordQuality, chordToSymbol, generateRandomChord, isValidVoicing, SeventhQuality} from "../music/Chord";
 import {Accidental, FLAT, Note, Root, SHARP} from "../music/Note";
 import _ from "lodash";
 import {VoicingHistory, VoicingResult} from "./VoicingHistory";
@@ -109,23 +109,23 @@ export default function PracticePage({
   const [settings, setSettings] = useState({...DEFAULT_PRACTICE_SETTINGS, ...initialSettings})
   const [voicingResults, setVoicingResults] = useState<VoicingResult[]>([])
 
-  const onCorrectVoicing = (chord: Chord, notes: Note[]) => {
+  const onCorrectVoicing = useCallback((chord: Chord, notes: Note[]) => {
     setShouldDisplaySuccess(true)
     setTimeLastChordEnded(Date.now())
-    setVoicingResults([ ...voicingResults, { chord, validNotes: notes }])
+    setVoicingResults([...voicingResults, {chord, validNotes: notes}])
     let newChord = generateChordFromSettings(settings)
     while (_.isEqual(currentChord, newChord)) {
       newChord = generateChordFromSettings(settings)
     }
     setCurrentChord(newChord)
-  }
+  }, [voicingResults, currentChord, settings])
 
   useEffect(() => {
     piano.setListener("PracticePage", (activeNotes: Note[]) => {
       if (isValidVoicing(currentChord, activeNotes)) onCorrectVoicing(currentChord, activeNotes)
     })
     return () => piano.removeListener("PracticePage")
-  }, [currentChord, piano, settings])
+  }, [currentChord, piano, settings, onCorrectVoicing])
 
   useInterval(() => {
     const inTimeWindow = Date.now() - timeLastChordEnded <= 1000
@@ -143,7 +143,7 @@ export default function PracticePage({
     if (!settings?.timerEnabled) return
     const timeLeft = (timeLastChordEnded + (settings.timerSeconds * 1000)) - Date.now()
     if (timeLeft <= 0) {
-      setVoicingResults([ ...voicingResults, { chord: currentChord, validNotes: []}])
+      setVoicingResults([...voicingResults, {chord: currentChord, validNotes: []}])
       let newChord = generateChordFromSettings(settings)
       while (_.isEqual(currentChord, newChord)) {
         newChord = generateChordFromSettings(settings)
@@ -173,6 +173,6 @@ export default function PracticePage({
     {settings?.timerEnabled &&
     <LinearProgress className="timer" variant="determinate" value={timerProgress}/>
     }
-    <VoicingHistory voicingResults={voicingResults} />
+    <VoicingHistory voicingResults={voicingResults}/>
   </StyledRoot>
 }

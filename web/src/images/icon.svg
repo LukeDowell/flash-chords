@@ -1,1 +1,39 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 244.39 272.16"><defs><style>.cls-1{fill:#1b1e51;}.cls-2{fill:url(#linear-gradient);}.cls-3{fill:#fff;opacity:0.43;}</style><linearGradient id="linear-gradient" x1="-200.12" y1="185.56" x2="377.65" y2="185.56" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ee1d49"/><stop offset="0.04" stop-color="#ed2f92"/><stop offset="0.11" stop-color="#c77ab3"/><stop offset="0.16" stop-color="#e97a8b"/><stop offset="0.22" stop-color="#bbe4ea"/><stop offset="0.27" stop-color="#b6c4e5"/><stop offset="0.31" stop-color="#452a73"/><stop offset="0.36" stop-color="#842676"/><stop offset="0.42" stop-color="#63bc46"/><stop offset="0.44" stop-color="#6fbe44"/><stop offset="0.48" stop-color="#e1e322"/><stop offset="0.53" stop-color="#ed1c24"/><stop offset="0.56" stop-color="#ed1e24"/><stop offset="0.6" stop-color="#70c05e"/><stop offset="0.67" stop-color="#3f66b0"/><stop offset="0.71" stop-color="#0dbcd0"/><stop offset="0.76" stop-color="#aed136"/><stop offset="0.81" stop-color="#e7427c"/><stop offset="0.88" stop-color="#f0d5ba"/><stop offset="0.92" stop-color="#efd0bc"/><stop offset="0.96" stop-color="#e8eb8f"/></linearGradient></defs><path class="cls-1" d="M113.22,37.61h94.27V50.32H129.36V90.11h50.35v12.71H129.36v85.31a15,15,0,0,1-15,15h-1.13Z"/><path class="cls-1" d="M113.89,148v36.67l.06.88c.87,19.55-17.27,36.21-36.22,36.21-20.3,0-35.33-16.59-36.21-36.21S58.79,149.3,77.73,149.3a35.13,35.13,0,0,1,13.71,2.75V135.47A51.81,51.81,0,1,0,113.89,148Z"/><circle class="cls-2" cx="77.25" cy="185.56" r="29.73"/><path class="cls-3" d="M104.65,174.92V196.2a29,29,0,0,0,0-21.28Z"/><path class="cls-3" d="M88.23,158.29v54.54c.33-.13.66-.26,1-.41V160.48a8.47,8.47,0,0,1,.17-1.71C89,158.6,88.62,158.44,88.23,158.29Z"/><path class="cls-3" d="M51.58,171.24a29.15,29.15,0,0,0,0,28.64Z"/><path class="cls-3" d="M67,158V213.1a29.13,29.13,0,0,0,5.77,1.51V157.06a5.25,5.25,0,0,1,0-.56A30.15,30.15,0,0,0,67,158Z"/></svg>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 244.39 272.16">
+    <defs>
+        <style>.cls-1{fill:#1b1e51;}.cls-2{fill:url(#linear-gradient);}.cls-3{fill:#fff;opacity:0.43;}</style>
+        <linearGradient id="linear-gradient" x1="-200.12" y1="185.56" x2="377.65" y2="185.56"
+                        gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ee1d49"/>
+            <stop offset="0.04" stop-color="#ed2f92"/>
+            <stop offset="0.11" stop-color="#c77ab3"/>
+            <stop offset="0.16" stop-color="#e97a8b"/>
+            <stop offset="0.22" stop-color="#bbe4ea"/>
+            <stop offset="0.27" stop-color="#b6c4e5"/>
+            <stop offset="0.31" stop-color="#452a73"/>
+            <stop offset="0.36" stop-color="#842676"/>
+            <stop offset="0.42" stop-color="#63bc46"/>
+            <stop offset="0.44" stop-color="#6fbe44"/>
+            <stop offset="0.48" stop-color="#e1e322"/>
+            <stop offset="0.53" stop-color="#ed1c24"/>
+            <stop offset="0.56" stop-color="#ed1e24"/>
+            <stop offset="0.6" stop-color="#70c05e"/>
+            <stop offset="0.67" stop-color="#3f66b0"/>
+            <stop offset="0.71" stop-color="#0dbcd0"/>
+            <stop offset="0.76" stop-color="#aed136"/>
+            <stop offset="0.81" stop-color="#e7427c"/>
+            <stop offset="0.88" stop-color="#f0d5ba"/>
+            <stop offset="0.92" stop-color="#efd0bc"/>
+            <stop offset="0.96" stop-color="#e8eb8f"/>
+        </linearGradient>
+    </defs>
+    <path class="cls-1" d="M113.22,37.61h94.27V50.32H129.36V90.11h50.35v12.71H129.36v85.31a15,15,0,0,1-15,15h-1.13Z"/>
+    <path class="cls-1"
+          d="M113.89,148v36.67l.06.88c.87,19.55-17.27,36.21-36.22,36.21-20.3,0-35.33-16.59-36.21-36.21S58.79,149.3,77.73,149.3a35.13,35.13,0,0,1,13.71,2.75V135.47A51.81,51.81,0,1,0,113.89,148Z"/>
+    <circle class="cls-2" cx="77.25" cy="185.56" r="29.73"/>
+    <path class="cls-3" d="M104.65,174.92V196.2a29,29,0,0,0,0-21.28Z"/>
+    <path class="cls-3"
+          d="M88.23,158.29v54.54c.33-.13.66-.26,1-.41V160.48a8.47,8.47,0,0,1,.17-1.71C89,158.6,88.62,158.44,88.23,158.29Z"/>
+    <path class="cls-3" d="M51.58,171.24a29.15,29.15,0,0,0,0,28.64Z"/>
+    <path class="cls-3"
+          d="M67,158V213.1a29.13,29.13,0,0,0,5.77,1.51V157.06a5.25,5.25,0,0,1,0-.56A30.15,30.15,0,0,0,67,158Z"/>
+</svg>

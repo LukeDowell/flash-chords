@@ -33,8 +33,11 @@ export const hasAccidental = (s: string): boolean => s.includes("#") || s.includ
 export const noteToSymbol = (n: Note) => `${n.root}${n?.accidental?.symbol || ""}${n.octave || ""}`
 
 export const toNote = (s: string): Note => {
+  const validNote = /^[a-gA-G][#\u266D]?[0-8]?$/g
+  if (!validNote.test(s)) throw new Error(`invalid note format ${s}`)
+
   const root = s.charAt(0)
-  if (s.length === 1) return {root} as Note
+  if (s.length === 1) return {root, octave: undefined, accidental: undefined} as Note
 
   let accidental: undefined | Accidental
   if (hasAccidental(s)) {
@@ -47,7 +50,7 @@ export const toNote = (s: string): Note => {
   if (/[0-9]/g.test(s) && !accidental) octave = parseInt(s.charAt(1))
   else if (/[0-9]/g.test(s) && accidental) octave = parseInt(s.charAt(2))
 
-  return {root, accidental, octave} as Note
+  return {root, accidental: accidental, octave: octave} as Note
 }
 
 export const lowerNote = (a: Note, b: Note) => {
@@ -81,11 +84,22 @@ export const standardizeNote = (n: Note): Note => {
   if (_.isEqual(n.accidental, FLAT)) {
     const newRoot = n.root === "A" ? String.fromCharCode(71) : String.fromCharCode(n.root.charCodeAt(0) - 1)
     const newOctave = n.root === "C" && n.octave ? n.octave - 1 : n.octave
+    let newAccidental = undefined;
+    if (newRoot !== "E" && newRoot !== "B") newAccidental = SHARP
     return {
       ...n,
       octave: newOctave,
       root: newRoot,
-      accidental: SHARP,
+      accidental: newAccidental,
+    } as Note
+  } else if (_.isEqual(n.accidental, SHARP) && (n.root === "B" || n.root === "E")) {
+    const newRoot = String.fromCharCode(n.root.charCodeAt(0) + 1)
+    const newOctave = newRoot === "C" && n.octave ? n.octave + 1 : n.octave // Increment if we go from B to C
+    return {
+      ...n,
+      root: newRoot,
+      octave: newOctave,
+      accidental: undefined,
     } as Note
   } else return n
 }

@@ -65,7 +65,7 @@ export const chordToSymbol = (c: Chord) => {
   return `${c.root}${c.accidental?.symbol || ""}${quality}${seventh}`
 }
 
-export const symbolToChord = (symbol: string): Chord | undefined => {
+export const symbolToChord = (symbol: string): Chord => {
   const validExpressions = [
     // Triad
     /^[a-gA-G][#\u266D]?(?:dim|m|aug)?$/g,
@@ -74,7 +74,7 @@ export const symbolToChord = (symbol: string): Chord | undefined => {
     /^[a-gA-G][#\u266D]?[mMo\u00f8]?7$/g,
   ]
 
-  if (!validExpressions.find((e) => e.test(symbol))) return undefined
+  if (!validExpressions.find((e) => e.test(symbol))) throw new Error(`invalid chord symbol format ${symbol}`)
 
   const root = symbol.charAt(0) as Root
   let accidental: Accidental | undefined = undefined
@@ -150,9 +150,9 @@ export const requiredNotesForChord = (c: Chord): Note[] => {
   semitones.forEach((s) => {
     const previousNoteIndex = KEYBOARD.findIndex((k) => {
       const previousNote = requiredNotes[requiredNotes.length - 1]
-      return k.root === previousNote.root && _.isEqual(k.accidental, previousNote.accidental)
+      return _.isEqual(k.root, previousNote.root) && _.isEqual(k.accidental, previousNote.accidental)
     })
-    requiredNotes.push(KEYBOARD[previousNoteIndex + s])
+    if (previousNoteIndex !== -1) requiredNotes.push({...KEYBOARD[previousNoteIndex + s], octave: undefined})
   })
 
   return requiredNotes

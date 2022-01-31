@@ -67,13 +67,16 @@ export const VoicingHistory = ({voicingResults}: Props) => {
     const notes = v.validNotes.length !== 0 ? v.validNotes : requiredNotesForChord(v.chord)
     const isSuccess = v.validNotes.length > 0
     const chordSymbol = chordToSymbol(v.chord);
-    return <StyledVoicingRoot key={i} data-testid={isSuccess ? `${chordSymbol}-valid-voicing` : `${chordSymbol}-invalid-voicing`}>
+    return <StyledVoicingRoot key={i}
+                              data-testid={isSuccess ? `${chordSymbol}-valid-voicing` : `${chordSymbol}-invalid-voicing`}>
       <span className="chord">{chordSymbol}</span>
-      <span className="notes">{notesToString(notes.map((n) => { return {...n, octave: undefined}}))}</span>
+      <span className="notes">{notesToString(notes.map((n) => {
+        return {...n, octave: undefined}
+      }))}</span>
     </StyledVoicingRoot>
   }
 
-  const newestOnTopResults = [ ...voicingResults ].reverse()
+  const newestOnTopResults = [...voicingResults].reverse()
 
   return <StyledRoot>
     <div className="header">

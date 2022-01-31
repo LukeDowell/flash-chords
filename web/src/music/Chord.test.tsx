@@ -1,5 +1,5 @@
 import {Chord, chordToSymbol, isValidVoicing, requiredNotesForChord, symbolToChord} from "./Chord";
-import {FLAT, SHARP, toNote} from "./Note";
+import {FLAT, Note, SHARP, toNote} from "./Note";
 
 describe('musical chords', () => {
   test.each([
@@ -23,22 +23,36 @@ describe('musical chords', () => {
   )
 
   test.each([
-    ["C", {root: "C", quality: "Minor"} as Chord],
-    ["", {root: "F", accidental: SHARP, quality: "Minor"} as Chord],
-    ["lelelel", {root: "F", accidental: SHARP, quality: "Minor"} as Chord],
-    [":^)", {root: "F", accidental: SHARP, quality: "Minor"} as Chord],
-    ["Fm#7", {root: "F", accidental: SHARP, quality: "Major", seventh: "Minor"} as Chord]
+    [""],
+    ["   C "],
+    ["lelelel"],
+    [":^)"],
+    ["Fm#7"]
   ])(
-    `%s should NOT be parsed to %s`,
-    (symbol: string, expectedChord: Chord) => expect(symbolToChord(symbol)).not.toStrictEqual(expectedChord)
+    `%s should NOT be parsed`,
+    (symbol: string) => expect(() => symbolToChord(symbol)).toThrow()
   )
 
   test.each([
-    [["F", "A", "C", "D#"], "F\u266d7"]
+    [["E", "G#", "B", "D"], "F\u266d7"], // Should actually be written as Fb, Ab, Cb, Ebb
+    [["B", "D#", "F#", "A"], "B7"],
+    [["C", "D#", "F#"], "B#dim"]
   ])(
     `%s should be the required notes for %s`,
     (notes: string[], chordSymbol: string) => {
-      expect(requiredNotesForChord(symbolToChord(chordSymbol)!!)).toBe(notes.map(toNote))
+      const requiredNotes: Note[] = requiredNotesForChord(symbolToChord(chordSymbol))
+      const expectedNotes: Note[] = notes.map(toNote)
+      expect(requiredNotes).toEqual(expectedNotes)
+    }
+  )
+
+  test.each([
+    [["B", "D"], "B7"],
+    [["C#"], "B#dim"]
+  ])(
+    `%s should NOT be the required notes for %s`,
+    (notes: string[], chordSymbol: string) => {
+      expect(requiredNotesForChord(symbolToChord(chordSymbol))).not.toEqual(notes.map(toNote))
     }
   )
 })
@@ -88,7 +102,7 @@ describe("Seventh Chord Voicings", () => {
     [["G#1", "C1", "D#2", "G2"], "G#M7"],
   ])(
     '%s should be a valid voicing of %s',
-    (keys, chord) => expect(isValidVoicing(symbolToChord(chord)!!, keys.map(toNote))).toBe(true)
+    (keys, chord) => expect(isValidVoicing(symbolToChord(chord), keys.map(toNote))).toBe(true)
   )
 
   test.each([
