@@ -61,21 +61,21 @@ interface Props {
   voicingResults: VoicingResult[]
 }
 
+const toVoicingComponent = (v: VoicingResult, i: number) => {
+  const notes = v.validNotes.length !== 0 ? v.validNotes : requiredNotesForChord(v.chord)
+  const isSuccess = v.validNotes.length > 0
+  const chordSymbol = chordToSymbol(v.chord);
+
+  return <StyledVoicingRoot key={i}
+                            data-testid={isSuccess ? `${chordSymbol}-valid-voicing` : `${chordSymbol}-invalid-voicing`}>
+    <span className="chord">{chordSymbol}</span>
+    <span className="notes">{notesToString(notes.map((n) => {
+      return {...n, octave: undefined}
+    }))}</span>
+  </StyledVoicingRoot>
+}
+
 export const VoicingHistory = ({voicingResults}: Props) => {
-
-  const toVoicingComponent = (v: VoicingResult, i: number) => {
-    const notes = v.validNotes.length !== 0 ? v.validNotes : requiredNotesForChord(v.chord)
-    const isSuccess = v.validNotes.length > 0
-    const chordSymbol = chordToSymbol(v.chord);
-    return <StyledVoicingRoot key={i}
-                              data-testid={isSuccess ? `${chordSymbol}-valid-voicing` : `${chordSymbol}-invalid-voicing`}>
-      <span className="chord">{chordSymbol}</span>
-      <span className="notes">{notesToString(notes.map((n) => {
-        return {...n, octave: undefined}
-      }))}</span>
-    </StyledVoicingRoot>
-  }
-
   const newestOnTopResults = [...voicingResults].reverse()
 
   return <StyledRoot>

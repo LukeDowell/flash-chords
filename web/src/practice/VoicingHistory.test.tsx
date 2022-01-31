@@ -33,4 +33,18 @@ describe('the voicing history component', () => {
     const expected = await screen.findByText(/C, D#, F#/)
     expect(expected).toBeInTheDocument()
   })
+
+  it('should render the required notes for a seventh voicing if none are provided', async () => {
+    const voicingResults: VoicingResult[] = [
+      {
+        chord: symbolToChord("D\u266dM7")!!,
+        validNotes: []
+      }
+    ]
+
+    render(<VoicingHistory voicingResults={voicingResults}/>)
+
+    const expected = await screen.findByText(/C#, F, G#, C/)
+    expect(expected).toBeInTheDocument()
+  })
 })

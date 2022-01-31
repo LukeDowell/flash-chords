@@ -20,7 +20,7 @@ export interface Settings {
 
 export const DEFAULT_PRACTICE_SETTINGS = {
   timerEnabled: true,
-  timerSeconds: 10,
+  timerSeconds: 15,
   triadsEnabled: true,
   seventhsEnabled: true,
   flatRootsEnabled: true,

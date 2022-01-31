@@ -77,14 +77,14 @@ export const symbolToChord = (symbol: string): Chord => {
   if (!validExpressions.find((e) => e.test(symbol))) throw new Error(`invalid chord symbol format ${symbol}`)
 
   const root = symbol.charAt(0) as Root
-  let accidental: Accidental | undefined = undefined
+  let accidental: Accidental | undefined
   if (hasAccidental(symbol)) {
     if (symbol.charAt(1) === "\u266d") accidental = FLAT
     else accidental = SHARP
   }
 
   // Seventh
-  let seventh: "Major" | "Minor" | undefined = undefined
+  let seventh: "Major" | "Minor" | undefined
   let quality: ChordQuality = "Major"
   if (symbol.charAt(symbol.length - 1) === "7") {
     if (/[mMo\u00f8]/g.test(symbol)) {

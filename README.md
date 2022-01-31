@@ -474,3 +474,12 @@ optional field can be a number. I have a few tests failing with the output inclu
 Notes can have octave information or not, and if they have it, it's a number. A decent amount of my code doesn't
 care about octave information so I omit it. This results in either it being undefined or 1, the default value 
 for number. Using `toEqual(expected)` in jest isn't pruning these fields like I thought it would.
+
+There is some issue with gathering the required notes for a chord after you let the page run for a bit. Initially
+this bug was what caused me to go back and harden my test suite and refactor the voicing validator, however
+it still persists. My next guess is that something is getting funky with the state of the component. 
+
+The issue was with my random chord generator. I allowed for it to generate a chord with a quality of
+undefined, which is not a valid chord at all. How to guard against that? Writing tests for generators
+is kind of whack imo, at least doing something like 'generate 1,000 chords and make sure they are all ok'
+feels weird.

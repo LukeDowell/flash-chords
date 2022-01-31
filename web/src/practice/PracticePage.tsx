@@ -21,7 +21,7 @@ export interface Props {
 
 export const generateChordFromSettings = (settings: Settings) => {
   const roots = ["A", "B", "C", "D", "E", "F", "G"] as Root[]
-  const qualities: Array<ChordQuality | undefined> = [undefined]
+  const qualities: Array<ChordQuality | undefined> = []
   const accidentals: Array<Accidental | undefined> = [undefined]
   const addedThirds: Array<SeventhQuality | undefined> = [undefined]
 

@@ -36,7 +36,8 @@ describe('musical chords', () => {
   test.each([
     [["E", "G#", "B", "D"], "F\u266d7"], // Should actually be written as Fb, Ab, Cb, Ebb
     [["B", "D#", "F#", "A"], "B7"],
-    [["C", "D#", "F#"], "B#dim"]
+    [["C", "D#", "F#"], "B#dim"],
+    [["C#", "F", "G#", "C"], "D\u266dM7"]
   ])(
     `%s should be the required notes for %s`,
     (notes: string[], chordSymbol: string) => {
@@ -48,7 +49,8 @@ describe('musical chords', () => {
 
   test.each([
     [["B", "D"], "B7"],
-    [["C#"], "B#dim"]
+    [["C#"], "B#dim"],
+    [["C#", "F"], "D\u266dM7"]
   ])(
     `%s should NOT be the required notes for %s`,
     (notes: string[], chordSymbol: string) => {
