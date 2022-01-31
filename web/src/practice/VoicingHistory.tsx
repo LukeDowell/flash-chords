@@ -28,7 +28,7 @@ const StyledRoot = styled('div')({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    fontSize: "2vmax"
+    fontSize: "2.5vmax"
   }
 })
 
@@ -66,13 +66,17 @@ const toVoicingComponent = (v: VoicingResult, i: number) => {
   const isSuccess = v.validNotes.length > 0
   const chordSymbol = chordToSymbol(v.chord);
 
-  return <StyledVoicingRoot key={i}
-                            data-testid={isSuccess ? `${chordSymbol}-valid-voicing` : `${chordSymbol}-invalid-voicing`}>
+  const Styled = styled(StyledVoicingRoot)({
+    backgroundColor: isSuccess ? "rgba(0, 255, 0, 0.2)" : "rgba(255, 0, 0, 0.2)"
+  })
+
+  return <Styled key={i}
+                 data-testid={isSuccess ? `${chordSymbol}-valid-voicing` : `${chordSymbol}-invalid-voicing`}>
     <span className="chord">{chordSymbol}</span>
     <span className="notes">{notesToString(notes.map((n) => {
       return {...n, octave: undefined}
     }))}</span>
-  </StyledVoicingRoot>
+  </Styled>
 }
 
 export const VoicingHistory = ({voicingResults}: Props) => {
