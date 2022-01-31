@@ -42,8 +42,8 @@ export function PracticeSettings({
         placeholder={String(settings?.timerSeconds)}
 
         onChange={(e) => {
-          const value = e.target.value
-          if (!Number.isSafeInteger(value) || parseInt(value) < 1) return
+          const value = parseInt(e.target.value)
+          if (!Number.isSafeInteger(value)) return
           else onSettingsUpdate({...settings, timerSeconds: parseInt(e.target.value)})
         }}
       />
