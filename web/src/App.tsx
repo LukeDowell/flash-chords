@@ -3,7 +3,6 @@ import './App.css';
 import MIDIPiano from "./music/MIDIPiano";
 import PracticePage from "./practice/PracticePage";
 import {styled} from "@mui/material";
-import {Note} from "./music/Note";
 
 const StyledRoot = styled('div')({
   display: "flex",
@@ -18,7 +17,6 @@ function App() {
   const [midiAccess, setMidiAccess] = useState<WebMidi.MIDIAccess | undefined>(undefined)
   const [isCompatibleBrowser, setIsCompatibleBrowser] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string>("")
-  const [, setActiveNotes] = useState<Note[]>([])
 
   useEffect(() => {
     if (hasLoadedMidi) return
@@ -32,7 +30,6 @@ function App() {
         const firstInput = m.inputs.get(firstInputKey)
         if (firstInput) {
           const piano = new MIDIPiano(firstInput)
-          piano.setListener("App", setActiveNotes)
           setMidiPiano(piano)
           setHasLoadedMidi(true)
           setErrorMessage("")

@@ -483,3 +483,8 @@ The issue was with my random chord generator. I allowed for it to generate a cho
 undefined, which is not a valid chord at all. How to guard against that? Writing tests for generators
 is kind of whack imo, at least doing something like 'generate 1,000 chords and make sure they are all ok'
 feels weird.
+
+**2/9/2022**
+
+UX feedback from interview candidate; list of failed chords is not clear in purpose, she thought that 
+they might have been chords the user has to to play before the timer runs out.

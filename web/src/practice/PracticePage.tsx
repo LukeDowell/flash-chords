@@ -121,9 +121,11 @@ export default function PracticePage({
   }, [voicingResults, currentChord, settings])
 
   useEffect(() => {
-    piano.setListener("PracticePage", (activeNotes: Note[]) => {
+    const callback = (activeNotes: Note[]) => {
+      console.log("I'm hanging out in the callback")
       if (isValidVoicing(currentChord, activeNotes)) onCorrectVoicing(currentChord, activeNotes)
-    })
+    };
+    piano.setListener("PracticePage", callback)
     return () => piano.removeListener("PracticePage")
   }, [currentChord, piano, settings, onCorrectVoicing])
 

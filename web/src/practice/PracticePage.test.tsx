@@ -1,7 +1,7 @@
 import React from 'react';
 import {act, render, screen} from "@testing-library/react";
 import PracticePage from "./PracticePage";
-import MIDIPiano from "../music/MIDIPiano";
+import MIDIPiano, {KEYBOARD, MIDI, MIDI_KEYBOARD_OFFSET} from "../music/MIDIPiano";
 import userEvent from "@testing-library/user-event";
 import {Chord, chordToSymbol, symbolToChord} from "../music/Chord";
 import {toNote} from "../music/Note";
@@ -98,5 +98,29 @@ describe("the practice page", () => {
 
     const expected = await screen.findByTestId("B#dim-invalid-voicing");
     expect(expected).toBeInTheDocument()
+  })
+
+  it('should be able to successfully play a chord via a midi piano', async () => {
+    let pianoEmitter: (e: WebMidi.MIDIMessageEvent) => void
+    mockedMidiInput.addEventListener = jest.fn().mockImplementation(
+      (key: string, callback: (e: WebMidi.MIDIMessageEvent) => void) => {
+        pianoEmitter = callback
+      }
+    )
+    midiPiano = new MIDIPiano(mockedMidiInput as WebMidi.MIDIInput)
+
+    const events = ["C1", "E1", "G1"]
+      .map(toNote)
+      .map((n): Partial<WebMidi.MIDIMessageEvent> => {
+        return {
+          data: Uint8Array.of(MIDI.KEY_DOWN, KEYBOARD.indexOf(n) + MIDI_KEYBOARD_OFFSET, 0)
+        }
+      })
+
+    const initialChord = symbolToChord("C")
+    render(<PracticePage piano={midiPiano} initialChord={initialChord}/>)
+    await act( () => events.forEach((e) => pianoEmitter.call(e, e as WebMidi.MIDIMessageEvent)))
+
+    expect(screen.getByTestId('CheckIcon')).toBeInTheDocument()
   })
 })
