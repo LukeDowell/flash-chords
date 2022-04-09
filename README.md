@@ -488,3 +488,9 @@ feels weird.
 
 UX feedback from interview candidate; list of failed chords is not clear in purpose, she thought that 
 they might have been chords the user has to to play before the timer runs out.
+
+**4/1/2022**
+
+Woo took a huge break, I started but didn't complete a different project in the meantime. I worked on this 
+app for fun with a coworker and was inspired to try another feature: I'd like to have a scrolling staff 
+to practice sight-reading with. 

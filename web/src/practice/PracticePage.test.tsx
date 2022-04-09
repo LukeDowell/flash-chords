@@ -11,7 +11,6 @@ const mockedMidiInput: Partial<WebMidi.MIDIInput> = {
   })
 }
 
-
 describe("the practice page", () => {
   let midiPiano: MIDIPiano
 
@@ -119,8 +118,9 @@ describe("the practice page", () => {
 
     const initialChord = symbolToChord("C")
     render(<PracticePage piano={midiPiano} initialChord={initialChord}/>)
-    await act( () => events.forEach((e) => pianoEmitter.call(e, e as WebMidi.MIDIMessageEvent)))
+    await act(() => events.forEach((e) => pianoEmitter.call(e, e as WebMidi.MIDIMessageEvent)))
 
-    expect(screen.getByTestId('CheckIcon')).toBeInTheDocument()
+    const expected = await screen.findByTestId('CheckIcon')
+    expect(expected).toBeInTheDocument()
   })
 })

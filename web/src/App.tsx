@@ -1,14 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
 import MIDIPiano from "./music/MIDIPiano";
-import PracticePage from "./practice/PracticePage";
 import {styled} from "@mui/material";
+import {Measure} from "./scrollingstaff/Measure";
 
 const StyledRoot = styled('div')({
   display: "flex",
   flexDirection: "column",
   textAlign: "center",
-  justifyContent: "space-between"
+  justifyContent: "space-between",
+  backgroundColor: 'skyblue',
+  width: '100%',
+  height: '1000px',
 })
 
 function App() {
@@ -53,10 +56,13 @@ function App() {
 
 
   return <StyledRoot>
-    <PracticePage piano={midiPiano || new MIDIPiano()}/>
-    {errorMessage.length > 0 &&
-    <h3>{errorMessage}</h3>
-    }
+    {/*<PracticePage piano={midiPiano || new MIDIPiano()}/>*/}
+    {/*{errorMessage.length > 0 &&*/}
+    {/*<h3>{errorMessage}</h3>*/}
+    {/*}*/}
+    <div style={{ height: '100px' }}>
+      <Measure />
+    </div>
   </StyledRoot>
 }
 
