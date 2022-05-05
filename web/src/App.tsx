@@ -3,6 +3,7 @@ import './App.css';
 import MIDIPiano from "./music/MIDIPiano";
 import {styled} from "@mui/material";
 import {Measure} from "./scrollingstaff/Measure";
+import PracticePage from './practice/PracticePage';
 
 const StyledRoot = styled('div')({
   display: "flex",
@@ -56,13 +57,10 @@ function App() {
 
 
   return <StyledRoot>
-    {/*<PracticePage piano={midiPiano || new MIDIPiano()}/>*/}
-    {/*{errorMessage.length > 0 &&*/}
-    {/*<h3>{errorMessage}</h3>*/}
-    {/*}*/}
-    <div style={{ height: '100px' }}>
-      <Measure />
-    </div>
+    <PracticePage piano={midiPiano || new MIDIPiano()}/>
+    {errorMessage.length > 0 &&
+    <h3>{errorMessage}</h3>
+    }
   </StyledRoot>
 }
 

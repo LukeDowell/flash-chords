@@ -5,6 +5,7 @@ import MIDIPiano, {KEYBOARD, MIDI, MIDI_KEYBOARD_OFFSET} from "../music/MIDIPian
 import userEvent from "@testing-library/user-event";
 import {Chord, chordToSymbol, symbolToChord} from "../music/Chord";
 import {toNote} from "../music/Note";
+import _ from "lodash";
 
 const mockedMidiInput: Partial<WebMidi.MIDIInput> = {
   addEventListener: jest.fn().mockImplementation(() => {
@@ -111,13 +112,15 @@ describe("the practice page", () => {
     const events = ["C1", "E1", "G1"]
       .map(toNote)
       .map((n): Partial<WebMidi.MIDIMessageEvent> => {
+        const noteIndex = KEYBOARD.findIndex((keyboardNote) => _.isEqual(keyboardNote, n));
         return {
-          data: Uint8Array.of(MIDI.KEY_DOWN, KEYBOARD.indexOf(n) + MIDI_KEYBOARD_OFFSET, 0)
+          data: Uint8Array.of(MIDI.KEY_DOWN, noteIndex + MIDI_KEYBOARD_OFFSET, 100)
         }
       })
 
     const initialChord = symbolToChord("C")
     render(<PracticePage piano={midiPiano} initialChord={initialChord}/>)
+
     await act(() => events.forEach((e) => pianoEmitter.call(e, e as WebMidi.MIDIMessageEvent)))
 
     const expected = await screen.findByTestId('CheckIcon')
