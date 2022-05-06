@@ -124,7 +124,7 @@ describe("the practice page", () => {
 
     render(<PracticePage piano={midiPiano} initialChord={initialChord}/>)
 
-    await act(() => events.forEach((e) => pianoEmitter.call(e, e as WebMidi.MIDIMessageEvent)))
+    act(() => events.forEach((e) => pianoEmitter.call(e, e as WebMidi.MIDIMessageEvent)))
 
     const expected = await screen.findByTestId('CheckIcon')
     expect(expected).toBeInTheDocument()
