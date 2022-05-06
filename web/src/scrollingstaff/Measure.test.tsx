@@ -5,7 +5,7 @@ import {toNote} from "../music/Note";
 
 
 describe('a measure', () => {
-  it('should render notes', () => {
+  it.skip('should render notes', () => {
     const notes = ['C4', 'E4', 'G4'].map(toNote)
 
     render(<Measure notes={notes} />)

@@ -113,16 +113,16 @@ export default function PracticePage({
     setShouldDisplaySuccess(true)
     setTimeLastChordEnded(Date.now())
     setVoicingResults([...voicingResults, {chord, validNotes: notes}])
-    let newChord = generateChordFromSettings(settings)
-    while (_.isEqual(currentChord, newChord)) {
-      newChord = generateChordFromSettings(settings)
-    }
-    setCurrentChord(newChord)
+    // let newChord = generateChordFromSettings(settings)
+    // while (_.isEqual(currentChord, newChord)) {
+    //   newChord = generateChordFromSettings(settings)
+    // }
+    // setCurrentChord(newChord)
   }, [voicingResults, currentChord, settings])
 
   useEffect(() => {
     const callback = (activeNotes: Note[]) => {
-      console.log("I'm hanging out in the callback")
+      console.log(activeNotes)
       if (isValidVoicing(currentChord, activeNotes)) onCorrectVoicing(currentChord, activeNotes)
     };
     piano.setListener("PracticePage", callback)

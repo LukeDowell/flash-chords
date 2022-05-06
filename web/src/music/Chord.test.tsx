@@ -90,9 +90,28 @@ describe("Triad Chord Voicings", () => {
 
 describe("Seventh Chord Voicings", () => {
   test.each([
+    [["C", "E", "G", "A#"], {root: "C", quality: "Major", seventh: "Minor"} as Chord],
+    [["F", "A", "C", "D#"], {root: "F", quality: "Major", seventh: "Minor"} as Chord],
+    [["G", "A#", "D", "F"], {root: "G", quality: "Minor", seventh: "Minor"} as Chord],
+  ])(
+    '%s should be the required notes for %s',
+    (keys: string[], chord: Chord) => expect(requiredNotesForChord(chord).sort()).toEqual(keys.map(toNote).sort())
+  )
+
+  test.each([
+    [["C", "E", "G"], {root: "C", quality: "Major", seventh: "Minor"} as Chord],
+    [["F1", "G#1"], {root: "F", quality: "Major", seventh: "Minor"} as Chord],
+    [["G3", "A#3", "D4", "F#4"], {root: "G", quality: "Minor", seventh: "Minor"} as Chord],
+  ])(
+    '%s should NOT be the required notes for %s',
+    (keys: string[], chord: Chord) => expect(requiredNotesForChord(chord).sort()).not.toBe(keys.map(toNote).sort())
+  )
+
+  test.each([
     [["C1", "E1", "G1", "A#2"], {root: "C", quality: "Major", seventh: "Minor"} as Chord],
     [["C1", "E1", "G1", "B\u266d2"], {root: "C", quality: "Major", seventh: "Minor"} as Chord],
     [["G#1", "C1", "D#2", "G2"], {root: "G", accidental: SHARP, quality: "Major", seventh: "Major"} as Chord],
+    [["A#1", "C#1", "F1", "G#1"], {root: "B", accidental: FLAT, quality: "Minor", seventh: "Minor"} as Chord]
   ])(
     '%s should be a valid voicing of %s',
     (keys, chord) => expect(isValidVoicing(chord, keys.map(toNote))).toBe(true)
@@ -102,6 +121,8 @@ describe("Seventh Chord Voicings", () => {
     [["C1", "E1", "G1", "A#2"], "C7"],
     [["C1", "E1", "G1", "B\u266d2"], "C7"],
     [["G#1", "C1", "D#2", "G2"], "G#M7"],
+    [["G3", "A#3", "D4", "F4"], "Gm7"],
+    [["G3", "B\u266d3", "D4", "F4"], "Gm7"],
   ])(
     '%s should be a valid voicing of %s',
     (keys, chord) => expect(isValidVoicing(symbolToChord(chord), keys.map(toNote))).toBe(true)
@@ -110,6 +131,8 @@ describe("Seventh Chord Voicings", () => {
   test.each([
     [["C1", "E1", "G1"], {root: "C", quality: "Major", seventh: "Minor"} as Chord],
     [["F1", "G#1"], {root: "F", quality: "Major", seventh: "Minor"} as Chord],
+    [["G3", "A#3", "D4", "F#4"], symbolToChord("Gm7")],
+    [["G3", "B\u266d3", "D4", "F#4"], symbolToChord("Gm7")],
   ])(
     '%s should NOT be a valid voicing of %s',
     (keys, chord) => expect(isValidVoicing(chord, keys.map(toNote))).toBe(false)

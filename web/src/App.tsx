@@ -10,7 +10,6 @@ const StyledRoot = styled('div')({
   flexDirection: "column",
   textAlign: "center",
   justifyContent: "space-between",
-  backgroundColor: 'skyblue',
   width: '100%',
   height: '1000px',
 })

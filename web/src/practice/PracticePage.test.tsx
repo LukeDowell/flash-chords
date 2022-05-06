@@ -1,11 +1,10 @@
 import React from 'react';
 import {act, render, screen} from "@testing-library/react";
 import PracticePage from "./PracticePage";
-import MIDIPiano, {KEYBOARD, MIDI, MIDI_KEYBOARD_OFFSET} from "../music/MIDIPiano";
+import MIDIPiano, {MIDI, MIDI_KEYBOARD_OFFSET} from "../music/MIDIPiano";
 import userEvent from "@testing-library/user-event";
 import {Chord, chordToSymbol, symbolToChord} from "../music/Chord";
-import {toNote} from "../music/Note";
-import _ from "lodash";
+import {FLAT, toNote} from "../music/Note";
 
 const mockedMidiInput: Partial<WebMidi.MIDIInput> = {
   addEventListener: jest.fn().mockImplementation(() => {
@@ -109,16 +108,20 @@ describe("the practice page", () => {
     )
     midiPiano = new MIDIPiano(mockedMidiInput as WebMidi.MIDIInput)
 
-    const events = ["C1", "E1", "G1"]
-      .map(toNote)
+    const events = [13, 16, 20, 23]
       .map((n): Partial<WebMidi.MIDIMessageEvent> => {
-        const noteIndex = KEYBOARD.findIndex((keyboardNote) => _.isEqual(keyboardNote, n));
         return {
-          data: Uint8Array.of(MIDI.KEY_DOWN, noteIndex + MIDI_KEYBOARD_OFFSET, 100)
+          data: Uint8Array.of(MIDI.KEY_DOWN, n + MIDI_KEYBOARD_OFFSET, 100)
         }
       })
 
-    const initialChord = symbolToChord("C")
+    const initialChord: Chord = {
+      accidental: FLAT,
+      quality: "Minor",
+      root: "B",
+      seventh: "Minor"
+    }
+
     render(<PracticePage piano={midiPiano} initialChord={initialChord}/>)
 
     await act(() => events.forEach((e) => pianoEmitter.call(e, e as WebMidi.MIDIMessageEvent)))

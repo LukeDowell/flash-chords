@@ -119,6 +119,9 @@ export const symbolToChord = (symbol: string): Chord => {
   return {root, quality, accidental, seventh}
 }
 
+/**
+ * Returns the standardized required notes for a chord (all sharps)
+ */
 export const requiredNotesForChord = (c: Chord): Note[] => {
   const semitones: number[] = []
   switch (c.quality) {
@@ -163,8 +166,9 @@ export const isValidVoicing = (chord: Chord, nonNormalizedActiveNotes: Array<Not
   if (chord.seventh && nonNormalizedActiveNotes.length < 4) return false
 
   const activeNotes = nonNormalizedActiveNotes.map(standardizeNote)
+  const standardizedRootNote = standardizeNote({ root: chord.root, accidental: chord.accidental })
 
-  const rootNotes = activeNotes.filter((n) => n.root === chord.root && _.isEqual(n.accidental, chord.accidental))
+  const rootNotes = activeNotes.filter((n) => _.isEqual(n.root, standardizedRootNote.root) && _.isEqual(n.accidental, standardizedRootNote.accidental))
   if (rootNotes.length === 0) return false
 
   // For every required note, we must find a matching (sans octave) note in the activeNotes parameter
