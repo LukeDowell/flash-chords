@@ -13,12 +13,12 @@ export interface Chord {
   bassNote?: Note
 }
 
-export const generateRandomChord = (): Chord => {
-  const roots = ["A", "B", "C", "D", "E", "F", "G"] as Root[]
-  const qualities = ["Major", "Minor", "Augmented", "Diminished"] as ChordQuality[]
-  const accidentals = [FLAT, SHARP, undefined] as Accidental[]
-  const addedThirds = ["Major", "Minor", undefined]
-
+export const generateRandomChord = (
+  roots = ["A", "B", "C", "D", "E", "F", "G"] as Root[],
+  qualities = ["Major", "Minor", "Augmented", "Diminished"] as ChordQuality[],
+  accidentals = [FLAT, SHARP, undefined] as Accidental[],
+  addedThirds = ["Major", "Minor", undefined]
+): Chord => {
   const root = roots[Math.floor(Math.random() * roots.length)]
   const quality = qualities[Math.floor(Math.random() * qualities.length)]
   const accidental = accidentals[Math.floor(Math.random() * accidentals.length)]

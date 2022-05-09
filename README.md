@@ -494,3 +494,32 @@ they might have been chords the user has to to play before the timer runs out.
 Woo took a huge break, I started but didn't complete a different project in the meantime. I worked on this 
 app for fun with a coworker and was inspired to try another feature: I'd like to have a scrolling staff 
 to practice sight-reading with. 
+
+**5/8/2022**
+
+Break wasn't over! I fixed some chord related bugs and am moving on to adding some Keys. In my practice sessions we have
+moved on to actually getting into jazz and diatonic chords have come to the forefront of my mind. Things that are swirling
+around in my head now are some way of practicing keys in a fun way. What metrics would be interesting as a student? What 
+exercise is best?
+
+I also know that I'm going to need to be able to render a musical staff. I got some bare bones down, it's not exactly
+pleasing to look at though...
+
+```jsx
+<StyledRoot>
+    <BlackLine>
+      <WholeNote />
+    </BlackLine>
+    <WhiteBar>
+      <WholeNote />
+    </WhiteBar>
+    ...
+```
+
+The notes show up fine and there is something nice about each note on a given line being an actual JSX child, but my
+current problems are overlapping notes and rendering notes "off staff" like middle C for a treble cleff. I looked at 
+some example staffs and noticed that when notes are about to overlap, a note is "shifted" to the left ~50% of it's width
+so that the edges of a note just meet.  
+
+For rendering notes off staff, I don't think that will be too hard either. I'm wondering if the dash through a floating
+note could just be some inline css...

@@ -12,6 +12,7 @@ import {Chord, ChordQuality, chordToSymbol, generateRandomChord, isValidVoicing,
 import {Accidental, FLAT, Note, Root, SHARP} from "../music/Note";
 import _ from "lodash";
 import {VoicingHistory, VoicingResult} from "./VoicingHistory";
+import {Measure} from "../scrollingstaff/Measure";
 
 export interface Props {
   piano: MIDIPiano,
@@ -21,9 +22,9 @@ export interface Props {
 
 export const generateChordFromSettings = (settings: Settings) => {
   const roots = ["A", "B", "C", "D", "E", "F", "G"] as Root[]
-  const qualities: Array<ChordQuality | undefined> = []
-  const accidentals: Array<Accidental | undefined> = [undefined]
-  const addedThirds: Array<SeventhQuality | undefined> = [undefined]
+  const qualities: Array<ChordQuality> = []
+  const accidentals: Array<Accidental> = []
+  const addedThirds: Array<SeventhQuality> = []
 
   if (!settings.majorEnabled && !settings.minorEnabled) {
     qualities.push("Major")
@@ -43,15 +44,7 @@ export const generateChordFromSettings = (settings: Settings) => {
   if (settings.augmentedEnabled) qualities.push("Augmented")
   if (settings.diminishedEnabled) qualities.push("Diminished")
 
-  const root = roots[Math.floor(Math.random() * roots.length)]
-  const quality = qualities[Math.floor(Math.random() * qualities.length)]
-  const accidental = accidentals[Math.floor(Math.random() * accidentals.length)]
-  let seventh = undefined
-  if (quality !== "Augmented") {
-    seventh = addedThirds[Math.floor(Math.random() * addedThirds.length)]
-  }
-
-  return {root, quality, accidental, seventh} as Chord
+  return generateRandomChord(roots, qualities, accidentals, addedThirds)
 }
 
 const StyledRoot = styled('div')({
@@ -108,6 +101,7 @@ export default function PracticePage({
   const [timerProgress, setTimerProgress] = useState(100)
   const [settings, setSettings] = useState({...DEFAULT_PRACTICE_SETTINGS, ...initialSettings})
   const [voicingResults, setVoicingResults] = useState<VoicingResult[]>([])
+  const [activeNotes, setActiveNotes] = useState<Note[]>([])
 
   const onCorrectVoicing = useCallback((chord: Chord, notes: Note[]) => {
     setShouldDisplaySuccess(true)
@@ -117,7 +111,12 @@ export default function PracticePage({
 
   useEffect(() => {
     const callback = (activeNotes: Note[]) => {
-      if (isValidVoicing(currentChord, activeNotes)) onCorrectVoicing(currentChord, activeNotes)
+      if (!shouldDisplaySuccess) {
+        setActiveNotes(activeNotes)
+        if (isValidVoicing(currentChord, activeNotes)) {
+          onCorrectVoicing(currentChord, activeNotes)
+        }
+      }
     };
     piano.setListener("PracticePage", callback)
     return () => piano.removeListener("PracticePage")
@@ -169,6 +168,7 @@ export default function PracticePage({
     {settings?.timerEnabled &&
     <LinearProgress className="timer" variant="determinate" value={timerProgress}/>
     }
+    <Measure notes={activeNotes} />
     <VoicingHistory voicingResults={voicingResults}/>
   </StyledRoot>
 }
