@@ -32,8 +32,7 @@ export const MAJOR_KEYS = {
   'G': {
     root: toNote("G"),
     quality: "major",
-    // diatonicChords: ["Gmaj7", "Am7", "Bm7", "Cmaj7", "D7", "Em7", "F#7(\u266d5)"].map(symbolToChord)
-    diatonicChords: [].map(symbolToChord) // TODO support for flat 5s
+    diatonicChords: ["Gmaj7", "Am7", "Bm7", "Cmaj7", "D7", "Em7", "F\u00f8"].map(symbolToChord)
   },
 }
 

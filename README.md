@@ -523,3 +523,24 @@ so that the edges of a note just meet.
 
 For rendering notes off staff, I don't think that will be too hard either. I'm wondering if the dash through a floating
 note could just be some inline css...
+
+**5/09/2022**
+
+I've started adding key information, started with C major and started working my way around the circle and ran
+into Fm7b5. I have just realized I haven't finished my chord implementation, and that my current structure doesn't 
+fit very elegantly into it.
+
+The quick and dirty way will be to just add "Half-Dimished" as a seventh quality type and then ignore whatever
+value "quality" has on a given chord, but that feels kind of lame. I wonder if it would be better to build my
+data structure around the idea of a first, third, fifth, seventh, and so on. Does that make it harder to calculate
+semitones? It certainly seems to mirror the domain language better than just considering major/minor triad + some kind 
+of seventh quality...the thing holding me back at the moment is that I anticipate it will be sort of annoying. 
+
+I suppose I could think of it as having a diminished triad with a major seventh on top but, as far as I know, that
+isn't how musicians would talk about a half diminished seventh.
+
+Also, side thought, my test suite is getting sort of unwieldy. I started with parameterized tests that I simply add
+to whenever I come across a bug. That strategy has worked alright, but I think my library is getting to the point where
+I'd like to be able to assert across all diatonic sevenths for all keys, and perhaps all modes of those keys as well.
+
+

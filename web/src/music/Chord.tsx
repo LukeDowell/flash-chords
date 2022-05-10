@@ -3,7 +3,7 @@ import _ from "lodash";
 import {KEYBOARD} from "./MIDIPiano";
 
 export type ChordQuality = "Major" | "Minor" | "Augmented" | "Diminished"
-export type SeventhQuality = "Major" | "Minor"
+export type SeventhQuality = "Major" | "Minor" | "Half-Diminished"
 
 export interface Chord {
   root: Root

@@ -6,7 +6,8 @@ describe('musical chords', () => {
     ["C", {root: "C", quality: "Major"} as Chord],
     ["F#m", {root: "F", accidental: SHARP, quality: "Minor"} as Chord],
     ["F#7", {root: "F", accidental: SHARP, quality: "Major", seventh: "Minor"} as Chord],
-    ["A\u266dm7", {root: "A", accidental: FLAT, quality: "Minor", seventh: "Minor"} as Chord]
+    ["A\u266dm7", {root: "A", accidental: FLAT, quality: "Minor", seventh: "Minor"} as Chord],
+    ["F\u00f8", {root: "F", accidental: SHARP, quality: "Minor", seventh: "Half-Diminished"} as Chord]
   ])(
     `%s should be parsed to %s`,
     (symbol: string, expectedChord: Chord) => expect(symbolToChord(symbol)).toEqual(expectedChord)
