@@ -6,7 +6,7 @@ import {symbolToChord} from "../music/Chord";
 
 describe('the voicing history component', () => {
   it('should render a voicing', async () => {
-    const validNotes = ["C2", "E\u266d2", "G2"].map(toNote)
+    const validNotes = ["C2", "E♭2", "G2"].map(toNote)
     const voicingResults: VoicingResult[] = [
       {
         chord: {root: "C", quality: "Minor"},
@@ -16,7 +16,7 @@ describe('the voicing history component', () => {
 
     render(<VoicingHistory voicingResults={voicingResults}/>)
 
-    const expected = await screen.findByText(/C, E\u266d, G/)
+    const expected = await screen.findByText(/C, E♭, G/)
     expect(expected).toBeInTheDocument()
   })
 
@@ -37,7 +37,7 @@ describe('the voicing history component', () => {
   it('should render the required notes for a seventh voicing if none are provided', async () => {
     const voicingResults: VoicingResult[] = [
       {
-        chord: symbolToChord("D\u266dM7")!!,
+        chord: symbolToChord("D♭M7")!!,
         validNotes: []
       }
     ]

@@ -9,7 +9,7 @@ export interface Note {
 }
 
 export type Accidental = {
-  symbol: "#" | "\u266d",
+  symbol: "#" | "♭",
 
   /**
    * Semitone modifier. This is the amount of half steps
@@ -24,16 +24,16 @@ export const SHARP: Accidental = {
 }
 
 export const FLAT: Accidental = {
-  symbol: "\u266d",
+  symbol: "♭",
   mod: -1
 }
 
-export const hasAccidental = (s: string): boolean => s.includes("#") || s.includes("\u266D")
+export const hasAccidental = (s: string): boolean => s.includes("#") || s.includes("♭")
 
 export const noteToSymbol = (n: Note) => `${n.root}${n?.accidental?.symbol || ""}${n.octave || ""}`
 
 export const toNote = (s: string): Note => {
-  const validNote = /^[a-gA-G][#\u266D]?[0-8]?$/g
+  const validNote = /^[a-gA-G][#♭]?[0-8]?$/g
   if (!validNote.test(s)) throw new Error(`invalid note format ${s}`)
 
   const root = s.charAt(0)
@@ -42,7 +42,7 @@ export const toNote = (s: string): Note => {
   let accidental: undefined | Accidental
   if (hasAccidental(s)) {
     const a = s.charAt(1)
-    if (a === "\u266d") accidental = {symbol: "\u266d", mod: -1}
+    if (a === "♭") accidental = {symbol: "♭", mod: -1}
     else accidental = {symbol: "#", mod: 1}
   }
 

@@ -542,5 +542,3 @@ isn't how musicians would talk about a half diminished seventh.
 Also, side thought, my test suite is getting sort of unwieldy. I started with parameterized tests that I simply add
 to whenever I come across a bug. That strategy has worked alright, but I think my library is getting to the point where
 I'd like to be able to assert across all diatonic sevenths for all keys, and perhaps all modes of those keys as well.
-
-
