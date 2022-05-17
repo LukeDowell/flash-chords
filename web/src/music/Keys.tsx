@@ -6,19 +6,25 @@ export interface Key {
 
   quality: "major" | "minor",
 
-  /** Diatonic chords for this key, with */
+  /** Diatonic seventh chords for this key */
   diatonicChords: Chord[],
 }
 
 export const MAJOR_KEYS = {
-  'C': {
-    root: toNote("C"),
+  'D\u266d': {
+    root: toNote('D\u266d'),
     quality: "major",
-    diatonicChords: ["Cmaj7", "Dm7", "Em7", "Fmaj7", "G7", "Am7", "B"].map(symbolToChord)
+    diatonicChords: ['D\u266dmaj7',]
   },
 
-  'F': {
-    root: toNote('F'),
+  'A\u266d': {
+    root: toNote('A\u266d'),
+    quality: "major",
+    diatonicChords: []
+  },
+
+  'E\u266d': {
+    root: toNote('E\u266d'),
     quality: "major",
     diatonicChords: []
   },
@@ -29,11 +35,22 @@ export const MAJOR_KEYS = {
     diatonicChords: []
   },
 
+  'F': {
+    root: toNote('F'),
+    quality: "major",
+    diatonicChords: []
+  },
+
+  'C': {
+    root: toNote("C"),
+    quality: "major",
+    diatonicChords: ["Cmaj7", "Dm7", "Em7", "Fmaj7", "G7", "Am7", "B"].map(symbolToChord)
+  },
+
   'G': {
     root: toNote("G"),
     quality: "major",
-    // diatonicChords: ["Gmaj7", "Am7", "Bm7", "Cmaj7", "D7", "Em7", "F#7(\u266d5)"].map(symbolToChord)
-    diatonicChords: [].map(symbolToChord) // TODO support for flat 5s
+    diatonicChords: ["Gmaj7", "Am7", "Bm7", "Cmaj7", "D7", "Em7", "F#7(\u266d5)"].map(symbolToChord)
   },
 }
 
