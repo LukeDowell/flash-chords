@@ -27,10 +27,10 @@ describe('Musical Notes', () => {
   )
 
   test.each([
-    ["F\u266d", "E"],
-    ["C\u266d", "B"],
+    ["F♭", "E"],
+    ["C♭", "B"],
     ["C#", "C#"],
-    ["D\u266d", "C#"],
+    ["D♭", "C#"],
   ])(
     `%s should be standardized to %s`,
     (unstandard, standard) => expect(standardizeNote(toNote(unstandard))).toEqual(toNote(standard))
@@ -38,7 +38,7 @@ describe('Musical Notes', () => {
 
   test.each([
     ["C2", {root: "C", octave: 2} as Note],
-    ["C\u266d2", {root: "C", octave: 2, accidental: FLAT} as Note],
+    ["C♭2", {root: "C", octave: 2, accidental: FLAT} as Note],
     ["F#5", {root: "F", octave: 5, accidental: SHARP} as Note],
   ])(
     `%s should be parsed to %s`,
@@ -48,7 +48,7 @@ describe('Musical Notes', () => {
   test.each([
     [""],
     ["        "],
-    ["C\u266d2, G2, C#"],
+    ["C♭2, G2, C#"],
     ["F#53"],
   ])(
     `%s should be unable to be parsed`,

@@ -1,3 +1,5 @@
+// noinspection NonAsciiCharacters,JSNonASCIINames
+
 import {Chord, symbolToChord} from "./Chord";
 import {Note, toNote} from "./Note";
 
@@ -11,53 +13,53 @@ export interface Key {
 }
 
 export const MAJOR_KEYS = {
-  'D\u266d': {
-    root: toNote('D\u266d'),
+  'D♭': {
+    notes: ['D♭'].map(toNote),
     quality: "major",
-    diatonicChords: ['D\u266dmaj7',]
+    diatonicChords: ['D♭maj7',]
   },
 
-  'A\u266d': {
-    root: toNote('A\u266d'),
-    quality: "major",
-    diatonicChords: []
-  },
-
-  'E\u266d': {
-    root: toNote('E\u266d'),
+  'A♭': {
+    notes: ['A♭'].map(toNote),
     quality: "major",
     diatonicChords: []
   },
 
-  'B\u266d': {
-    root: toNote('B\u266d'),
+  'E♭': {
+    notes: ['E♭'].map(toNote),
+    quality: "major",
+    diatonicChords: []
+  },
+
+  'B♭': {
+    notes: ['B♭'].map(toNote),
     quality: "major",
     diatonicChords: []
   },
 
   'F': {
-    root: toNote('F'),
+    notes: ['F'].map(toNote),
     quality: "major",
     diatonicChords: []
   },
 
   'C': {
-    root: toNote("C"),
+    notes: ['C', 'D', 'E', 'F', 'G', 'A', 'B'].map(toNote),
     quality: "major",
     diatonicChords: ["Cmaj7", "Dm7", "Em7", "Fmaj7", "G7", "Am7", "B"].map(symbolToChord)
   },
 
   'G': {
-    root: toNote("G"),
+    notes: ['G'].map(toNote),
     quality: "major",
-    diatonicChords: ["Gmaj7", "Am7", "Bm7", "Cmaj7", "D7", "Em7", "F#7(\u266d5)"].map(symbolToChord)
+    diatonicChords: ["Gmaj7", "Am7", "Bm7", "Cmaj7", "D7", "Em7", "F#7(♭5)"].map(symbolToChord)
   },
 }
 
 export const MINOR_KEYS = {
   'Gm': {
-    root: toNote('Gm'),
+    notes: toNote('Gm'),
     quality: 'minor',
-    diatonicChords: MAJOR_KEYS['B\u266d']
+    diatonicChords: MAJOR_KEYS['B♭']
   }
 }

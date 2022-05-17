@@ -68,10 +68,10 @@ export const chordToSymbol = (c: Chord) => {
 export const symbolToChord = (symbol: string): Chord => {
   const validExpressions = [
     // Triad
-    /^[a-gA-G][#\u266D]?(?:dim|m|aug)?$/g,
+    /^[a-gA-G][#♭]?(?:dim|m|aug)?$/g,
 
     // Seventh
-    /^[a-gA-G][#\u266D]?[mMo\u00f8]?7$/g,
+    /^[a-gA-G][#♭]?[mMo\u00f8]?7$/g,
   ]
 
   if (!validExpressions.find((e) => e.test(symbol))) throw new Error(`invalid chord symbol format ${symbol}`)
@@ -79,7 +79,7 @@ export const symbolToChord = (symbol: string): Chord => {
   const root = symbol.charAt(0) as Root
   let accidental: Accidental | undefined
   if (hasAccidental(symbol)) {
-    if (symbol.charAt(1) === "\u266d") accidental = FLAT
+    if (symbol.charAt(1) === "♭") accidental = FLAT
     else accidental = SHARP
   }
 
