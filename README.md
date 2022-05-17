@@ -542,3 +542,20 @@ isn't how musicians would talk about a half diminished seventh.
 Also, side thought, my test suite is getting sort of unwieldy. I started with parameterized tests that I simply add
 to whenever I come across a bug. That strategy has worked alright, but I think my library is getting to the point where
 I'd like to be able to assert across all diatonic sevenths for all keys, and perhaps all modes of those keys as well.
+
+
+**5/16/2022**
+
+I already handle half diminished chords *facepalm*
+
+I switched from using '\u266d' all over the place to actually using '♭', we will see if I regret that. Perhaps
+the greater sin is that in Keys.tsx I use the ♭ as part of a string key to retrieve information about the musical key.
+I had to disable TWO inspections, surely I won't regret this later.
+
+```typescript
+'D♭': {
+  notes: ['D♭', 'E♭', 'F', 'G♭', 'A♭', 'B♭', 'C'].map(toNote),
+  quality: "major",
+  diatonicChords: ['D♭maj7', 'E♭m7', 'Fm7', 'G♭maj7', 'A♭maj7', 'B♭m7', 'Cdim7'].map(symbolToChord)
+},
+```

@@ -14,9 +14,9 @@ export interface Key {
 
 export const MAJOR_KEYS = {
   'D♭': {
-    notes: ['D♭'].map(toNote),
+    notes: ['D♭', 'E♭', 'F', 'G♭', 'A♭', 'B♭', 'C'].map(toNote),
     quality: "major",
-    diatonicChords: ['D♭maj7',]
+    diatonicChords: ['D♭maj7', 'E♭m7', 'Fm7', 'G♭maj7', 'A♭maj7', 'B♭m7', 'Cdim7'].map(symbolToChord)
   },
 
   'A♭': {
