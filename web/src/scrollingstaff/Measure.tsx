@@ -18,13 +18,11 @@ const StyledRoot = styled('div')({
   maxWidth: '400px',
   minHeight: '40px',
   width: '100%',
-  height: '100%'
+  height: '100%',
+  position: 'relative'
 })
 
 const WhiteBar = styled('div')({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
   height: '25%',
   width: '100%',
   backgroundColor: 'white',
@@ -40,7 +38,8 @@ const BlackLine = styled('div')({
 })
 
 const WholeNote = styled(WholeNoteSvg)({
-  zIndex: 2
+  transform: 'scale(1.75)',
+  position: 'absolute',
 })
 
 export const Measure = ({
@@ -48,34 +47,21 @@ export const Measure = ({
                           notes = []
                         }: Props) => {
   const noteComponents = notes.map((n) => {
-    return <WholeNote data-testId={`${noteToSymbol(n)}-note`.toLowerCase()} />
+    return <WholeNote data-testId={`${noteToSymbol(n)}-note`.toLowerCase()}
+
+    />
   })
-  const groupedNotes = _.groupBy(notes,(n) => n?.root)
 
   return <StyledRoot>
-    <BlackLine>
-      <WholeNote />
-    </BlackLine>
-    <WhiteBar>
-      <WholeNote />
-    </WhiteBar>
-
-    <BlackLine>
-    </BlackLine>
-    <WhiteBar>
-    </WhiteBar>
-
-    <BlackLine>
-    </BlackLine>
-    <WhiteBar>
-    </WhiteBar>
-
-    <BlackLine>
-    </BlackLine>
-    <WhiteBar>
-    </WhiteBar>
-
-    <BlackLine>
-    </BlackLine>
+    { noteComponents }
+    <BlackLine/>
+    <WhiteBar/>
+    <BlackLine/>
+    <WhiteBar/>
+    <BlackLine/>
+    <WhiteBar/>
+    <BlackLine/>
+    <WhiteBar/>
+    <BlackLine/>
   </StyledRoot>
 }

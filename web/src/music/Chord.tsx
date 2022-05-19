@@ -1,6 +1,5 @@
-import {Accidental, FLAT, hasAccidental, Note, Root, SHARP, standardizeNote} from "./Note";
+import {Accidental, FLAT, hasAccidental, Note, Root, SHARP, standardizeNote, KEYBOARD} from "./Note";
 import _ from "lodash";
-import {KEYBOARD} from "./MIDIPiano";
 
 export type ChordQuality = "Major" | "Minor" | "Augmented" | "Diminished"
 export type SeventhQuality = "Major" | "Minor" | "Half-Diminished"

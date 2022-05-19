@@ -1,4 +1,4 @@
-import {FLAT, lowerNote, Note, SHARP, sortNotes, standardizeNote, toNote} from "./Note";
+import {FLAT, genericInterval, lowerNote, Note, SHARP, sortNotes, standardizeNote, toNote} from "./Note";
 
 describe('Musical Notes', () => {
   test.each([
@@ -10,6 +10,16 @@ describe('Musical Notes', () => {
   ])(
     `%s should be lower than %s`,
     (lower: string, higher: string) => expect(lowerNote(toNote(lower), toNote(higher))).toEqual(toNote(lower))
+  )
+
+  test.each([
+    [toNote("C4"), toNote("C4"), 1],
+    [toNote("C4"), toNote("B4"), 7],
+    [toNote("D4"), toNote("D5"), 8],
+    [toNote("D4"), toNote("F5"), 10],
+  ])(
+    `%o and %o should have a generic interval of %d`,
+    (noteA: Note, noteB: Note, interval: number) => expect(genericInterval(noteA, noteB)).toEqual(interval)
   )
 
   test.each([

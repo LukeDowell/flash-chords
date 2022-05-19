@@ -103,3 +103,33 @@ export const standardizeNote = (n: Note): Note => {
     } as Note
   } else return n
 }
+
+/**
+ * A physical representation of a keyboard
+ */
+export const KEYBOARD: Note[] = [
+  "A0", "A#0", "B0", // 2
+  "C1", "C#1", "D1", "D#1", "E1", "F1", "F#1", "G1", "G#1", "A1", "A#1", "B1", // 14
+  "C2", "C#2", "D2", "D#2", "E2", "F2", "F#2", "G2", "G#2", "A2", "A#2", "B2", // 26
+  "C3", "C#3", "D3", "D#3", "E3", "F3", "F#3", "G3", "G#3", "A3", "A#3", "B3", // 38
+  "C4", "C#4", "D4", "D#4", "E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4",
+  "C5", "C#5", "D5", "D#5", "E5", "F5", "F#5", "G5", "G#5", "A5", "A#5", "B5",
+  "C6", "C#6", "D6", "D#6", "E6", "F6", "F#6", "G6", "G#6", "A6", "A#6", "B6",
+  "C7", "C#7", "D7", "D#7", "E7", "F7", "F#7", "G7", "G#7", "A7", "A#7", "B7",
+  "C8",
+].map(toNote)
+
+export const genericInterval = (n1a: Note, n2a: Note): Number => {
+  if (!n1a.octave || !n2a.octave) throw new Error('cannot calculate generic interval without octave information')
+
+  const n1 = { ...n1a, accidental: undefined }
+  const n2 = { ...n2a, accidental: undefined }
+
+  if (_.isEqual(n1, n2)) return 1
+
+  const i1 = KEYBOARD.findIndex((n) => _.isEqual(standardizeNote(n1), n))
+  const i2 = KEYBOARD.findIndex((n) => _.isEqual(standardizeNote(n2), n))
+
+  const genericKeys = KEYBOARD.slice(i1, i2 + 1).filter((n) => !n.accidental)
+  return genericKeys.length
+}

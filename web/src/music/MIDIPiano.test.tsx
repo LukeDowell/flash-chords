@@ -1,5 +1,4 @@
-import {KEYBOARD} from './MIDIPiano'
-import {toNote} from "./Note";
+import {toNote, KEYBOARD} from "./Note";
 import _ from "lodash";
 import React from "react";
 
