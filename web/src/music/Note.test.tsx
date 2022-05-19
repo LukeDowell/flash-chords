@@ -13,13 +13,19 @@ describe('Musical Notes', () => {
   )
 
   test.each([
-    [toNote("C4"), toNote("C4"), 1],
-    [toNote("C4"), toNote("B4"), 7],
-    [toNote("D4"), toNote("D5"), 8],
-    [toNote("D4"), toNote("F5"), 10],
+    [["C4", "C4"], 1],
+    [["C4", "D4"], 2],
+    [["C4", "E4"], 3],
+    [["C4", "B4"], 7],
+    [["D4", "D5"], 8],
+    [["D4", "F5"], 10],
+    [["C4", "F5"], 11],
   ])(
-    `%o and %o should have a generic interval of %d`,
-    (noteA: Note, noteB: Note, interval: number) => expect(genericInterval(noteA, noteB)).toEqual(interval)
+    `%s should have a generic interval of %d`,
+    (noteStrings: string[], interval: number) => {
+      const notes = noteStrings.map(toNote)
+      expect(genericInterval(notes[0], notes[1])).toEqual(interval)
+    }
   )
 
   test.each([

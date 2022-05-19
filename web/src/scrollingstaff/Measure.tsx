@@ -1,27 +1,31 @@
 import React from 'react'
 import styled from "@emotion/styled";
-import {Note, noteToSymbol} from "../music/Note";
+import {genericInterval, Note, noteToSymbol, toNote} from "../music/Note";
 import _ from "lodash";
 import { ReactComponent as WholeNoteSvg } from '../images/whole-note.svg'
 
-export interface Props {
-  cleff?: 'treble' | 'bass',
-  notes?: Note[]
+export interface MeasureStyles {
+  width: number,
+  height: number,
 }
 
-const StyledRoot = styled('div')({
+export interface Props {
+  cleff?: 'treble' | 'bass',
+  notes?: Note[],
+  style?: MeasureStyles
+}
+
+const StyledRoot = styled('div')<MeasureStyles>(props => ({
   display: 'flex',
   flexDirection: 'column',
   border: "1px solid black",
   borderBottom: '0px solid black',
   borderTop: 'none',
-  maxWidth: '400px',
-  minHeight: '40px',
-  width: '100%',
-  height: '100%',
+  minWidth: props.width,
+  minHeight: props.height,
   position: 'relative'
 })
-
+)
 const WhiteBar = styled('div')({
   height: '25%',
   width: '100%',
@@ -37,22 +41,39 @@ const BlackLine = styled('div')({
   backgroundColor: 'black',
 })
 
-const WholeNote = styled(WholeNoteSvg)({
-  transform: 'scale(1.75)',
+interface WholeNoteProps {
+  top: string,
+  scale: string,
+  left?: string,
+}
+
+const WholeNote = styled(WholeNoteSvg)<WholeNoteProps>(props => ({
   position: 'absolute',
-})
+  left: props?.left || '50%',
+  top: props?.top || '40px',
+  transform: `translate(-50%, -50%) scale(${props.scale})`
+}))
 
 export const Measure = ({
                           cleff = 'treble',
-                          notes = []
+                          notes = [],
+                          style = {
+                            width: 400,
+                            height: 80
+                          }
                         }: Props) => {
-  const noteComponents = notes.map((n) => {
-    return <WholeNote data-testId={`${noteToSymbol(n)}-note`.toLowerCase()}
-
+  const noteComponents = notes.map((n, i) => {
+    const key = `${noteToSymbol(n)}-note`.toLowerCase()
+    const base = toNote(cleff === 'treble' ? 'F5' : 'A3')
+    const interval = genericInterval(base, n)
+    const top = `${interval * 10}%`
+    return <WholeNote data-testid={key} key={key}
+                      scale={`${1.5 + (style.height / style.width)}`}
+                      top={top}
     />
   })
 
-  return <StyledRoot>
+  return <StyledRoot width={style.width} height={style.height}>
     { noteComponents }
     <BlackLine/>
     <WhiteBar/>
