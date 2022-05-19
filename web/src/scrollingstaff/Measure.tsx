@@ -43,7 +43,7 @@ const BlackLine = styled('div')({
 
 interface WholeNoteProps {
   top: string,
-  scale: string,
+  height: string,
   left?: string,
 }
 
@@ -51,7 +51,9 @@ const WholeNote = styled(WholeNoteSvg)<WholeNoteProps>(props => ({
   position: 'absolute',
   left: props?.left || '50%',
   top: props?.top || '40px',
-  transform: `translate(-50%, -50%) scale(${props.scale})`
+  transform: `translate(-50%, -50%)`,
+  width: 'auto',
+  height: props?.height || '20px'
 }))
 
 export const Measure = ({
@@ -68,7 +70,7 @@ export const Measure = ({
     const interval = genericInterval(base, n)
     const top = `${(interval - 1) * (style.height / 8)}px`
     return <WholeNote data-testid={key} key={key}
-                      scale={`${1.75 + (style.height / style.width)}`}
+                      height={`${style?.height / 4}`}
                       top={top}
     />
   })
