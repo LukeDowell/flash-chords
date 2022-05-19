@@ -588,3 +588,27 @@ about how to render a given note is right there and accessible:
 
 It might be a little annoying getting the scale exactly right. I need the note to fully fill a white bar 
 on the staff. Perhaps scale isn't the answer and I should just set the height / width directly...
+
+
+Tada!
+
+<img alt="measure component" src="https://puu.sh/J1b0z/272d4c7d39.png" width="800" />
+
+The code to successfully shift notes left doesn't actually totally make sense to me, I arrived at it via
+some tinkering:
+
+```typescript
+ // Horizontally Position
+ let left
+ const neighbors: Note[] = notes.filter((maybeNeighbor) => genericInterval(maybeNeighbor, n) === 2)
+   .filter((dn) => {
+     // Remove neighbors who themselves have two neighbors so that we alternate notes if necessary
+     const neighborsNeighbors = notes.filter((mn) => genericInterval(dn, mn) === 2)
+     return neighborsNeighbors.length < 2
+   })
+
+ if (neighbors.length == 1) left = "42.5%"
+```
+
+The only remaining problem is the '42.5%'; I need to appropriately scale that value because if I adjust the height/width
+of the measure at all it doesn't line up quite right anymore.
