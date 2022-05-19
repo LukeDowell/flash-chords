@@ -66,9 +66,9 @@ export const Measure = ({
     const key = `${noteToSymbol(n)}-note`.toLowerCase()
     const base = toNote(cleff === 'treble' ? 'F5' : 'A3')
     const interval = genericInterval(base, n)
-    const top = `${interval * 10}%`
+    const top = `${(interval - 1) * (style.height / 8)}px`
     return <WholeNote data-testid={key} key={key}
-                      scale={`${1.5 + (style.height / style.width)}`}
+                      scale={`${1.75 + (style.height / style.width)}`}
                       top={top}
     />
   })

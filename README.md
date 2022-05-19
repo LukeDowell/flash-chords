@@ -559,3 +559,32 @@ I had to disable TWO inspections, surely I won't regret this later.
   diatonicChords: ['D♭maj7', 'E♭m7', 'Fm7', 'G♭maj7', 'A♭maj7', 'B♭m7', 'Cdim7'].map(symbolToChord)
 },
 ```
+
+**5/19/2022**
+
+Lots of progress being made on the Measure component:
+
+<img alt="measure component" src="https://puu.sh/J195g/0a6b6d8a0e.png" width="800" />
+
+I was initially going to go through and lay it out line by line in the JSX but that felt pretty clumsy. In
+particular I couldn't find a good way to apply the "left shift" to notes that overlapped, nor was it very scalable
+when considering that sometimes notes go far beyond the staff vertically. 
+
+I tried again with absolute positioning, and I think this will work well. All the data I need to make any choice
+about how to render a given note is right there and accessible:
+
+```typescript
+ const noteComponents = notes.map((n, i) => {
+    const key = `${noteToSymbol(n)}-note`.toLowerCase()
+    const base = toNote(cleff === 'treble' ? 'F5' : 'A3')
+    const interval = genericInterval(base, n)
+    const top = `${(interval - 1) * (style.height / 8)}px`
+    return <WholeNote data-testid={key} key={key}
+                      scale={`${1.75 + (style.height / style.width)}`}
+                      top={top}
+    />
+  })
+```
+
+It might be a little annoying getting the scale exactly right. I need the note to fully fill a white bar 
+on the staff. Perhaps scale isn't the answer and I should just set the height / width directly...
