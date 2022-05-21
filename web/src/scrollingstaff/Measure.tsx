@@ -71,12 +71,12 @@ export const Measure = ({
 
   const noteComponents = notes.map((n, i, a) => {
     const key = `${noteToSymbol(n)}-note`.toLowerCase()
-    const base = toNote(cleff === 'treble' ? 'F5' : 'A3')
-    const interval = genericInterval(base, n)
+    const cleffBase = toNote(cleff === 'treble' ? 'F5' : 'A3')
+    const interval = genericInterval(cleffBase, n)
 
     // Vertically Position
     let topValue = (interval - 1) * (style.height / 8)
-    if (base.isLowerThan(n)) topValue = -topValue
+    if (cleffBase.isLowerThan(n)) topValue = -topValue
     const top = `${topValue}px`
 
     // Horizontally Position
@@ -92,13 +92,20 @@ export const Measure = ({
     else if (neighbors.length == 1 && neighbors[0].isLowerThan(n)) left = "42.5%"
 
     // Line Hint
-    let lineHint
-
+    const topOfStaff = toNote(cleff === 'treble' ? 'F5' : 'A3')
+    const bottomOfStaff = toNote(cleff === 'treble' ? 'E4' : 'A0')
+    let lineHint: 'center' | 'bottom' | 'top' | undefined
+    if (n.isLowerThan(bottomOfStaff)) {
+      lineHint = genericInterval(bottomOfStaff, n) % 2 === 0 ? 'bottom' : 'center'
+    } else if (topOfStaff.isLowerThan(n)) {
+      lineHint = genericInterval(bottomOfStaff, n) % 2 === 0 ? 'top' : 'center'
+    }
 
     return <WholeNote data-testid={key} key={key}
                       height={`${style?.height / 4}`}
                       top={top}
                       left={left}
+                      lineHint={lineHint}
     />
   })
 

@@ -70,12 +70,9 @@ const toVoicingComponent = (v: VoicingResult, i: number) => {
     backgroundColor: isSuccess ? "rgba(0, 255, 0, 0.2)" : "rgba(255, 0, 0, 0.2)"
   })
 
-  return <Styled key={i}
-                 data-testid={isSuccess ? `${chordSymbol}-valid-voicing` : `${chordSymbol}-invalid-voicing`}>
+  return <Styled key={i} data-testid={isSuccess ? `${chordSymbol}-valid-voicing` : `${chordSymbol}-invalid-voicing`}>
     <span className="chord">{chordSymbol}</span>
-    <span className="notes">{notesToString(notes.map((n) => {
-      return {...n, octave: undefined}
-    }))}</span>
+    <span className="notes">{notesToString(notes.map((n) =>  new Note(n.root, n.accidental)))}</span>
   </Styled>
 }
 
