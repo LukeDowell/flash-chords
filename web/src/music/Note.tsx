@@ -2,10 +2,26 @@ import _ from "lodash";
 
 export type Root = "A" | "B" | "C" | "D" | "E" | "F" | "G"
 
-export interface Note {
+export interface NoteInterface {
   root: Root
   accidental?: Accidental,
-  octave?: number
+  octave?: number,
+}
+
+export class Note implements NoteInterface {
+  root: Root;
+  accidental?: Accidental;
+  octave?: number;
+
+  constructor(root: Root, accidental?: Accidental, octave?: number) {
+    this.root = root
+    this.accidental = accidental
+    this.octave = octave
+  }
+
+  isLowerThan(other: Note): boolean {
+    return _.isEqual(lowerNote(this, other), this)
+  }
 }
 
 export type Accidental = {
@@ -36,8 +52,8 @@ export const toNote = (s: string): Note => {
   const validNote = /^[a-gA-G][#♭]?[0-8]?$/g
   if (!validNote.test(s)) throw new Error(`invalid note format ${s}`)
 
-  const root = s.charAt(0)
-  if (s.length === 1) return {root, octave: undefined, accidental: undefined} as Note
+  const root = s.charAt(0) as Root
+  if (s.length === 1) return new Note(root)
 
   let accidental: undefined | Accidental
   if (hasAccidental(s)) {
@@ -50,10 +66,10 @@ export const toNote = (s: string): Note => {
   if (/[0-9]/g.test(s) && !accidental) octave = parseInt(s.charAt(1))
   else if (/[0-9]/g.test(s) && accidental) octave = parseInt(s.charAt(2))
 
-  return {root, accidental: accidental, octave: octave} as Note
+  return new Note(root, accidental, octave)
 }
 
-export const lowerNote = (a: Note, b: Note) => {
+const lowerNote = (a: Note, b: Note) => {
   if (a.octave === undefined || b.octave === undefined) throw new Error("cannot compare notes without octaves")
 
   if (a.octave > b.octave) return b
@@ -82,25 +98,17 @@ export const notesToString = (notes: Note[]): string => notes.map((n) => {
  */
 export const standardizeNote = (n: Note): Note => {
   if (_.isEqual(n.accidental, FLAT)) {
-    const newRoot = n.root === "A" ? String.fromCharCode(71) : String.fromCharCode(n.root.charCodeAt(0) - 1)
+    const newRoot = n.root === "A" ?
+      String.fromCharCode(71) as Root:
+      String.fromCharCode(n.root.charCodeAt(0) - 1) as Root
     const newOctave = n.root === "C" && n.octave ? n.octave - 1 : n.octave
     let newAccidental = undefined;
     if (newRoot !== "E" && newRoot !== "B") newAccidental = SHARP
-    return {
-      ...n,
-      octave: newOctave,
-      root: newRoot,
-      accidental: newAccidental,
-    } as Note
+    return new Note(newRoot, newAccidental, newOctave)
   } else if (_.isEqual(n.accidental, SHARP) && (n.root === "B" || n.root === "E")) {
-    const newRoot = String.fromCharCode(n.root.charCodeAt(0) + 1)
+    const newRoot = String.fromCharCode(n.root.charCodeAt(0) + 1) as Root
     const newOctave = newRoot === "C" && n.octave ? n.octave + 1 : n.octave // Increment if we go from B to C
-    return {
-      ...n,
-      root: newRoot,
-      octave: newOctave,
-      accidental: undefined,
-    } as Note
+    return new Note(newRoot, undefined, newOctave)
   } else return n
 }
 
@@ -122,8 +130,8 @@ export const KEYBOARD: Note[] = [
 export const genericInterval = (n1a: Note, n2a: Note): number => {
   if (!n1a.octave || !n2a.octave) throw new Error('cannot calculate generic interval without octave information')
 
-  const n1 = { ...n1a, accidental: undefined }
-  const n2 = { ...n2a, accidental: undefined }
+  const n1 = new Note(n1a.root, undefined, n1a.octave)
+  const n2 = new Note(n2a.root, undefined, n2a.octave)
 
   if (_.isEqual(n1, n2)) return 1
 

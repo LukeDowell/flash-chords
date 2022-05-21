@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from "@emotion/styled";
-import {genericInterval, lowerNote, Note, noteToSymbol, toNote} from "../music/Note";
-import _ from "lodash";
+import {genericInterval, Note, noteToSymbol, toNote} from "../music/Note";
 import {ReactComponent as WholeNoteSvg} from '../images/whole-note.svg'
 
 export interface MeasureStyles {
@@ -45,6 +44,7 @@ interface WholeNoteProps {
   top: string,
   height: string,
   left?: string,
+  lineHint?: 'center' | 'bottom' | 'top'
 }
 
 const WholeNote = styled(WholeNoteSvg)<WholeNoteProps>(props => ({
@@ -54,6 +54,10 @@ const WholeNote = styled(WholeNoteSvg)<WholeNoteProps>(props => ({
   height: props?.height || '20px',
   left: props?.left || '50%',
   top: props.top,
+  backgroundImage: props.lineHint ? 'linear-gradient(black, black)' : '',
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: '125% 1px',
+  backgroundPosition: `-10px ${props.lineHint}`,
 }))
 
 export const Measure = ({
@@ -64,26 +68,31 @@ export const Measure = ({
                             height: 80
                           }
                         }: Props) => {
-  const noteComponents = notes.map((n) => {
+
+  const noteComponents = notes.map((n, i, a) => {
     const key = `${noteToSymbol(n)}-note`.toLowerCase()
     const base = toNote(cleff === 'treble' ? 'F5' : 'A3')
     const interval = genericInterval(base, n)
 
     // Vertically Position
     let topValue = (interval - 1) * (style.height / 8)
-    if (_.isEqual(lowerNote(base, n), base)) topValue = -topValue
+    if (base.isLowerThan(n)) topValue = -topValue
     const top = `${topValue}px`
 
     // Horizontally Position
     let left
-    const neighbors: Note[] = notes.filter((maybeNeighbor) => genericInterval(maybeNeighbor, n) === 2)
-      .filter((dn) => {
-        // Remove neighbors who themselves have two neighbors so that we alternate notes if necessary
-        const neighborsNeighbors = notes.filter((mn) => genericInterval(dn, mn) === 2)
-        return neighborsNeighbors.length < 2
-      })
+    const unfilteredNeighbors: Note[] = notes.filter((maybeNeighbor) => genericInterval(maybeNeighbor, n) === 2)
+    const neighbors = unfilteredNeighbors.filter((dn) => {
+      // Remove neighbors who themselves have two neighbors so that we alternate notes if necessary
+      const neighborsNeighbors = notes.filter((mn) => genericInterval(dn, mn) === 2)
+      return neighborsNeighbors.length < 2 && unfilteredNeighbors.length === 2
+    })
 
-    if (neighbors.length == 1) left = "42.5%"
+    if (neighbors.length == 2) left = "42.5%"
+    else if (neighbors.length == 1 && neighbors[0].isLowerThan(n)) left = "42.5%"
+
+    // Line Hint
+    let lineHint
 
 
     return <WholeNote data-testid={key} key={key}

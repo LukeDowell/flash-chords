@@ -24,5 +24,5 @@ const Template: ComponentStory<typeof Measure> = (args) => <Container>
 export const Treble = Template.bind({});
 Treble.args = {
   cleff: "treble",
-  notes: ['C4', 'D4', 'E4', 'F4', 'G4', 'E5', 'G5'].map(toNote)
+  notes: ['B3', 'C4', 'D4', 'E4', 'G4', 'E5', 'F5', 'G5'].map(toNote)
 }

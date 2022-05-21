@@ -148,13 +148,17 @@ export const requiredNotesForChord = (c: Chord): Note[] => {
   }
 
   // TODO find some way to 'change back' the format of the chord
-  const requiredNotes: Note[] = [standardizeNote({root: c.root, accidental: c.accidental})]
+  const requiredNotes: Note[] = [standardizeNote(new Note(c.root, c.accidental))]
   semitones.forEach((s) => {
     const previousNoteIndex = KEYBOARD.findIndex((k) => {
       const previousNote = requiredNotes[requiredNotes.length - 1]
       return _.isEqual(k.root, previousNote.root) && _.isEqual(k.accidental, previousNote.accidental)
     })
-    if (previousNoteIndex !== -1) requiredNotes.push({...KEYBOARD[previousNoteIndex + s], octave: undefined})
+    if (previousNoteIndex !== -1) {
+      let copy = KEYBOARD[previousNoteIndex + s]
+      let note = new Note(copy.root, copy.accidental)
+      requiredNotes.push(note)
+    }
   })
 
   return requiredNotes
@@ -165,7 +169,7 @@ export const isValidVoicing = (chord: Chord, nonNormalizedActiveNotes: Array<Not
   if (chord.seventh && nonNormalizedActiveNotes.length < 4) return false
 
   const activeNotes = nonNormalizedActiveNotes.map(standardizeNote)
-  const standardizedRootNote = standardizeNote({ root: chord.root, accidental: chord.accidental })
+  const standardizedRootNote = standardizeNote(new Note(chord.root, chord.accidental))
 
   const rootNotes = activeNotes.filter((n) => _.isEqual(n.root, standardizedRootNote.root) && _.isEqual(n.accidental, standardizedRootNote.accidental))
   if (rootNotes.length === 0) return false
