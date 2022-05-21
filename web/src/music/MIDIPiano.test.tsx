@@ -1,4 +1,4 @@
-import {toNote, KEYBOARD} from "./Note";
+import {KEYBOARD, toNote} from "./Note";
 import _ from "lodash";
 import React from "react";
 

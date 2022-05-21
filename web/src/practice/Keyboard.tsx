@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from "@emotion/styled";
-import {Note, noteToSymbol, SHARP, KEYBOARD} from "../music/Note";
+import {KEYBOARD, Note, noteToSymbol, SHARP} from "../music/Note";
 
 interface Props {
   activeNotes: Note[],

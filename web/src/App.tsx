@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import './App.css';
 import MIDIPiano from "./music/MIDIPiano";
 import {styled} from "@mui/material";
-import {Measure} from "./scrollingstaff/Measure";
 import PracticePage from './practice/PracticePage';
 
 const StyledRoot = styled('div')({

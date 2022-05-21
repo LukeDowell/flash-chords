@@ -99,7 +99,7 @@ export const notesToString = (notes: Note[]): string => notes.map((n) => {
 export const standardizeNote = (n: Note): Note => {
   if (_.isEqual(n.accidental, FLAT)) {
     const newRoot = n.root === "A" ?
-      String.fromCharCode(71) as Root:
+      String.fromCharCode(71) as Root :
       String.fromCharCode(n.root.charCodeAt(0) - 1) as Root
     const newOctave = n.root === "C" && n.octave ? n.octave - 1 : n.octave
     let newAccidental = undefined;

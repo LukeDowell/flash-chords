@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import {ComponentMeta, ComponentStory} from '@storybook/react';
 import {Measure} from "../scrollingstaff/Measure";
 import {toNote} from "../music/Note";
 import styled from "@emotion/styled";

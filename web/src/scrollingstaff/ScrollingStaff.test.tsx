@@ -3,7 +3,7 @@ import {ScrollingStaff} from "./ScrollingStaff";
 import {render, screen} from "@testing-library/react";
 import {toNote} from "../music/Note";
 
-describe('the staff component',  () => {
+describe('the staff component', () => {
   it.skip('should render a note', () => {
     const notes = [
       ["C4", "E4", "G4"].map(toNote)

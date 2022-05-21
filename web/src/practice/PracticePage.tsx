@@ -168,7 +168,7 @@ export default function PracticePage({
     {settings?.timerEnabled &&
     <LinearProgress className="timer" variant="determinate" value={timerProgress}/>
     }
-    <Measure notes={activeNotes} />
+    <Measure notes={activeNotes}/>
     <VoicingHistory voicingResults={voicingResults}/>
   </StyledRoot>
 }

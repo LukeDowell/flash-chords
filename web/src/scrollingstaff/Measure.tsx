@@ -3,15 +3,16 @@ import styled from "@emotion/styled";
 import {genericInterval, Note, noteToSymbol, toNote} from "../music/Note";
 import {ReactComponent as WholeNoteSvg} from '../images/whole-note.svg'
 
-export interface MeasureStyles {
-  width: number,
-  height: number,
-}
 
 export interface Props {
   cleff?: 'treble' | 'bass',
   notes?: Note[],
   style?: MeasureStyles
+}
+
+export interface MeasureStyles {
+  width: number,
+  height: number,
 }
 
 const StyledRoot = styled('div')<MeasureStyles>(props => ({
@@ -90,6 +91,8 @@ export const Measure = ({
 
     if (neighbors.length == 2) left = "42.5%"
     else if (neighbors.length == 1 && neighbors[0].isLowerThan(n)) left = "42.5%"
+
+    // Accidental
 
     // Line Hint
     const topOfStaff = toNote(cleff === 'treble' ? 'F5' : 'A3')
