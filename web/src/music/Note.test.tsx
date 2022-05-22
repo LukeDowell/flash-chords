@@ -7,6 +7,9 @@ describe('Musical Notes', () => {
     ["E4", 'F4'],
     ["C1", 'C2'],
     ["C1", 'C1'],
+    ['D#4', 'E4'],
+    ['C#4', 'D#4'],
+    ['B3', 'C#4',]
   ])(
     `%s should be lower than %s`,
     (lower: string, higher: string) => expect(toNote(lower).isLowerThan(toNote(higher))).toBeTruthy()
@@ -28,11 +31,18 @@ describe('Musical Notes', () => {
     }
   )
 
+  it('should throw an error when trying to compare two notes without an octave', () => {
+    expect(() => {
+      genericInterval(toNote('C'), toNote('G'))
+    }).toThrow()
+  })
+
   test.each([
-    [["C3", "C2"], ["C2", "C3"]],
-    [["F#5", "G#4", "G6"], ["G#4", "F#5", "G6"]],
-    [["G4", "C4", "A#4"], ["A#4", "C4", "G4"]],
-    [["G4", "C4", "A#4", "A4"], ["A4", "A#4", "C4", "G4"]],
+    // [["C3", "C2"], ["C2", "C3"]],
+    // [["F#5", "G#4", "G6"], ["G#4", "F#5", "G6"]],
+    // [["G4", "C4", "A#4"], ["A#4", "C4", "G4"]],
+    // [["G4", "C4", "A#4", "A4"], ["A4", "A#4", "C4", "G4"]],
+    [['B3', 'C#4', 'D#4', 'E4'], ['B3', 'C#4', 'D#4', 'E4']]
   ])(
     `%s should be sorted to %s`,
     (unsorted: string[], expected: string[]) => {

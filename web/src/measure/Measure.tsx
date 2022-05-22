@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from "@emotion/styled";
-import {FLAT, genericInterval, Note, noteToSymbol, toNote} from "../music/Note";
+import {FLAT, genericInterval, Note, noteToSymbol, sortNotes, toNote} from "../music/Note";
 import {ReactComponent as WholeNoteSvg} from '../images/whole-note.svg'
 import {ReactComponent as FlatSvg} from '../images/accidental-flat.svg'
 import {ReactComponent as SharpSvg} from '../images/accidental-sharp.svg'
@@ -97,7 +97,8 @@ export const Measure = ({
                           }
                         }: Props) => {
 
-  const noteComponents = notes.flatMap((n, i, a) => {
+  const leftShiftedNoteIndex: number[] = []
+  const noteComponents = sortNotes(notes).flatMap((n, i, a) => {
     const key = `${noteToSymbol(n)}-note`
     const topOfStaff = toNote(cleff === 'treble' ? 'F5' : 'A3')
     const bottomOfStaff = toNote(cleff === 'treble' ? 'E4' : 'A0')
@@ -110,25 +111,23 @@ export const Measure = ({
 
     // Horizontally Position
     let left = 50.0
-    const unfilteredNeighbors: Note[] = notes.filter((maybeNeighbor) => genericInterval(maybeNeighbor, n) === 2)
-    const neighbors = unfilteredNeighbors.filter((dn) => {
-      // Remove neighbors who themselves have two neighbors so that we alternate notes if necessary
-      const neighborsNeighbors = notes.filter((mn) => genericInterval(dn, mn) === 2)
-      return neighborsNeighbors.length < 2 && unfilteredNeighbors.length === 2
-    })
-
-    if (neighbors.length == 2) left = 42.5
-    else if (neighbors.length == 1 && neighbors[0].isLowerThan(n)) left = 42.5
+    if (leftShiftedNoteIndex.includes(i)) left = 42.5
+    else if (notes?.[i + 1] !== undefined && genericInterval(n, notes[i + 1]) === 2) {
+      leftShiftedNoteIndex.push(i + 1)
+    }
 
     // Accidental
     let accidental
     if (n?.accidental) {
       const aKey = `${noteToSymbol(n)}-accidental`
       const Accidental = _.isEqual(n.accidental, FLAT) ? FlatComponent : SharpComponent
+      const neighborsAreShifted = leftShiftedNoteIndex.map((i) => notes[i])
+        .some((o) => genericInterval(n, o) === 2)
+
       accidental = <Accidental data-testid={aKey} key={aKey}
-                 height={`${style?.height / 4}`}
-                 top={top}
-                 left={`${left - 6}%`} />
+                               height={`${style?.height / 4}`}
+                               top={top}
+                               left={`${neighborsAreShifted ? left + 6 : left - 6}%`}/>
     }
 
     // Line Hint
@@ -140,10 +139,10 @@ export const Measure = ({
     }
 
     return [<WholeNote data-testid={key} key={key}
-                      height={`${style?.height / 4}`}
-                      top={top}
-                      left={`${left}%`}
-                      linehint={lineHint}
+                       height={`${style?.height / 4}`}
+                       top={top}
+                       left={`${left}%`}
+                       linehint={lineHint}
     />, accidental]
   })
 

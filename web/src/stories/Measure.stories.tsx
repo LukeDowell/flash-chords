@@ -25,7 +25,7 @@ export const Treble = Template.bind({});
 export const Bass = Template.bind({});
 Treble.args = {
   cleff: "treble",
-  notes: ['B3', 'C#4', 'D4', 'E4', 'G♭4', 'E5', 'F5', 'G5'].map(toNote)
+  notes: ['B3', 'C#4', 'D#4', 'E4', 'G♭4', 'E5', 'F5', 'G5'].map(toNote)
 }
 
 Bass.args = {

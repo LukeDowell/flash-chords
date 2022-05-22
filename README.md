@@ -624,3 +624,20 @@ Still have to add naturals, fix the improper staggering of the notes, and then p
 on the x-axis but the end is in sight. Once the measures render, I'll probably start trying to get some kind
 of new game off the ground, like cycling through a key or something like that. I will also have to add it to the 
 homepage I think, like an option to display the chord as you move through the main game.
+
+**5/22/2022**
+
+I was able to decomplect Measure's horizontal positioning by a good amount. The new code looks like this:
+
+```typescript
+let left = 50.0
+if (leftShiftedNoteIndex.includes(i)) left = 42.5
+else if (notes?.[i + 1] !== undefined && genericInterval(n, notes[i + 1]) === 2) {
+   leftShiftedNoteIndex.push(i + 1)
+} 
+```
+
+Each note checks to see if it's index is in the 'should be shifted pile'. If it's not, it 
+checks to see if the note immediately above it needs to be shifted. This gives the nice effect
+of never shifting the root of any cluster. This change also uncovered some bugs with the note sorting
+code!

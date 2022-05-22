@@ -75,15 +75,24 @@ const lowerNote = (a: Note, b: Note) => {
   if (a.octave > b.octave) return b
   else if (b.octave > a.octave) return a
   else {
-    const aValue = a.root.charCodeAt(0) + (a.accidental?.mod || 0)
-    const bValue = b.root.charCodeAt(0) + (b.accidental?.mod || 0)
+    let aValue = a.root.charCodeAt(0)
+    let bValue = b.root.charCodeAt(0)
     if (aValue > bValue) return b
-    else return a
+    else if (bValue > aValue) return a
+    else {
+      aValue = a?.accidental?.mod || 0
+      bValue = b?.accidental?.mod || 0
+      if (aValue > bValue) return b
+      else if (bValue > aValue) return a
+    }
+
+    return a
   }
 }
 
+/** Lowest to highest */
 export const sortNotes = (notes: Note[]): Note[] => notes.sort((a, b) => {
-  if (lowerNote(a, b) === a) return -1;
+  if (a.isLowerThan(b)) return -1;
 
   return 1
 })
@@ -128,7 +137,7 @@ export const KEYBOARD: Note[] = [
 ].map(toNote)
 
 export const genericInterval = (n1a: Note, n2a: Note): number => {
-  if (n1a.octave === undefined || n2a.octave === undefined) throw new Error('cannot calculate generic interval without octave information')
+  if (n1a?.octave === undefined || n2a?.octave === undefined) throw new Error('cannot calculate generic interval without octave information')
 
   const n1 = new Note(n1a.root, undefined, n1a.octave)
   const n2 = new Note(n2a.root, undefined, n2a.octave)
