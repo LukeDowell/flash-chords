@@ -612,3 +612,15 @@ some tinkering:
 
 The only remaining problem is the '42.5%'; I need to appropriately scale that value because if I adjust the height/width
 of the measure at all it doesn't line up quite right anymore.
+
+
+**5/21/2022**
+
+First pass at accidentals complete; 
+
+<img alt="accidentals" src="https://puu.sh/J1AAd/8fcd4c68a1.png" width="800" />
+
+Still have to add naturals, fix the improper staggering of the notes, and then properly implement scaling 
+on the x-axis but the end is in sight. Once the measures render, I'll probably start trying to get some kind
+of new game off the ground, like cycling through a key or something like that. I will also have to add it to the 
+homepage I think, like an option to display the chord as you move through the main game.

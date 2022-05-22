@@ -12,7 +12,7 @@ import {Chord, ChordQuality, chordToSymbol, generateRandomChord, isValidVoicing,
 import {Accidental, FLAT, Note, Root, SHARP} from "../music/Note";
 import _ from "lodash";
 import {VoicingHistory, VoicingResult} from "./VoicingHistory";
-import {Measure} from "../scrollingstaff/Measure";
+import {Measure} from "../measure/Measure";
 
 export interface Props {
   piano: MIDIPiano,

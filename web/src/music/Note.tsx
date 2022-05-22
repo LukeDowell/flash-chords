@@ -29,7 +29,7 @@ export type Accidental = {
 
   /**
    * Semitone modifier. This is the amount of half steps
-   * from the base note.
+   * from the root note.
    */
   mod: 1 | -1
 }
@@ -128,7 +128,7 @@ export const KEYBOARD: Note[] = [
 ].map(toNote)
 
 export const genericInterval = (n1a: Note, n2a: Note): number => {
-  if (!n1a.octave || !n2a.octave) throw new Error('cannot calculate generic interval without octave information')
+  if (n1a.octave === undefined || n2a.octave === undefined) throw new Error('cannot calculate generic interval without octave information')
 
   const n1 = new Note(n1a.root, undefined, n1a.octave)
   const n2 = new Note(n2a.root, undefined, n2a.octave)
@@ -137,7 +137,6 @@ export const genericInterval = (n1a: Note, n2a: Note): number => {
 
   const i1 = KEYBOARD.findIndex((n) => _.isEqual(standardizeNote(n1), n))
   const i2 = KEYBOARD.findIndex((n) => _.isEqual(standardizeNote(n2), n))
-
 
   const genericKeys = (i1 < i2 ? KEYBOARD.slice(i1, i2 + 1) : KEYBOARD.slice(i2, i1 + 1)).filter((n) => !n.accidental)
   return genericKeys.length
