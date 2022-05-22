@@ -70,7 +70,7 @@ export const symbolToChord = (symbol: string): Chord => {
     /^[a-gA-G][#♭]?(?:dim|m|aug)?$/g,
 
     // Seventh
-    /^[a-gA-G][#♭]?[mMo\u00f8]?7$/g,
+    /^[a-gA-G][#♭]?(?:m|M|o|\u00f8|maj|dim)?7$/g,
   ]
 
   if (!validExpressions.find((e) => e.test(symbol))) throw new Error(`invalid chord symbol format ${symbol}`)
@@ -91,7 +91,7 @@ export const symbolToChord = (symbol: string): Chord => {
       if (a === "\u00f8") {
         seventh = "Major"
         quality = "Diminished"
-      } else if (a === "M") {
+      } else if (a === "M" || a === "maj") {
         seventh = "Major"
         quality = "Major"
       } else if (a === "o") {

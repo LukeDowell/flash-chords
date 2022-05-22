@@ -150,3 +150,17 @@ export const genericInterval = (n1a: Note, n2a: Note): number => {
   const genericKeys = (i1 < i2 ? KEYBOARD.slice(i1, i2 + 1) : KEYBOARD.slice(i2, i1 + 1)).filter((n) => !n.accidental)
   return genericKeys.length
 }
+
+export const layNotesOnKeyboard = (notes: Note[], octave: number): Note[] => {
+  let currentOctave = octave
+  return notes.map((n, i) => {
+    if (i !== 0) return new Note(n.root, n.accidental, currentOctave)
+    else if (n.root === 'B') {
+      const newNote = new Note(n.root, n.accidental, currentOctave)
+      currentOctave++
+      return newNote
+    }
+
+    return new Note(n.root, n.accidental, currentOctave)
+  })
+}

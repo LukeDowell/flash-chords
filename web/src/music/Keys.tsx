@@ -52,13 +52,13 @@ export const MAJOR_KEYS = {
   'G': {
     notes: ['G'].map(toNote),
     quality: "major",
-    diatonicChords: ["Gmaj7", "Am7", "Bm7", "Cmaj7", "D7", "Em7", "F#7(♭5)"].map(symbolToChord)
+    // diatonicChords: ["Gmaj7", "Am7", "Bm7", "Cmaj7", "D7", "Em7", "F#7(♭5)"].map(symbolToChord)
   },
 }
 
 export const MINOR_KEYS = {
-  'Gm': {
-    notes: toNote('Gm'),
+  'G': {
+    notes: toNote('G'),
     quality: 'minor',
     diatonicChords: MAJOR_KEYS['B♭']
   }
