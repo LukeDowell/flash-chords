@@ -651,3 +651,10 @@ const measures = MAJOR_KEYS['D♭'].diatonicChords.map(requiredNotesForChord)
  .map((notes) => layNotesOnKeyboard(notes, 4))
  .map((notes) => <Measure cleff={'treble'} notes={notes}/>)
 ```
+
+and it looked like this!
+
+![render key bug](./doc/render-measure-4.png)
+
+Time to begin on being able to transpose notes to a given key. I'm hoping there aren't too many weird 
+bugs with this one...
