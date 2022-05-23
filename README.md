@@ -363,7 +363,7 @@ I'm curious what organizing this will be like. I know the idea is your base CSS 
 screen devices and you use media queries to scale up. I threw these together in Whimsical, and this will
 be what I work towards for now.
 
-<img alt="timer mockup" src="./doc/timer-mockup.png" width="1000" />
+<img alt="timer mockup" src="./doc/timer-mockup.png" width="1021" />
 
 I have no doubt that the settings design is a UX sin of the highest order, I'm gonna see how it 
 feels first though.
@@ -389,7 +389,7 @@ window scales up, we can put the keyboard back in!
 
 I finished up the settings and iterated on the mockups.
 
-<img alt="mockups v2" src="https://puu.sh/IFtmJ/fc093b35cd.png" width="1250" />
+<img alt="mockups v2" src="./doc/timer-mockup-2.png" width="903" />
 
 I'm pumped for the table tracking the previous set of chords. That's going to lead me into 
 figuring out how best to represent the required notes for a given chord, IE A#2 vs Bb2 
@@ -428,7 +428,7 @@ The app is coming along however it's still not quite useful enough for me to enj
 
 Ha! Just ran into my first flat/sharp bug while putting the table together
 
-<img alt="flat bug!" src="https://puu.sh/IFRcV/671f61aed5.png" />
+<img alt="flat bug!" src="./doc/voicing-table.png" />
 
 A lot of the flat keys are wrong. In moving around some of the validation code I lost the "standardization"
 from flats to sharps for the keyboard. It's a little sneaky because all code that relies on the validator
@@ -564,7 +564,7 @@ I had to disable TWO inspections, surely I won't regret this later.
 
 Lots of progress being made on the Measure component:
 
-<img alt="measure component" src="https://puu.sh/J195g/0a6b6d8a0e.png" width="800" />
+<img alt="measure component" src="doc/render-measure.png" />
 
 I was initially going to go through and lay it out line by line in the JSX but that felt pretty clumsy. In
 particular I couldn't find a good way to apply the "left shift" to notes that overlapped, nor was it very scalable
@@ -592,7 +592,7 @@ on the staff. Perhaps scale isn't the answer and I should just set the height / 
 
 Tada!
 
-<img alt="measure component" src="https://puu.sh/J1b0z/272d4c7d39.png" width="800" />
+<img alt="measure component" src="doc/render-measure-2.png" />
 
 The code to successfully shift notes left doesn't actually totally make sense to me, I arrived at it via
 some tinkering:
@@ -616,9 +616,9 @@ of the measure at all it doesn't line up quite right anymore.
 
 **5/21/2022**
 
-First pass at accidentals complete; 
+First pass at accidentals complete;
 
-<img alt="accidentals" src="https://puu.sh/J1AAd/8fcd4c68a1.png" width="800" />
+<img alt="measure component" src="doc/render-measure-3.png" />
 
 Still have to add naturals, fix the improper staggering of the notes, and then properly implement scaling 
 on the x-axis but the end is in sight. Once the measures render, I'll probably start trying to get some kind
