@@ -4,7 +4,7 @@ Chord Notation Practice
 
 https://flashchords.app/
 
-<img alt="feature demonstration" src="https://puu.sh/IDt30/ccdb38dda1.gif" width="1000" />
+![feature demonstration](./doc/piano-mvp.gif)
 
 ## Features
 
@@ -363,7 +363,7 @@ I'm curious what organizing this will be like. I know the idea is your base CSS 
 screen devices and you use media queries to scale up. I threw these together in Whimsical, and this will
 be what I work towards for now.
 
-<img alt="feature demonstration" src="https://puu.sh/IEVdV/be0ad30fac.png" width="1000" />
+<img alt="timer mockup" src="./doc/timer-mockup.png" width="1000" />
 
 I have no doubt that the settings design is a UX sin of the highest order, I'm gonna see how it 
 feels first though.
@@ -641,3 +641,13 @@ Each note checks to see if it's index is in the 'should be shifted pile'. If it'
 checks to see if the note immediately above it needs to be shifted. This gives the nice effect
 of never shifting the root of any cluster. This change also uncovered some bugs with the note sorting
 code!
+
+**5/23/2022**
+
+I went to test out my measures and generate a series of chords for a given key. 
+
+```typescript
+const measures = MAJOR_KEYS['D♭'].diatonicChords.map(requiredNotesForChord)
+ .map((notes) => layNotesOnKeyboard(notes, 4))
+ .map((notes) => <Measure cleff={'treble'} notes={notes}/>)
+```

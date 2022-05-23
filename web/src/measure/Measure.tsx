@@ -29,11 +29,15 @@ const StyledRoot = styled('div')<MeasureStyles>(props => ({
   position: 'relative'
 }))
 
-const WhiteBar = styled('div')({
-  height: '25%',
+interface WhiteBarProps {
+  height: number
+}
+
+const WhiteBar = styled('div')<WhiteBarProps>(props => ({
+  height: `${props.height / 4}px`,
   width: '100%',
   backgroundColor: 'white',
-})
+}))
 
 const BlackLine = styled('div')({
   display: 'flex',
@@ -45,9 +49,9 @@ const BlackLine = styled('div')({
 })
 
 interface WholeNoteProps {
-  top: string,
-  height: string,
-  left: string,
+  top: number,
+  height: number,
+  left: number,
   linehint?: 'center' | 'bottom' | 'top'
 }
 
@@ -55,9 +59,9 @@ const WholeNote = styled(WholeNoteSvg)<WholeNoteProps>(props => ({
   position: 'absolute',
   transform: `translate(-50%, -50%)`,
   width: 'auto',
-  height: props.height,
-  left: props.left,
-  top: props.top,
+  height: `${props.height}px`,
+  left: `${props.left}%`,
+  top: `${props.top}%`,
   backgroundImage: props.linehint ? 'linear-gradient(black, black)' : '',
   backgroundRepeat: 'no-repeat',
   backgroundSize: '125% 1px',
@@ -65,18 +69,18 @@ const WholeNote = styled(WholeNoteSvg)<WholeNoteProps>(props => ({
 }))
 
 interface AccidentalProps {
-  height: string,
-  top: string,
-  left: string
+  height: number,
+  top: number,
+  left: number
 }
 
 const SharpComponent = styled(SharpSvg)<AccidentalProps>(props => ({
   position: 'absolute',
   transform: `translate(-50%, -50%)`,
-  height: props.height,
+  height: `${props.height}px`,
   width: 'auto',
-  left: props.left,
-  top: props.top
+  left: `${props.left}%`,
+  top: `${props.top}%`,
 }))
 
 const FlatComponent = styled(FlatSvg)<AccidentalProps>(props => ({
@@ -84,16 +88,16 @@ const FlatComponent = styled(FlatSvg)<AccidentalProps>(props => ({
   transform: `translate(-50%, -75%)`,
   height: props.height,
   width: 'auto',
-  left: props.left,
-  top: props.top
+  left: `${props.left}%`,
+  top: `${props.top}%`,
 }))
 
 export const Measure = ({
                           cleff = 'treble',
                           notes = [],
                           style = {
-                            width: 400,
-                            height: 80
+                            width: 800,
+                            height: 200
                           }
                         }: Props) => {
 
@@ -105,9 +109,8 @@ export const Measure = ({
     const interval = genericInterval(topOfStaff, n)
 
     // Vertically Position
-    let topValue = (interval - 1) * (style.height / 8)
-    if (topOfStaff.isLowerThan(n)) topValue = -topValue
-    const top = `${topValue}px`
+    let top = (interval - 1) * 12.5
+    if (topOfStaff.isLowerThan(n)) top = -top
 
     // Horizontally Position
     let left = 50.0
@@ -123,11 +126,10 @@ export const Measure = ({
       const Accidental = _.isEqual(n.accidental, FLAT) ? FlatComponent : SharpComponent
       const neighborsAreShifted = leftShiftedNoteIndex.map((i) => notes[i])
         .some((o) => genericInterval(n, o) === 2)
-
       accidental = <Accidental data-testid={aKey} key={aKey}
-                               height={`${style?.height / 4}`}
+                               height={style?.height / 4}
                                top={top}
-                               left={`${neighborsAreShifted ? left + 6 : left - 6}%`}/>
+                               left={neighborsAreShifted ? left + 8 : left - 8}/>
     }
 
     // Line Hint
@@ -139,9 +141,9 @@ export const Measure = ({
     }
 
     return [<WholeNote data-testid={key} key={key}
-                       height={`${style?.height / 4}`}
+                       height={style.height / 4}
                        top={top}
-                       left={`${left}%`}
+                       left={left}
                        linehint={lineHint}
     />, accidental]
   })
@@ -149,13 +151,13 @@ export const Measure = ({
   return <StyledRoot width={style.width} height={style.height}>
     {noteComponents}
     <BlackLine/>
-    <WhiteBar/>
+    <WhiteBar height={style.height}/>
     <BlackLine/>
-    <WhiteBar/>
+    <WhiteBar height={style.height}/>
     <BlackLine/>
-    <WhiteBar/>
+    <WhiteBar height={style.height}/>
     <BlackLine/>
-    <WhiteBar/>
+    <WhiteBar height={style.height}/>
     <BlackLine/>
   </StyledRoot>
 }

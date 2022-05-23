@@ -63,3 +63,7 @@ export const MINOR_KEYS = {
     diatonicChords: MAJOR_KEYS['B♭']
   }
 }
+
+export const inKey = (notes: Note[]): Note[] => {
+  return []
+}

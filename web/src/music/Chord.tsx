@@ -86,7 +86,10 @@ export const symbolToChord = (symbol: string): Chord => {
   let seventh: "Major" | "Minor" | undefined
   let quality: ChordQuality = "Major"
   if (symbol.charAt(symbol.length - 1) === "7") {
-    if (/[mMo\u00f8]/g.test(symbol)) {
+    if (symbol.includes("maj")) {
+      quality = "Major"
+      seventh = "Major"
+    } else if (/[mMo\u00f8]/g.test(symbol)) {
       const a = symbol.charAt(symbol.length - 2)
       if (a === "\u00f8") {
         seventh = "Major"
