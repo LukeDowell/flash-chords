@@ -24,42 +24,36 @@ const StyledRoot = styled('div')<MeasureStyles>(props => ({
   border: "1px solid black",
   borderBottom: '0px solid black',
   borderTop: 'none',
-  minWidth: props.width,
-  minHeight: props.height,
-  position: 'relative'
+  width: `${props.width}px`,
+  height: `${props.height}px`,
+  position: 'relative',
 }))
 
-interface WhiteBarProps {
-  height: number
-}
-
-const WhiteBar = styled('div')<WhiteBarProps>(props => ({
-  height: `${props.height / 4}px`,
+const WhiteBar = styled('div')({
+  height: `25%`,
   width: '100%',
   backgroundColor: 'white',
-}))
+})
 
 const BlackLine = styled('div')({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: '1px',
+  minHeight: '1px',
+  height: '1%',
   width: '100%',
   backgroundColor: 'black',
 })
 
 interface WholeNoteProps {
   top: number,
-  height: number,
   left: number,
   linehint?: 'center' | 'bottom' | 'top'
 }
 
 const WholeNote = styled(WholeNoteSvg)<WholeNoteProps>(props => ({
+  color: 'black',
   position: 'absolute',
   transform: `translate(-50%, -50%)`,
   width: 'auto',
-  height: `${props.height}px`,
+  height: `25%`,
   left: `${props.left}%`,
   top: `${props.top}%`,
   backgroundImage: props.linehint ? 'linear-gradient(black, black)' : '',
@@ -77,7 +71,7 @@ interface AccidentalProps {
 const SharpComponent = styled(SharpSvg)<AccidentalProps>(props => ({
   position: 'absolute',
   transform: `translate(-50%, -50%)`,
-  height: `${props.height}px`,
+  height: `${props.height / 8}rem`,
   width: 'auto',
   left: `${props.left}%`,
   top: `${props.top}%`,
@@ -96,8 +90,8 @@ export const Measure = ({
                           cleff = 'treble',
                           notes = [],
                           style = {
-                            width: 800,
-                            height: 200
+                            width: 400,
+                            height: 150
                           }
                         }: Props) => {
 
@@ -110,7 +104,7 @@ export const Measure = ({
 
     // Vertically Position
     let top = (interval - 1) * 12.5
-    if (topOfStaff.isLowerThan(n)) top = -top
+    if (!topOfStaff.isLowerThan(n)) top = -top
 
     // Horizontally Position
     let left = 50.0
@@ -141,7 +135,6 @@ export const Measure = ({
     }
 
     return [<WholeNote data-testid={key} key={key}
-                       height={style.height / 4}
                        top={top}
                        left={left}
                        linehint={lineHint}
@@ -151,13 +144,13 @@ export const Measure = ({
   return <StyledRoot width={style.width} height={style.height}>
     {noteComponents}
     <BlackLine/>
-    <WhiteBar height={style.height}/>
+    <WhiteBar/>
     <BlackLine/>
-    <WhiteBar height={style.height}/>
+    <WhiteBar/>
     <BlackLine/>
-    <WhiteBar height={style.height}/>
+    <WhiteBar/>
     <BlackLine/>
-    <WhiteBar height={style.height}/>
+    <WhiteBar/>
     <BlackLine/>
   </StyledRoot>
 }

@@ -656,5 +656,7 @@ and it looked like this!
 
 ![render key bug](./doc/render-measure-4.png)
 
+An obvious problem is that the first chord only has three required notes, which is a bit odd for a seventh. 
+The second is that none of the notes really match the key, there should be flats instead of sharps.
 Time to begin on being able to transpose notes to a given key. I'm hoping there aren't too many weird 
 bugs with this one...
