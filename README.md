@@ -660,3 +660,9 @@ An obvious problem is that the first chord only has three required notes, which 
 The second is that none of the notes really match the key, there should be flats instead of sharps.
 Time to begin on being able to transpose notes to a given key. I'm hoping there aren't too many weird 
 bugs with this one...
+
+**5/26/2022**
+
+Ahh another bug, this time with the code that calculates which note is lowest. I based it off character code
+which doesn't work, since a C is the lowest note in an octave and B is the highest. Shoot.
+

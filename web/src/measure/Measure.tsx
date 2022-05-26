@@ -71,7 +71,7 @@ interface AccidentalProps {
 const SharpComponent = styled(SharpSvg)<AccidentalProps>(props => ({
   position: 'absolute',
   transform: `translate(-50%, -50%)`,
-  height: `${props.height / 8}rem`,
+  height: `${props.height / 10}rem`,
   width: 'auto',
   left: `${props.left}%`,
   top: `${props.top}%`,
@@ -80,7 +80,7 @@ const SharpComponent = styled(SharpSvg)<AccidentalProps>(props => ({
 const FlatComponent = styled(FlatSvg)<AccidentalProps>(props => ({
   position: 'absolute',
   transform: `translate(-50%, -75%)`,
-  height: props.height,
+  height: `${props.height / 10}rem`,
   width: 'auto',
   left: `${props.left}%`,
   top: `${props.top}%`,
@@ -96,19 +96,19 @@ export const Measure = ({
                         }: Props) => {
 
   const leftShiftedNoteIndex: number[] = []
-  const noteComponents = sortNotes(notes).flatMap((n, i, a) => {
+  const noteComponents = sortNotes(notes).flatMap((n, i) => {
     const key = `${noteToSymbol(n)}-note`
     const topOfStaff = toNote(cleff === 'treble' ? 'F5' : 'A3')
-    const bottomOfStaff = toNote(cleff === 'treble' ? 'E4' : 'A0')
+    const bottomOfStaff = toNote(cleff === 'treble' ? 'E4' : 'G2')
     const interval = genericInterval(topOfStaff, n)
 
     // Vertically Position
     let top = (interval - 1) * 12.5
-    if (!topOfStaff.isLowerThan(n)) top = -top
+    if (topOfStaff.isLowerThan(n)) top = -top
 
     // Horizontally Position
     let left = 50.0
-    if (leftShiftedNoteIndex.includes(i)) left = 42.5
+    if (leftShiftedNoteIndex.includes(i)) left = 40.0
     else if (notes?.[i + 1] !== undefined && genericInterval(n, notes[i + 1]) === 2) {
       leftShiftedNoteIndex.push(i + 1)
     }
@@ -123,7 +123,7 @@ export const Measure = ({
       accidental = <Accidental data-testid={aKey} key={aKey}
                                height={style?.height / 4}
                                top={top}
-                               left={neighborsAreShifted ? left + 8 : left - 8}/>
+                               left={neighborsAreShifted ? left + 10 : left - 10}/>
     }
 
     // Line Hint
@@ -132,6 +132,8 @@ export const Measure = ({
       lineHint = genericInterval(bottomOfStaff, n) % 2 === 0 ? 'bottom' : 'center'
     } else if (topOfStaff.isLowerThan(n)) {
       lineHint = genericInterval(bottomOfStaff, n) % 2 === 0 ? 'top' : 'center'
+    } else {
+      lineHint = undefined
     }
 
     return [<WholeNote data-testid={key} key={key}

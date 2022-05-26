@@ -9,7 +9,8 @@ describe('Musical Notes', () => {
     ["C1", 'C1'],
     ['D#4', 'E4'],
     ['C#4', 'D#4'],
-    ['B3', 'C#4',]
+    ['B3', 'C#4'],
+    ['C3', 'A3']
   ])(
     `%s should be lower than %s`,
     (lower: string, higher: string) => expect(toNote(lower).isLowerThan(toNote(higher))).toBeTruthy()

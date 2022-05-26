@@ -42,10 +42,9 @@ export const Key = KeyTemplate.bind({})
 Treble.args = {
   cleff: "treble",
   notes: ['B3', 'C#4', 'D#4', 'E4', 'G♭4', 'E5', 'F5', 'G5'].map(toNote)
-  // notes: ['G♭4', 'E5'].map(toNote)
 }
 
 Bass.args = {
   cleff: "bass",
-  notes: ['A2', 'C♭3', 'E3', 'D#3'].map(toNote)
+  notes: ['A2', 'C♭2', 'E2', 'D#2', 'C3'].map(toNote)
 }
