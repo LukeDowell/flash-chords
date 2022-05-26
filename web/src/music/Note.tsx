@@ -69,14 +69,15 @@ export const toNote = (s: string): Note => {
   return new Note(root, accidental, octave)
 }
 
+const notesFromLowestToHighest: Root[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
 const lowerNote = (a: Note, b: Note) => {
   if (a.octave === undefined || b.octave === undefined) throw new Error("cannot compare notes without octaves")
 
   if (a.octave > b.octave) return b
   else if (b.octave > a.octave) return a
   else {
-    let aValue = a.root.charCodeAt(0)
-    let bValue = b.root.charCodeAt(0)
+    let aValue = notesFromLowestToHighest.indexOf(a.root)
+    let bValue = notesFromLowestToHighest.indexOf(b.root)
     if (aValue > bValue) return b
     else if (bValue > aValue) return a
     else {
