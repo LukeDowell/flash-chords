@@ -82,7 +82,6 @@ describe('musical chords', () => {
   )
 })
 
-
 describe("Triad Chord Voicings", () => {
   test.each([
     [["C1", "E1", "G1"], {root: "C", quality: "Major"} as Chord],

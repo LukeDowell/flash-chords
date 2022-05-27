@@ -1,10 +1,8 @@
-// noinspection NonAsciiCharacters,JSNonASCIINames
-
 import {Chord, symbolToChord} from "./Chord";
 import {Note, toNote} from "./Note";
 
 export interface Key {
-  root: Note,
+  notes: Note[],
 
   quality: "major" | "minor",
 
@@ -12,7 +10,7 @@ export interface Key {
   diatonicChords: Chord[],
 }
 
-export const MAJOR_KEYS = {
+export const MAJOR_KEYS: Record<string, Key> = {
   'D♭': {
     notes: ['D♭', 'E♭', 'F', 'G♭', 'A♭', 'B♭', 'C'].map(toNote),
     quality: "major",
@@ -53,17 +51,18 @@ export const MAJOR_KEYS = {
     notes: ['G'].map(toNote),
     quality: "major",
     // diatonicChords: ["Gmaj7", "Am7", "Bm7", "Cmaj7", "D7", "Em7", "F#7(♭5)"].map(symbolToChord)
+    diatonicChords: [].map(symbolToChord)
   },
 }
 
-export const MINOR_KEYS = {
+export const MINOR_KEYS: Record<string, Key> = {
   'G': {
-    notes: toNote('G'),
+    notes: [toNote('G')],
     quality: 'minor',
-    diatonicChords: MAJOR_KEYS['B♭']
+    diatonicChords: MAJOR_KEYS['B♭'].diatonicChords
   }
 }
 
-export const inKey = (notes: Note[]): Note[] => {
-  return []
+export const transposeNotesToKey = (notes: Note[], key: Key): Note[] => {
+  return notes
 }
