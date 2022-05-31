@@ -666,3 +666,17 @@ bugs with this one...
 Ahh another bug, this time with the code that calculates which note is lowest. I based it off character code
 which doesn't work, since a C is the lowest note in an octave and B is the highest. Shoot.
 
+**5/27/2022**
+
+Ok fixed that bug, notes from lowest->highest now sort correctly. Now I am actually on to key transposition. I feel like
+this is gonna be sort of tricky to do in a satisfying way. Thus far I have "standardized" on the layout that the
+keyboard seems to use, which is all sharps. Now when I am trying to render something like a D♭maj7, it looks like this:
+
+![render dflat 7 bug](./doc/d-flat-major-7-broken.png)
+
+The problem is that if the notes are calculated using the 'standardized' way, we end up with `C#, F, G# and C`. There is
+an additional bug of me not correctly laying out the notes on the staff, so the C# and the C are both on octave 4 which
+causes them to overlap and the C to 'disappear'. 
+
+I'm wondering if there are going to be issues with B, C, E and F since you can "shift" physical keys depending on the 
+accidental. 

@@ -71,7 +71,7 @@ interface AccidentalProps {
 const SharpComponent = styled(SharpSvg)<AccidentalProps>(props => ({
   position: 'absolute',
   transform: `translate(-50%, -50%)`,
-  height: `${props.height / 10}rem`,
+  height: `${props.height / 12}rem`,
   width: 'auto',
   left: `${props.left}%`,
   top: `${props.top}%`,
@@ -80,7 +80,7 @@ const SharpComponent = styled(SharpSvg)<AccidentalProps>(props => ({
 const FlatComponent = styled(FlatSvg)<AccidentalProps>(props => ({
   position: 'absolute',
   transform: `translate(-50%, -75%)`,
-  height: `${props.height / 10}rem`,
+  height: `${props.height / 12}rem`,
   width: 'auto',
   left: `${props.left}%`,
   top: `${props.top}%`,
