@@ -1,16 +1,17 @@
 import {requiredNotesForChord, symbolToChord} from "./Chord";
 import {Note, toNote} from "./Note";
-import {Key, MAJOR_KEYS, transposeNotesToKey} from "./Keys";
+import {Key, MAJOR_KEYS, formatNotesInKey} from "./Keys";
 
 describe('Keys', () => {
   test.each([
-    ['D♭maj7', MAJOR_KEYS['D♭'], ['D♭', 'F', 'A♭', 'C'].map(toNote)],
+    ['D♭maj7', 'D♭', ['D♭', 'F', 'A♭', 'C']],
   ])(
-    `%s required notes should be %s`,
-    (symbol: string, key: Key, expectedNotes: Note[]) => {
+    `%s required notes in key of %s should be %s`,
+    (symbol: string, key: string, expectedNotes: string[]) => {
       const normalizedNotes = requiredNotesForChord(symbolToChord(symbol))
-      const requiredNotes = transposeNotesToKey(normalizedNotes, key)
-      expect(requiredNotes).toEqual(expectedNotes)
+      // @ts-ignore
+      const requiredNotes = formatNotesInKey(normalizedNotes, MAJOR_KEYS[key])
+      expect(requiredNotes).toEqual(expectedNotes.map(toNote))
     }
   )
 })

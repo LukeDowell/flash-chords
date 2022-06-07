@@ -63,6 +63,17 @@ export const MINOR_KEYS: Record<string, Key> = {
   }
 }
 
-export const transposeNotesToKey = (notes: Note[], key: Key): Note[] => {
+/**
+ * This function takes a series of notes and makes sure that they are rendered in a compatible
+ * way for a given key.
+ *
+ * Ex. D♭maj7 on a standardized keyboard would be C#, G, A#, and C which isn't great due to the C# and C.
+ * Those notes passed in with the D♭ key would result in D♭, G, B♭, C
+ *
+ * No transposition has taken place, the notes are simply formatted in a way that makes sense under a given
+ * key
+ */
+export const formatNotesInKey = (notes: Note[], key: Key): Note[] => {
+
   return notes
 }
