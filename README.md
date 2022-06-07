@@ -680,3 +680,21 @@ causes them to overlap and the C to 'disappear'.
 
 I'm wondering if there are going to be issues with B, C, E and F since you can "shift" physical keys depending on the 
 accidental. 
+
+**06/07/2022**
+
+Absolutely TMI for a dev journal, but today I started using Vyvanse, I've read that the best way to see if it is working
+is to write down how you're feeling and when you started it. Well, this will be that marker I suppose. Perhaps I'll be
+all done and customer ready by the end of the month :)
+
+For now, I am continuing to work on what I have previously called "transposition". I realized after watching a bunch
+of theory videos that isn't what I'm doing, as far as I can tell anyway. Transposition would require a "source" key, and
+the notes could move significantly on the staff. What I am doing is really formatting notes to make sense under a given
+key, almost like "key aware formatting" or something like that. My mind is starting to wander towards building in the
+idea of exercises or katas to be able to perform each day. To really nail that down I think I'd have to do a significant
+amount of work on the Measure component to be able to handle all the lengths of different notes in addition to some
+work on the MIDIPiano implementation itself. 
+
+Fun to think about, although I'd prefer to get started on users, logins and dashboards. If I am going to try and monetize this
+somehow, I absolutely need to have a useful and fun free tier. Right now I think my monetization strategy would come in 
+the form of teacher-centric tools, like seeing student progress and giving them assignments. 

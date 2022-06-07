@@ -69,7 +69,8 @@ export const toNote = (s: string): Note => {
   return new Note(root, accidental, octave)
 }
 
-const notesFromLowestToHighest: Root[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
+export const notesFromLowestToHighest: Root[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
+
 const lowerNote = (a: Note, b: Note) => {
   if (a.octave === undefined || b.octave === undefined) throw new Error("cannot compare notes without octaves")
 

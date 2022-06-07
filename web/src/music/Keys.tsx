@@ -1,5 +1,6 @@
 import {Chord, symbolToChord} from "./Chord";
-import {Note, toNote} from "./Note";
+import {FLAT, Note, Root, SHARP, toNote} from "./Note";
+import _ from "lodash";
 
 export interface Key {
   notes: Note[],
@@ -73,7 +74,38 @@ export const MINOR_KEYS: Record<string, Key> = {
  * No transposition has taken place, the notes are simply formatted in a way that makes sense under a given
  * key
  */
+const allRoots: Root[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 export const formatNotesInKey = (notes: Note[], key: Key): Note[] => {
+  return notes.map((n) => {
+    if (key.notes.some((note) => _.isEqual(note, n))) return n
+    else if (!n.accidental) {
+      throw new Error("ahhhhhh maybe we need to implement natural?")
+    }
 
-  return notes
+    // Root
+    const rootIndex = allRoots.indexOf(n.root)
+    let newIndex;
+    if (rootIndex + n.accidental.mod <= 0) newIndex = allRoots.length - 1
+    else if (rootIndex + n.accidental.mod >= allRoots.length) newIndex = 0
+    else newIndex = rootIndex + n.accidental.mod
+
+    const newRoot = allRoots[newIndex]
+
+    // Octave
+    let newOctave = n.octave
+    if (n.octave && (n.root === 'C' || newRoot === 'C')) {
+      if (n.root === 'C' && newRoot === 'B') newOctave = n.octave - 1
+      else if (newRoot === 'C' && n.root === 'B') newOctave = n.octave + 1
+    }
+
+    // Accidental
+    let newAccidental = n.accidental === FLAT ? SHARP : FLAT
+
+    return {
+      ...n,
+      root: newRoot,
+      octave: newOctave,
+      accidental: newAccidental
+    } as Note
+  })
 }
