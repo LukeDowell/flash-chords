@@ -1,6 +1,5 @@
 import {Chord, symbolToChord} from "./Chord";
-import {FLAT, Note, Root, SHARP, toNote} from "./Note";
-import _ from "lodash";
+import {FLAT, Note, noteToSymbol, Root, SHARP, toNote} from "./Note";
 
 export interface Key {
   notes: Note[],
@@ -15,19 +14,19 @@ export const MAJOR_KEYS: Record<string, Key> = {
   'C♭': {
     notes: ['C♭', 'D♭', 'E♭', 'F♭', 'G♭', 'A♭', 'B♭'].map(toNote),
     quality: "major",
-    diatonicChords: ['D♭maj7', 'E♭m7', 'Fm7', 'G♭maj7', 'A♭7', 'B♭m7', 'Cdim7'].map(symbolToChord)
+    diatonicChords: [].map(symbolToChord)
   },
 
   'G♭': {
     notes: ['G♭', 'A♭', 'B♭', 'C♭', 'D♭', 'E♭', 'F'].map(toNote),
     quality: "major",
-    diatonicChords: ['D♭maj7', 'E♭m7', 'Fm7', 'G♭maj7', 'A♭7', 'B♭m7', 'Cdim7'].map(symbolToChord)
+    diatonicChords: [].map(symbolToChord)
   },
 
   'D♭': {
     notes: ['D♭', 'E♭', 'F', 'G♭', 'A♭', 'B♭', 'C'].map(toNote),
     quality: "major",
-    diatonicChords: ['D♭maj7', 'E♭m7', 'Fm7', 'G♭maj7', 'A♭7', 'B♭m7', 'Cdim7'].map(symbolToChord)
+    diatonicChords: ['D♭maj7', 'E♭m7', 'Fm7', 'G♭maj7', 'A♭7', 'B♭m7', 'Cm7♭5'].map(symbolToChord)
   },
 
   'A♭': {
@@ -125,8 +124,10 @@ export const MINOR_KEYS: Record<string, Key> = {
 const allRoots: Root[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 export const formatNotesInKey = (notes: Note[], key: Key): Note[] => {
   return notes.map((n) => {
-    if (key.notes.some((note) => _.isEqual(note, n))) return n
+    // Strip octave
+    if (key.notes.some((note) => note.equalsWithoutOctave(n))) return n
     else if (!n.accidental) {
+      console.error(`note: ${noteToSymbol(n)}   --- all notes ${notes.map(noteToSymbol)}`)
       throw new Error("ahhhhhh maybe we need to implement natural?")
     }
 
@@ -149,11 +150,6 @@ export const formatNotesInKey = (notes: Note[], key: Key): Note[] => {
     // Accidental
     let newAccidental = n.accidental === FLAT ? SHARP : FLAT
 
-    return {
-      ...n,
-      root: newRoot,
-      octave: newOctave,
-      accidental: newAccidental
-    } as Note
+    return new Note(newRoot, newAccidental, newOctave)
   })
 }

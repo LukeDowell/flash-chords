@@ -3,7 +3,7 @@ import {ComponentMeta, ComponentStory} from '@storybook/react';
 import {Measure} from "../measure/Measure";
 import {layNotesOnKeyboard, toNote} from "../music/Note";
 import styled from "@emotion/styled";
-import {MAJOR_KEYS} from "../music/Keys";
+import {formatNotesInKey, MAJOR_KEYS} from "../music/Keys";
 import {requiredNotesForChord} from "../music/Chord";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -28,6 +28,7 @@ const BasicTemplate: ComponentStory<typeof Measure> = (args) => <Container>
 const KeyTemplate: ComponentStory<typeof Measure> = (args) => {
   const measures = MAJOR_KEYS['D♭'].diatonicChords.map(requiredNotesForChord)
     .map((notes) => layNotesOnKeyboard(notes, 4))
+    .map((notes) => formatNotesInKey(notes, MAJOR_KEYS['D♭']))
     .map((notes) => <Measure style={{ width: 450, height: 150 }} cleff={'treble'} notes={notes}/>)
 
   return <Container>

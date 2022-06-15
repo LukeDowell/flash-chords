@@ -698,3 +698,29 @@ work on the MIDIPiano implementation itself.
 Fun to think about, although I'd prefer to get started on users, logins and dashboards. If I am going to try and monetize this
 somehow, I absolutely need to have a useful and fun free tier. Right now I think my monetization strategy would come in 
 the form of teacher-centric tools, like seeing student progress and giving them assignments. 
+
+**06/15/2022**
+
+While pairing on this project today I came across a very odd issue; I have multiple paramterized tests in several describe blocks
+in the music theory package. Occasionally tests will "leak" across when I am trying to run a specific test suite, and I 
+believe it happens because of similar naming. The test name template of several sets of parameterized tests is the same,
+for example:
+
+```typescript
+    [["G3", "A#3", "D4", "F4"], "Gm7"],
+    [["G3", "B♭3", "D4", "F4"], "Gm7"],
+  ])(
+    '%s should be a valid voicing of %s',
+```
+
+and 
+
+```typescript
+[["G#1", "C1", "D#2", "G2"], {root: "G", accidental: SHARP, quality: "Major", seventh: "Major"} as Chord],
+    [["A#1", "C#1", "F1", "G#1"], {root: "B", accidental: FLAT, quality: "Minor", seventh: "Minor"} as Chord]
+  ])(
+    '%s should be a valid voicing of %s',
+```
+
+In other news, formatting on a key is working! "Laying out" the notes on top of the root of a chord isn't working quite
+perfectly, For Dbmaj7 the C ends up on the bottom, but the notes themselves are correct which is exciting stuff.

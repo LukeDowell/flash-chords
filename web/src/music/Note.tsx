@@ -22,6 +22,10 @@ export class Note implements NoteInterface {
   isLowerThan(other: Note): boolean {
     return _.isEqual(lowerNote(this, other), this)
   }
+
+  equalsWithoutOctave(other: Note): boolean {
+    return _.isEqual({ ...other, octave: undefined }, { ...this, octave: undefined })
+  }
 }
 
 export type Accidental = {

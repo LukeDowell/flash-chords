@@ -43,6 +43,7 @@ describe('musical chords', () => {
     [["C", "D#", "F#"], "B#dim"],
     [["C#", "F", "G#", "C"], "D♭M7"],
     [["G#", "B", "D#", "F#"], "A♭m7"],
+    [["C", "D#", "F#", "A#"], "Cm7♭5"],
   ])(
     `%s should be the required notes for %s`,
     (notes: string[], chordSymbol: string) => {

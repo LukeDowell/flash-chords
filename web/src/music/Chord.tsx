@@ -70,28 +70,29 @@ export const symbolToChord = (symbol: string): Chord => {
     /^[a-gA-G][#♭]?(?:dim|m|aug)?$/g,
 
     // Seventh
-    /^[a-gA-G][#♭]?(?:m|M|o|\u00f8|maj|dim)?7$/g,
+    /^[a-gA-G][#♭]?(?:m|M|o|\u00f8|maj|dim)?7(♭5)?$/g,
   ]
 
   if (!validExpressions.find((e) => e.test(symbol))) throw new Error(`invalid chord symbol format ${symbol}`)
 
   const root = symbol.charAt(0) as Root
-  let accidental: Accidental | undefined
+  let rootAccidental: Accidental | undefined
+
   if (hasAccidental(symbol)) {
-    if (symbol.charAt(1) === "♭") accidental = FLAT
-    else accidental = SHARP
+    if (symbol.charAt(1) === "♭") rootAccidental = FLAT
+    else if (symbol.charAt(1) === "#") rootAccidental = SHARP
   }
 
   // Seventh
   let seventh: "Major" | "Minor" | undefined
   let quality: ChordQuality = "Major"
-  if (symbol.charAt(symbol.length - 1) === "7") {
+  if (symbol.charAt(symbol.length - 1) === "7" || symbol.charAt(symbol.indexOf("♭5") - 1) === "7" ) { // TODO only checking last symbol wont work, we have to fix this
     if (symbol.includes("maj")) {
       quality = "Major"
       seventh = "Major"
     } else if (/[mMo\u00f8]/g.test(symbol)) {
       const a = symbol.charAt(symbol.length - 2)
-      if (a === "\u00f8") {
+      if (a === "\u00f8" || symbol.includes('♭5')) {
         seventh = "Major"
         quality = "Diminished"
       } else if (a === "M" || a === "maj") {
@@ -118,7 +119,8 @@ export const symbolToChord = (symbol: string): Chord => {
     quality = "Major"
   }
 
-  return {root, quality, accidental, seventh}
+  // We want quality = diminished and the seventh = major
+  return {root, quality, accidental: rootAccidental, seventh}
 }
 
 /**
@@ -150,7 +152,6 @@ export const requiredNotesForChord = (c: Chord): Note[] => {
       break
   }
 
-  // TODO find some way to 'change back' the format of the chord
   const requiredNotes: Note[] = [standardizeNote(new Note(c.root, c.accidental))]
   semitones.forEach((s) => {
     const previousNoteIndex = KEYBOARD.findIndex((k) => {
