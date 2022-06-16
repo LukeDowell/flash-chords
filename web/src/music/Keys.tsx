@@ -121,34 +121,33 @@ export const MINOR_KEYS: Record<string, Key> = {
  * key
  */
 const allRoots: Root[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+export const formatNoteInKey = (note: Note, key: Key): Note => {
+  // Strip octave
+  if (key.notes.some((n) => note.equalsWithoutOctave(n))) return note
+  else if (!note.accidental) throw new Error("natural is unimplemented")
+
+  // Root
+  const rootIndex = allRoots.indexOf(note.root)
+  let newIndex;
+  if (rootIndex + note.accidental.mod <= 0) newIndex = allRoots.length - 1
+  else if (rootIndex + note.accidental.mod >= allRoots.length) newIndex = 0
+  else newIndex = rootIndex + note.accidental.mod
+
+  const newRoot = allRoots[newIndex]
+
+  // Octave
+  let newOctave = note.octave
+  if (note.octave && (note.root === 'C' || newRoot === 'C')) {
+    if (note.root === 'C' && newRoot === 'B') newOctave = note.octave - 1
+    else if (newRoot === 'C' && note.root === 'B') newOctave = note.octave + 1
+  }
+
+  // Accidental
+  let newAccidental = note.accidental === FLAT ? SHARP : FLAT
+
+  return new Note(newRoot, newAccidental, newOctave)
+}
+
 export const formatNotesInKey = (notes: Note[], key: Key): Note[] => {
-  return notes.map((n) => {
-    // Strip octave
-    if (key.notes.some((note) => note.equalsWithoutOctave(n))) return n
-    else if (!n.accidental) {
-      console.error(`note: ${noteToSymbol(n)}   --- all notes ${notes.map(noteToSymbol)}`)
-      throw new Error("ahhhhhh maybe we need to implement natural?")
-    }
-
-    // Root
-    const rootIndex = allRoots.indexOf(n.root)
-    let newIndex;
-    if (rootIndex + n.accidental.mod <= 0) newIndex = allRoots.length - 1
-    else if (rootIndex + n.accidental.mod >= allRoots.length) newIndex = 0
-    else newIndex = rootIndex + n.accidental.mod
-
-    const newRoot = allRoots[newIndex]
-
-    // Octave
-    let newOctave = n.octave
-    if (n.octave && (n.root === 'C' || newRoot === 'C')) {
-      if (n.root === 'C' && newRoot === 'B') newOctave = n.octave - 1
-      else if (newRoot === 'C' && n.root === 'B') newOctave = n.octave + 1
-    }
-
-    // Accidental
-    let newAccidental = n.accidental === FLAT ? SHARP : FLAT
-
-    return new Note(newRoot, newAccidental, newOctave)
-  })
+  return notes.map((n) => formatNoteInKey(n, key))
 }
