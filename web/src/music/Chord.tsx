@@ -67,10 +67,10 @@ export const chordToSymbol = (c: Chord) => {
 export const symbolToChord = (symbol: string): Chord => {
   const validExpressions = [
     // Triad
-    /^[a-gA-G][#♭]?(?:dim|m|aug)?$/g,
+    /^[a-gA-G][#b]?(?:dim|m|aug)?$/g,
 
     // Seventh
-    /^[a-gA-G][#♭]?(?:m|M|o|\u00f8|maj|dim)?7(♭5)?$/g,
+    /^[a-gA-G][#b]?(?:m|M|o|\u00f8|maj|dim)?7(b5)?$/g,
   ]
 
   if (!validExpressions.find((e) => e.test(symbol))) throw new Error(`invalid chord symbol format ${symbol}`)
@@ -79,20 +79,20 @@ export const symbolToChord = (symbol: string): Chord => {
   let rootAccidental: Accidental | undefined
 
   if (hasAccidental(symbol)) {
-    if (symbol.charAt(1) === "♭") rootAccidental = FLAT
+    if (symbol.charAt(1) === "b") rootAccidental = FLAT
     else if (symbol.charAt(1) === "#") rootAccidental = SHARP
   }
 
   // Seventh
   let seventh: "Major" | "Minor" | undefined
   let quality: ChordQuality = "Major"
-  if (symbol.charAt(symbol.length - 1) === "7" || symbol.charAt(symbol.indexOf("♭5") - 1) === "7" ) { // TODO only checking last symbol wont work, we have to fix this
+  if (symbol.charAt(symbol.length - 1) === "7" || symbol.charAt(symbol.indexOf("b5") - 1) === "7" ) { // TODO only checking last symbol wont work, we have to fix this
     if (symbol.includes("maj")) {
       quality = "Major"
       seventh = "Major"
     } else if (/[mMo\u00f8]/g.test(symbol)) {
       const a = symbol.charAt(symbol.length - 2)
-      if (a === "\u00f8" || symbol.includes('♭5')) {
+      if (a === "\u00f8" || symbol.includes('b5')) {
         seventh = "Major"
         quality = "Diminished"
       } else if (a === "M" || a === "maj") {

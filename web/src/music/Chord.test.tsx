@@ -6,9 +6,9 @@ describe('musical chords', () => {
     ["C", {root: "C", quality: "Major"} as Chord],
     ["F#m", {root: "F", accidental: SHARP, quality: "Minor"} as Chord],
     ["F#7", {root: "F", accidental: SHARP, quality: "Major", seventh: "Minor"} as Chord],
-    ["A♭m7", {root: "A", accidental: FLAT, quality: "Minor", seventh: "Minor"} as Chord],
-    ["D♭M7", {root: "D", accidental: FLAT, quality: "Major", seventh: "Major"} as Chord],
-    ["D♭maj7", {root: "D", accidental: FLAT, quality: "Major", seventh: "Major"} as Chord],
+    ["Abm7", {root: "A", accidental: FLAT, quality: "Minor", seventh: "Minor"} as Chord],
+    ["DbM7", {root: "D", accidental: FLAT, quality: "Major", seventh: "Major"} as Chord],
+    ["Dbmaj7", {root: "D", accidental: FLAT, quality: "Major", seventh: "Major"} as Chord],
   ])(
     `%s should be parsed to %s`,
     (symbol: string, expectedChord: Chord) => expect(symbolToChord(symbol)).toEqual(expectedChord)
@@ -17,10 +17,10 @@ describe('musical chords', () => {
   test.each([
     [{root: "C", quality: "Major"} as Chord, "C",],
     [{root: "F", accidental: SHARP, quality: "Minor"} as Chord, "F#m"],
-    [{root: "B", accidental: FLAT, quality: "Diminished", seventh: "Minor"} as Chord, "B♭o7"],
+    [{root: "B", accidental: FLAT, quality: "Diminished", seventh: "Minor"} as Chord, "Bbo7"],
     [{root: "F", accidental: SHARP, quality: "Major", seventh: "Minor"} as Chord, "F#7"],
     [{root: "A", accidental: SHARP, quality: "Major", seventh: "Major"} as Chord, "A#M7"],
-    [{root: "A", accidental: FLAT, quality: "Minor", seventh: "Minor"} as Chord, "A♭m7"]
+    [{root: "A", accidental: FLAT, quality: "Minor", seventh: "Minor"} as Chord, "Abm7"]
   ])(
     `%s should be written as %s`,
     (chord, expectedString) => expect(chordToSymbol(chord)).toStrictEqual(expectedString)
@@ -38,12 +38,12 @@ describe('musical chords', () => {
   )
 
   test.each([
-    [["E", "G#", "B", "D"], "F♭7"], // Should actually be written as Fb, Ab, Cb, Ebb
+    [["E", "G#", "B", "D"], "Fb7"], // Should actually be written as Fb, Ab, Cb, Ebb
     [["B", "D#", "F#", "A"], "B7"],
     [["C", "D#", "F#"], "B#dim"],
-    [["C#", "F", "G#", "C"], "D♭M7"],
-    [["G#", "B", "D#", "F#"], "A♭m7"],
-    [["C", "D#", "F#", "A#"], "Cm7♭5"],
+    [["C#", "F", "G#", "C"], "DbM7"],
+    [["G#", "B", "D#", "F#"], "Abm7"],
+    [["C", "D#", "F#", "A#"], "Cm7b5"],
   ])(
     `%s should be the required notes for %s`,
     (notes: string[], chordSymbol: string) => {
@@ -56,7 +56,7 @@ describe('musical chords', () => {
   test.each([
     [["B", "D"], "B7"],
     [["C#"], "B#dim"],
-    [["C#", "F"], "D♭M7"]
+    [["C#", "F"], "DbM7"]
   ])(
     `%s should NOT be the required notes for %s`,
     (notes: string[], chordSymbol: string) => {
@@ -114,7 +114,7 @@ describe("Triad Chord Voicings", () => {
 describe("Seventh Chord Voicings", () => {
   test.each([
     [["C1", "E1", "G1", "A#2"], {root: "C", quality: "Major", seventh: "Minor"} as Chord],
-    [["C1", "E1", "G1", "B♭2"], {root: "C", quality: "Major", seventh: "Minor"} as Chord],
+    [["C1", "E1", "G1", "Bb2"], {root: "C", quality: "Major", seventh: "Minor"} as Chord],
     [["G#1", "C1", "D#2", "G2"], {root: "G", accidental: SHARP, quality: "Major", seventh: "Major"} as Chord],
     [["A#1", "C#1", "F1", "G#1"], {root: "B", accidental: FLAT, quality: "Minor", seventh: "Minor"} as Chord]
   ])(
@@ -124,10 +124,10 @@ describe("Seventh Chord Voicings", () => {
 
   test.each([
     [["C1", "E1", "G1", "A#2"], "C7"],
-    [["C1", "E1", "G1", "B♭2"], "C7"],
+    [["C1", "E1", "G1", "Bb2"], "C7"],
     [["G#1", "C1", "D#2", "G2"], "G#M7"],
     [["G3", "A#3", "D4", "F4"], "Gm7"],
-    [["G3", "B♭3", "D4", "F4"], "Gm7"],
+    [["G3", "Bb3", "D4", "F4"], "Gm7"],
   ])(
     '%s should be a valid voicing of %s',
     (keys, chord) => expect(isValidVoicing(symbolToChord(chord), keys.map(toNote))).toBe(true)
@@ -137,7 +137,7 @@ describe("Seventh Chord Voicings", () => {
     [["C1", "E1", "G1"], {root: "C", quality: "Major", seventh: "Minor"} as Chord],
     [["F1", "G#1"], {root: "F", quality: "Major", seventh: "Minor"} as Chord],
     [["G3", "A#3", "D4", "F#4"], symbolToChord("Gm7")],
-    [["G3", "B♭3", "D4", "F#4"], symbolToChord("Gm7")],
+    [["G3", "Bb3", "D4", "F#4"], symbolToChord("Gm7")],
   ])(
     '%s should NOT be a valid voicing of %s',
     (keys, chord) => expect(isValidVoicing(chord, keys.map(toNote))).toBe(false)

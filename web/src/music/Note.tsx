@@ -29,7 +29,7 @@ export class Note implements NoteInterface {
 }
 
 export type Accidental = {
-  symbol: "#" | "♭",
+  symbol: "#" | "b",
 
   /**
    * Semitone modifier. This is the amount of half steps
@@ -44,16 +44,16 @@ export const SHARP: Accidental = {
 }
 
 export const FLAT: Accidental = {
-  symbol: "♭",
+  symbol: "b",
   mod: -1
 }
 
-export const hasAccidental = (s: string): boolean => s.includes("#") || s.includes("♭")
+export const hasAccidental = (s: string): boolean => s.includes("#") || s.includes("b")
 
 export const noteToSymbol = (n: Note) => `${n.root}${n?.accidental?.symbol || ""}${n.octave || ""}`
 
 export const toNote = (s: string): Note => {
-  const validNote = /^[a-gA-G][#♭]?[0-8]?$/g
+  const validNote = /^[a-gA-G][#b]?[0-8]?$/g
   if (!validNote.test(s)) throw new Error(`invalid note format ${s}`)
 
   const root = s.charAt(0) as Root
@@ -62,7 +62,7 @@ export const toNote = (s: string): Note => {
   let accidental: undefined | Accidental
   if (hasAccidental(s)) {
     const a = s.charAt(1)
-    if (a === "♭") accidental = {symbol: "♭", mod: -1}
+    if (a === "b") accidental = {symbol: "b", mod: -1}
     else accidental = {symbol: "#", mod: 1}
   }
 
@@ -160,13 +160,7 @@ export const genericInterval = (n1a: Note, n2a: Note): number => {
 export const layNotesOnKeyboard = (notes: Note[], octave: number): Note[] => {
   let currentOctave = octave
   return notes.map((n, i) => {
-    if (i !== 0) return new Note(n.root, n.accidental, currentOctave)
-    else if (n.root === 'B') {
-      const newNote = new Note(n.root, n.accidental, currentOctave)
-      currentOctave++
-      return newNote
-    }
-
+    if (n.root === 'C' && i !== 0) currentOctave++
     return new Note(n.root, n.accidental, currentOctave)
   })
 }

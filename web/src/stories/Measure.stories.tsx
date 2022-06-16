@@ -26,9 +26,9 @@ const BasicTemplate: ComponentStory<typeof Measure> = (args) => <Container>
 </Container>;
 
 const KeyTemplate: ComponentStory<typeof Measure> = (args) => {
-  const measures = MAJOR_KEYS['D♭'].diatonicChords.map(requiredNotesForChord)
+  const measures = MAJOR_KEYS['Db'].diatonicChords.map(requiredNotesForChord)
     .map((notes) => layNotesOnKeyboard(notes, 4))
-    .map((notes) => formatNotesInKey(notes, MAJOR_KEYS['D♭']))
+    .map((notes) => formatNotesInKey(notes, MAJOR_KEYS['Db']))
     .map((notes) => <Measure style={{ width: 450, height: 150 }} cleff={'treble'} notes={notes}/>)
 
   return <Container>
@@ -42,10 +42,10 @@ export const Key = KeyTemplate.bind({})
 
 Treble.args = {
   cleff: "treble",
-  notes: ['B3', 'C#4', 'D#4', 'E4', 'G♭4', 'E5', 'F5', 'G5'].map(toNote)
+  notes: ['B3', 'C#4', 'D#4', 'E4', 'Gb4', 'E5', 'F5', 'G5'].map(toNote)
 }
 
 Bass.args = {
   cleff: "bass",
-  notes: ['A2', 'C♭2', 'E2', 'D#2', 'C3'].map(toNote)
+  notes: ['A2', 'Cb2', 'E2', 'D#2', 'C3'].map(toNote)
 }

@@ -4,8 +4,8 @@ import {formatNotesInKey, MAJOR_KEYS} from "./Keys";
 
 describe('Keys', () => {
   test.each([
-    ['D♭maj7', 'D♭', ['D♭', 'F', 'A♭', 'C']],
-    ['Cm7♭5', 'D♭', ['C', 'E♭', 'G♭', 'B♭']],
+    ['Dbmaj7', 'Db', ['Db', 'F', 'Ab', 'C']],
+    ['Cm7b5', 'Db', ['C', 'Eb', 'Gb', 'Bb']],
   ])(
     `%s required notes in key of %s should be %s`,
     (symbol: string, key: string, expectedNotes: string[]) => {

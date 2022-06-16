@@ -11,44 +11,44 @@ export interface Key {
 }
 
 export const MAJOR_KEYS: Record<string, Key> = {
-  'C♭': {
-    notes: ['C♭', 'D♭', 'E♭', 'F♭', 'G♭', 'A♭', 'B♭'].map(toNote),
+  'Cb': {
+    notes: ['Cb', 'Db', 'Eb', 'Fb', 'Gb', 'Ab', 'Bb'].map(toNote),
     quality: "major",
     diatonicChords: [].map(symbolToChord)
   },
 
-  'G♭': {
-    notes: ['G♭', 'A♭', 'B♭', 'C♭', 'D♭', 'E♭', 'F'].map(toNote),
+  'Gb': {
+    notes: ['Gb', 'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'F'].map(toNote),
     quality: "major",
     diatonicChords: [].map(symbolToChord)
   },
 
-  'D♭': {
-    notes: ['D♭', 'E♭', 'F', 'G♭', 'A♭', 'B♭', 'C'].map(toNote),
+  'Db': {
+    notes: ['Db', 'Eb', 'F', 'Gb', 'Ab', 'Bb', 'C'].map(toNote),
     quality: "major",
-    diatonicChords: ['D♭maj7', 'E♭m7', 'Fm7', 'G♭maj7', 'A♭7', 'B♭m7', 'Cm7♭5'].map(symbolToChord)
+    diatonicChords: ['Dbmaj7', 'Ebm7', 'Fm7', 'Gbmaj7', 'Ab7', 'Bbm7', 'Cm7b5'].map(symbolToChord)
   },
 
-  'A♭': {
-    notes: ['A♭', 'B♭', 'C', 'D♭', 'E♭', 'F', 'G'].map(toNote),
-    quality: "major",
-    diatonicChords: []
-  },
-
-  'E♭': {
-    notes: ['E♭', 'F', 'G', 'A♭', 'B♭', 'C', 'D'].map(toNote),
+  'Ab': {
+    notes: ['Ab', 'Bb', 'C', 'Db', 'Eb', 'F', 'G'].map(toNote),
     quality: "major",
     diatonicChords: []
   },
 
-  'B♭': {
-    notes: ['B♭', 'C', 'D', 'E♭', 'F', 'G', 'A'].map(toNote),
+  'Eb': {
+    notes: ['Eb', 'F', 'G', 'Ab', 'Bb', 'C', 'D'].map(toNote),
+    quality: "major",
+    diatonicChords: []
+  },
+
+  'Bb': {
+    notes: ['Bb', 'C', 'D', 'Eb', 'F', 'G', 'A'].map(toNote),
     quality: "major",
     diatonicChords: []
   },
 
   'F': {
-    notes: ['F', 'G', 'A', 'B♭', 'C', 'D', 'E'].map(toNote),
+    notes: ['F', 'G', 'A', 'Bb', 'C', 'D', 'E'].map(toNote),
     quality: "major",
     diatonicChords: []
   },
@@ -62,8 +62,7 @@ export const MAJOR_KEYS: Record<string, Key> = {
   'G': {
     notes: ['G', 'A', 'B', 'C', 'D', 'E', 'F#'].map(toNote),
     quality: "major",
-    // diatonicChords: ["Gmaj7", "Am7", "Bm7", "Cmaj7", "D7", "Em7", "F#7(♭5)"].map(symbolToChord)
-    diatonicChords: [].map(symbolToChord)
+    diatonicChords: ["Gmaj7", "Am7", "Bm7", "Cmaj7", "D7", "Em7", "F#7b5"].map(symbolToChord)
   },
 
   'D': {
@@ -107,7 +106,7 @@ export const MINOR_KEYS: Record<string, Key> = {
   'G': {
     notes: [toNote('G')],
     quality: 'minor',
-    diatonicChords: MAJOR_KEYS['B♭'].diatonicChords
+    diatonicChords: MAJOR_KEYS['Bb'].diatonicChords
   }
 }
 
@@ -115,8 +114,8 @@ export const MINOR_KEYS: Record<string, Key> = {
  * This function takes a series of notes and makes sure that they are rendered in a compatible
  * way for a given key.
  *
- * Ex. D♭maj7 on a standardized keyboard would be C#, G, A#, and C which isn't great due to the C# and C.
- * Those notes passed in with the D♭ key would result in D♭, G, B♭, C
+ * Ex. Dbmaj7 on a standardized keyboard would be C#, G, A#, and C which isn't great due to the C# and C.
+ * Those notes passed in with the Db key would result in Db, G, Bb, C
  *
  * No transposition has taken place, the notes are simply formatted in a way that makes sense under a given
  * key

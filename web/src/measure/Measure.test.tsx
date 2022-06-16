@@ -16,13 +16,13 @@ describe('a measure', () => {
   })
 
   it('should render accidentals', () => {
-    const notes = ['C♭4', 'D#4', 'E4', 'A5'].map(toNote)
+    const notes = ['Cb4', 'D#4', 'E4', 'A5'].map(toNote)
 
     render(<Measure notes={notes}/>)
 
-    expect(screen.getByTestId('C♭4-accidental')).toBeInTheDocument()
+    expect(screen.getByTestId('Cb4-accidental')).toBeInTheDocument()
     expect(screen.getByTestId('D#4-accidental')).toBeInTheDocument()
-    expect(screen.queryByTestId('E♭4-accidental')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('Eb4-accidental')).not.toBeInTheDocument()
     expect(screen.queryByTestId('E#4-accidental')).not.toBeInTheDocument()
   })
 })

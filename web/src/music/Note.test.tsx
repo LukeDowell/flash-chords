@@ -1,4 +1,4 @@
-import {FLAT, genericInterval, Note, SHARP, sortNotes, standardizeNote, toNote} from "./Note";
+import {FLAT, genericInterval, layNotesOnKeyboard, Note, SHARP, sortNotes, standardizeNote, toNote} from "./Note";
 
 describe('Musical Notes', () => {
   test.each([
@@ -54,10 +54,10 @@ describe('Musical Notes', () => {
   )
 
   test.each([
-    ["F♭", "E"],
-    ["C♭", "B"],
+    ["Fb", "E"],
+    ["Cb", "B"],
     ["C#", "C#"],
-    ["D♭", "C#"],
+    ["Db", "C#"],
   ])(
     `%s should be standardized to %s`,
     (unstandard, standard) => expect(standardizeNote(toNote(unstandard))).toEqual(toNote(standard))
@@ -65,7 +65,7 @@ describe('Musical Notes', () => {
 
   test.each([
     ["C2", new Note("C", undefined, 2)],
-    ["C♭2", new Note("C", FLAT, 2)],
+    ["Cb2", new Note("C", FLAT, 2)],
     ["F#5", new Note("F", SHARP, 5)],
   ])(
     `%s should be parsed to %s`,
@@ -75,10 +75,20 @@ describe('Musical Notes', () => {
   test.each([
     [""],
     ["        "],
-    ["C♭2, G2, C#"],
+    ["Cb2, G2, C#"],
     ["F#53"],
   ])(
     `%s should be unable to be parsed`,
     (input: string) => expect(() => toNote(input)).toThrow()
+  )
+
+  test.each([
+    [['Db', 'F', 'Ab', 'C'], ['Db4', 'F4', 'Ab4', 'C5']]
+  ])(
+    `%s should be placed on an octave to match %s`,
+    (input: string[], expected: string[]) => {
+      const result = layNotesOnKeyboard(input.map(toNote), 4)
+      expect(result).toEqual(expected.map(toNote))
+    }
   )
 })

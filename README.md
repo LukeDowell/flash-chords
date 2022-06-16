@@ -724,3 +724,7 @@ and
 
 In other news, formatting on a key is working! "Laying out" the notes on top of the root of a chord isn't working quite
 perfectly, For Dbmaj7 the C ends up on the bottom, but the notes themselves are correct which is exciting stuff.
+
+**06/16/2022**
+
+Alright I'm sick of it, ♭ is gonna be 'b'
