@@ -8,7 +8,14 @@ import {PracticeSettings} from "./PracticeSettings";
 import flashchordsLogo from '../../images/icon.svg'
 import {DEFAULT_PRACTICE_SETTINGS, Settings} from "./Settings";
 import {LinearProgress} from "@mui/material";
-import {Chord, ChordQuality, chordToSymbol, generateRandomChord, isValidVoicing, SeventhQuality} from "../../music/Chord";
+import {
+  Chord,
+  ChordQuality,
+  chordToSymbol,
+  generateRandomChord,
+  isValidVoicing,
+  SeventhQuality
+} from "../../music/Chord";
 import {Accidental, FLAT, Note, Root, SHARP} from "../../music/Note";
 import _ from "lodash";
 import {VoicingHistory, VoicingResult} from "./VoicingHistory";

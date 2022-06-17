@@ -2,7 +2,7 @@ import React from 'react'
 import {FLAT, genericInterval, Note, noteToSymbol, sortNotes, toNote} from "../../music/Note";
 import _ from "lodash";
 import {BlackLine, FlatComponent, SharpComponent, StyledRoot, WhiteBar, WholeNote} from './MeasureStyles';
-import {formatNoteInKey, Key, MAJOR_KEYS} from "../../music/Keys";
+import {formatNoteInKey, Key} from "../../music/Keys";
 
 
 export interface Props {

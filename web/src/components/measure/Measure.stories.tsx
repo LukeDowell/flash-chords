@@ -22,17 +22,17 @@ const Container = styled('div')({
 })
 
 const BasicTemplate: ComponentStory<typeof Measure> = (args) => <Container>
-  <Measure style={{ width: 450, height: 150 }} {...args} />
+  <Measure style={{width: 450, height: 150}} {...args} />
 </Container>;
 
 const KeyTemplate: ComponentStory<typeof Measure> = (args) => {
   const measures = MAJOR_KEYS['Db'].diatonicChords.map(requiredNotesForChord)
     .map((notes) => layNotesOnKeyboard(notes, 4))
     .map((notes) => formatNotesInKey(notes, MAJOR_KEYS['Db']))
-    .map((notes) => <Measure style={{ width: 450, height: 150 }} cleff={'treble'} notes={notes}/>)
+    .map((notes) => <Measure style={{width: 450, height: 150}} cleff={'treble'} notes={notes}/>)
 
   return <Container>
-    { measures }
+    {measures}
   </Container>
 }
 

@@ -1,5 +1,5 @@
 import {Chord, symbolToChord} from "./Chord";
-import {FLAT, Note, noteToSymbol, Root, SHARP, toNote} from "./Note";
+import {FLAT, Note, Root, SHARP, toNote} from "./Note";
 
 export interface Key {
   notes: Note[],

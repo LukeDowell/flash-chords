@@ -3,6 +3,6 @@ import Staff from "./Staff";
 
 describe('the staff', () => {
   it('should render', () => {
-    render(<Staff />)
+    render(<Staff/>)
   })
 })

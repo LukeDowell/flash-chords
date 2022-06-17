@@ -2,7 +2,7 @@ import React from 'react'
 import {render, screen} from "@testing-library/react";
 import {toNote} from "../../music/Note";
 import {Measure, MeasureOptions} from "./Measure";
-import { MAJOR_KEYS } from '../../music/Keys';
+import {MAJOR_KEYS} from '../../music/Keys';
 
 
 describe('a measure', () => {
@@ -49,7 +49,7 @@ describe('a measure', () => {
       lowerNoteLimit: toNote('D4')
     }
 
-    render(<Measure notes={notes} options={options} />)
+    render(<Measure notes={notes} options={options}/>)
 
     expect(screen.queryByTestId('C4-note')).not.toBeInTheDocument()
     expect(screen.getByTestId('E4-note')).toBeInTheDocument()
