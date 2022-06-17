@@ -728,3 +728,37 @@ perfectly, For Dbmaj7 the C ends up on the bottom, but the notes themselves are 
 **06/16/2022**
 
 Alright I'm sick of it, ♭ is gonna be 'b'
+
+I've had a vision of a feature that I'd like to try and build. I think it would be interesting to try and create a 
+staff editor in-app that allows the user to place notes on the staff in some kind of ergonomic way. It's hard to imagine
+what that actually looks like, and may end up lending itself to be rendered via Phaser or something like that, but I do
+know that I'll have to crate a musical staff that accepts arbitrary notes. 
+
+The next iteration of the `Measure` is being able to have multiple sets of notes on it. I've been thinking of the idea
+of 'beats', i.e putting a time signature into a data structure that wraps all the notes we need to render. Whatever the 
+index of the 'beat' is would dictate how far we place the note horizontally in the measure. 
+
+There are some weird notes that are going to be challenging to render:
+ - Grace notes
+ - When notes connect from the bass cleff into the treble cleff on a long arpeggio or something like that
+ - Connecting / intelligently rendering the connectors of eight notes / sixteenth notes / etc
+
+Once all that is complete, we can move towards actually implementing users and having them persist the sheets they edit. 
+Being able to create different "games" would be very interesting, like what sorts of requirements can the creator attach 
+to their sheet? 
+
+- Playing at speed?
+- Play x times accurately playing y% of notes?
+- Specific voicings:
+   - 3rd and 5th shells
+   - playing anything other than the most basic root voicing? 
+   - spanning more than an octave? 
+   - Avoid chords with x quality? 
+
+It's easy then to think of there being a free, community collection of challenges. Maybe teachers could create their own
+curriculums and track their students' progress. Highscores among your friends / class?  
+
+I can see having to refactor the piano/activeNotes related code in the future as well. I wonder what an event-log of keys
+would be like? If I'm going to support arpeggios in the future I'll need to be able to see a history of notes. Maybe we 
+could have an array of the last 200 notes played or something like that, and "activeNotes" would just be reading 'key-down'
+events for the last x notes until we encountered a 'key-up' event
