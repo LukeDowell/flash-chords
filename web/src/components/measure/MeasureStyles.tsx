@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
-import {ReactComponent as WholeNoteSvg} from "../images/whole-note.svg";
-import {ReactComponent as SharpSvg} from "../images/accidental-sharp.svg";
-import {ReactComponent as FlatSvg} from "../images/accidental-flat.svg";
+import {ReactComponent as WholeNoteSvg} from "../../images/whole-note.svg";
+import {ReactComponent as SharpSvg} from "../../images/accidental-sharp.svg";
+import {ReactComponent as FlatSvg} from "../../images/accidental-flat.svg";
 import {MeasureStyles} from "./Measure";
 
 export const StyledRoot = styled('div')<MeasureStyles>(props => ({

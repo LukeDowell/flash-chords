@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {styled} from "@mui/material"
-import {Chord, chordToSymbol, requiredNotesForChord} from "../music/Chord";
-import {Note, notesToString} from "../music/Note";
+import {Chord, chordToSymbol, requiredNotesForChord} from "../../music/Chord";
+import {Note, notesToString} from "../../music/Note";
 
 const StyledRoot = styled('div')({
   display: "flex",

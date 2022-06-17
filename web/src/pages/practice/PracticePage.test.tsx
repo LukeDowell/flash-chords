@@ -1,10 +1,10 @@
 import React from 'react';
 import {act, render, screen} from "@testing-library/react";
 import PracticePage from "./PracticePage";
-import MIDIPiano, {MIDI, MIDI_KEYBOARD_OFFSET} from "../music/MIDIPiano";
+import MIDIPiano, {MIDI, MIDI_KEYBOARD_OFFSET} from "../../music/MIDIPiano";
 import userEvent from "@testing-library/user-event";
-import {Chord, chordToSymbol, symbolToChord} from "../music/Chord";
-import {FLAT, toNote} from "../music/Note";
+import {Chord, chordToSymbol, symbolToChord} from "../../music/Chord";
+import {FLAT, toNote} from "../../music/Note";
 
 const mockedMidiInput: Partial<WebMidi.MIDIInput> = {
   addEventListener: jest.fn().mockImplementation(() => {

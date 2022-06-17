@@ -1,8 +1,8 @@
 import React from 'react'
 import {render, screen} from "@testing-library/react";
-import {toNote} from "../music/Note";
+import {toNote} from "../../music/Note";
 import {Measure, MeasureOptions} from "./Measure";
-import { MAJOR_KEYS } from '../music/Keys';
+import { MAJOR_KEYS } from '../../music/Keys';
 
 
 describe('a measure', () => {

@@ -1,18 +1,18 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import MIDIPiano from "../music/MIDIPiano";
+import MIDIPiano from "../../music/MIDIPiano";
 import styled from "@emotion/styled";
 import CheckIcon from '@mui/icons-material/Check'
-import {useInterval} from "../utility";
+import {useInterval} from "../../utility";
 import {Close as CloseIcon, Settings as SettingsIcon} from "@mui/icons-material";
 import {PracticeSettings} from "./PracticeSettings";
-import flashchordsLogo from '../images/icon.svg'
+import flashchordsLogo from '../../images/icon.svg'
 import {DEFAULT_PRACTICE_SETTINGS, Settings} from "./Settings";
 import {LinearProgress} from "@mui/material";
-import {Chord, ChordQuality, chordToSymbol, generateRandomChord, isValidVoicing, SeventhQuality} from "../music/Chord";
-import {Accidental, FLAT, Note, Root, SHARP} from "../music/Note";
+import {Chord, ChordQuality, chordToSymbol, generateRandomChord, isValidVoicing, SeventhQuality} from "../../music/Chord";
+import {Accidental, FLAT, Note, Root, SHARP} from "../../music/Note";
 import _ from "lodash";
 import {VoicingHistory, VoicingResult} from "./VoicingHistory";
-import {Measure} from "../measure/Measure";
+import {Measure} from "../../components/measure/Measure";
 
 export interface Props {
   piano: MIDIPiano,

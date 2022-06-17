@@ -1,10 +1,10 @@
 import React from 'react';
 import {ComponentMeta, ComponentStory} from '@storybook/react';
-import {Measure} from "../measure/Measure";
-import {layNotesOnKeyboard, toNote} from "../music/Note";
+import {Measure} from "./Measure";
+import {layNotesOnKeyboard, toNote} from "../../music/Note";
 import styled from "@emotion/styled";
-import {formatNotesInKey, MAJOR_KEYS} from "../music/Keys";
-import {requiredNotesForChord} from "../music/Chord";
+import {formatNotesInKey, MAJOR_KEYS} from "../../music/Keys";
+import {requiredNotesForChord} from "../../music/Chord";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
