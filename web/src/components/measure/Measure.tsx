@@ -6,9 +6,9 @@ import {formatNoteInKey, Key} from "../../music/Keys";
 
 
 export interface Props {
-  cleff?: 'treble' | 'bass',
+  clef?: 'treble' | 'bass',
   notes?: Note[],
-  formatKey?: Key, // Rip 'key' is already reserved
+  musicalKey?: Key,
   style?: MeasureStyles,
   options?: MeasureOptions,
 }
@@ -27,9 +27,9 @@ export interface MeasureOptions {
 }
 
 export const Measure = ({
-                          cleff = 'treble',
+                          clef = 'treble',
                           notes = [],
-                          formatKey = undefined,
+                          musicalKey = undefined,
                           style = {
                             width: 400,
                             height: 150
@@ -42,13 +42,13 @@ export const Measure = ({
 
   const formattedNotes = notes.filter((n) => !options?.upperNoteLimit || n.isLowerThan(options.upperNoteLimit))
     .filter((n) => !options?.lowerNoteLimit || options.lowerNoteLimit.isLowerThan(n))
-    .map((n) => formatKey ? formatNoteInKey(n, formatKey) : n)
+    .map((n) => musicalKey ? formatNoteInKey(n, musicalKey) : n)
 
   const leftShiftedNoteIndex: number[] = []
   const noteComponents = sortNotes(formattedNotes).flatMap((n, i) => {
     const key = `${noteToSymbol(n)}-note`
-    const topOfStaff = toNote(cleff === 'treble' ? 'F5' : 'A3')
-    const bottomOfStaff = toNote(cleff === 'treble' ? 'E4' : 'G2')
+    const topOfStaff = toNote(clef === 'treble' ? 'F5' : 'A3')
+    const bottomOfStaff = toNote(clef === 'treble' ? 'E4' : 'G2')
     const interval = genericInterval(topOfStaff, n)
 
     // Vertically Position

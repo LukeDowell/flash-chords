@@ -18,9 +18,16 @@ const Container = styled('div')({
 })
 
 const BasicTemplate: ComponentStory<typeof Staff> = (args) => <Container>
-  <Staff />
+  <Staff {...args} />
 </Container>;
 
-export const EmptyStaff = BasicTemplate.bind({});
+export const EmptyTrebleStaff = BasicTemplate.bind({});
+export const EmptyBassStaff = BasicTemplate.bind({});
 
-EmptyStaff.args = {}
+EmptyTrebleStaff.args = {
+  clef: 'treble'
+}
+
+EmptyBassStaff.args = {
+  clef: 'bass'
+}

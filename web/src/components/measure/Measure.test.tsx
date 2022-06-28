@@ -31,7 +31,7 @@ describe('a measure', () => {
     const notes = ['C#4', 'F4', 'G#4', 'C5'].map(toNote)
     const key = MAJOR_KEYS['Db']
 
-    render(<Measure notes={notes} formatKey={key}/>)
+    render(<Measure notes={notes} musicalKey={key}/>)
 
     expect(screen.queryByTestId('C#4-note')).not.toBeInTheDocument()
     expect(screen.queryByTestId('G#4-note')).not.toBeInTheDocument()

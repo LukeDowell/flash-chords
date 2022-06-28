@@ -50,7 +50,7 @@ export const MAJOR_KEYS: Record<string, Key> = {
   'F': {
     notes: ['F', 'G', 'A', 'Bb', 'C', 'D', 'E'].map(toNote),
     quality: "major",
-    diatonicChords: []
+    diatonicChords: ['Fmaj7', 'Gm7', 'Am7', 'Bbmaj7', 'C7', 'Dm7', 'Em7b5'].map(symbolToChord)
   },
 
   'C': {
@@ -68,7 +68,7 @@ export const MAJOR_KEYS: Record<string, Key> = {
   'D': {
     notes: ['D', 'E', 'F#', 'G', 'A', 'B', 'C#'].map(toNote),
     quality: 'major',
-    diatonicChords: [].map(symbolToChord)
+    diatonicChords: ['Dmaj7', 'Em7', 'F#m7', 'Gmaj7', 'A7', 'Bm7', 'C#7b5'].map(symbolToChord)
   },
 
   'A': {
@@ -80,7 +80,7 @@ export const MAJOR_KEYS: Record<string, Key> = {
   'E': {
     notes: ['E', 'F#', 'G#', 'A', 'B', 'C#', 'D#'].map(toNote),
     quality: 'major',
-    diatonicChords: [].map(symbolToChord)
+    diatonicChords: ['Emaj7', 'F#m7', 'G#m7', 'Amaj7', 'B7', 'C#m7', 'D#m7b5'].map(symbolToChord)
   },
 
   'B': {
