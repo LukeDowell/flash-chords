@@ -3,7 +3,7 @@ import {act, render, screen} from "@testing-library/react";
 import PracticePage from "./PracticePage";
 import MIDIPiano, {MIDI, MIDI_KEYBOARD_OFFSET} from "../../music/MIDIPiano";
 import userEvent from "@testing-library/user-event";
-import {Chord, chordToSymbol, symbolToChord} from "../../music/Chord";
+import {Chord, toSymbol, toChord} from "../../music/Chord";
 import {FLAT, toNote} from "../../music/Note";
 
 const mockedMidiInput: Partial<WebMidi.MIDIInput> = {
@@ -80,7 +80,7 @@ describe("the practice page", () => {
 
     await act(() => new Promise((r) => setTimeout(r, 1300)))
 
-    const expected = await screen.findByText(chordToSymbol(initialChord))
+    const expected = await screen.findByText(toSymbol(initialChord))
     expect(expected).toBeInTheDocument()
     expect(screen.getByText(/C, E, G/)).toBeInTheDocument()
   })
@@ -91,7 +91,7 @@ describe("the practice page", () => {
       timerSeconds: 1
     }
 
-    const initialChord = symbolToChord("B#dim")
+    const initialChord = toChord("B#dim")
     render(<PracticePage piano={midiPiano} initialSettings={practiceSettings} initialChord={initialChord}/>)
     await act(() => new Promise((r) => setTimeout(r, 1250)))
 

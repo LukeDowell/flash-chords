@@ -157,10 +157,16 @@ export const genericInterval = (n1a: Note, n2a: Note): number => {
   return genericKeys.length
 }
 
-export const layNotesOnKeyboard = (notes: Note[], octave: number): Note[] => {
-  let currentOctave = octave
+export const placeOnOctave = (octave: number, notes: Note[]): Note[] => {
+  // Assign all positions
+  let currentOctave = octave;
+
   return notes.map((n, i) => {
-    if (n.root === 'C' && i !== 0) currentOctave++
-    return new Note(n.root, n.accidental, currentOctave)
+    if (i !== 0) {
+      const tempNote = new Note(n.root, n.accidental, octave)
+      if (tempNote.isLowerThan(notes[i - 1])) currentOctave++
+    }
+    n.octave = currentOctave
+    return n
   })
 }

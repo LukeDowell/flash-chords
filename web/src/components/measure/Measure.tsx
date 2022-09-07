@@ -16,6 +16,7 @@ export interface Props {
 export interface MeasureStyles {
   width: number,
   height: number,
+  noteColor?: string,
 }
 
 export interface MeasureOptions {
@@ -32,7 +33,7 @@ export const Measure = ({
                           musicalKey = undefined,
                           style = {
                             width: 400,
-                            height: 150
+                            height: 150,
                           },
                           options = {
                             upperNoteLimit: undefined,
@@ -45,6 +46,7 @@ export const Measure = ({
     .map((n) => musicalKey ? formatNoteInKey(n, musicalKey) : n)
 
   const leftShiftedNoteIndex: number[] = []
+
   const noteComponents = sortNotes(formattedNotes).flatMap((n, i) => {
     const key = `${noteToSymbol(n)}-note`
     const topOfStaff = toNote(clef === 'treble' ? 'F5' : 'A3')

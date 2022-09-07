@@ -1,4 +1,4 @@
-import {Accidental, FLAT, hasAccidental, KEYBOARD, Note, Root, SHARP, standardizeNote} from "./Note";
+import {Accidental, FLAT, hasAccidental, KEYBOARD, Note, Root, SHARP, standardizeNote, toNote} from "./Note";
 import _ from "lodash";
 
 export type ChordQuality = "Major" | "Minor" | "Augmented" | "Diminished"
@@ -11,8 +11,6 @@ export interface Chord {
   seventh?: SeventhQuality
   bassNote?: Note
 }
-
-
 
 export const generateRandomChord = (
   roots = ["A", "B", "C", "D", "E", "F", "G"] as Root[],
@@ -31,7 +29,7 @@ export const generateRandomChord = (
   return {root, quality, accidental, seventh} as Chord
 }
 
-export const chordToSymbol = (c: Chord) => {
+export const toSymbol = (c: Chord) => {
   let quality = "";
   switch (c.quality) {
     case "Diminished":
@@ -66,7 +64,7 @@ export const chordToSymbol = (c: Chord) => {
   return `${c.root}${c.accidental?.symbol || ""}${quality}${seventh}`
 }
 
-export const symbolToChord = (symbol: string): Chord => {
+export const toChord = (symbol: string): Chord => {
   const validExpressions = [
     // Triad
     /^[a-gA-G][#b]?(?:dim|m|aug)?$/g,

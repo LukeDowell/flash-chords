@@ -11,7 +11,7 @@ import {LinearProgress} from "@mui/material";
 import {
   Chord,
   ChordQuality,
-  chordToSymbol,
+  toSymbol,
   generateRandomChord,
   isValidVoicing,
   SeventhQuality
@@ -168,7 +168,7 @@ export default function PracticePage({
     <PracticeSettings settings={settings} onSettingsUpdate={setSettings}/>
     }
     <ChordSymbolPrompt>
-      <h2 className="current-chord-symbol">{chordToSymbol(currentChord)}</h2>
+      <h2 className="current-chord-symbol">{toSymbol(currentChord)}</h2>
       {shouldDisplaySuccess &&
       <CheckIcon style={{color: "green"}}/>}
     </ChordSymbolPrompt>

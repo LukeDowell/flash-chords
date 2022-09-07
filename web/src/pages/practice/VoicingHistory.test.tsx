@@ -2,7 +2,7 @@ import * as React from 'react'
 import {VoicingHistory, VoicingResult} from "./VoicingHistory";
 import {render, screen} from "@testing-library/react";
 import {toNote} from "../../music/Note";
-import {symbolToChord} from "../../music/Chord";
+import {toChord} from "../../music/Chord";
 
 describe('the voicing history component', () => {
   it('should render a voicing', async () => {
@@ -23,7 +23,7 @@ describe('the voicing history component', () => {
   it('should render the required notes for a voicing if none are provided', async () => {
     const voicingResults: VoicingResult[] = [
       {
-        chord: symbolToChord("B#dim")!!,
+        chord: toChord("B#dim")!!,
         validNotes: []
       }
     ]
@@ -37,7 +37,7 @@ describe('the voicing history component', () => {
   it('should render the required notes for a seventh voicing if none are provided', async () => {
     const voicingResults: VoicingResult[] = [
       {
-        chord: symbolToChord("DbM7")!!,
+        chord: toChord("DbM7")!!,
         validNotes: []
       }
     ]

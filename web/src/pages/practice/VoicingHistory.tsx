@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {styled} from "@mui/material"
-import {Chord, chordToSymbol, requiredNotesForChord} from "../../music/Chord";
+import {Chord, toSymbol, requiredNotesForChord} from "../../music/Chord";
 import {Note, notesToString} from "../../music/Note";
 
 const StyledRoot = styled('div')({
@@ -64,7 +64,7 @@ interface Props {
 const toVoicingComponent = (v: VoicingResult, i: number) => {
   const notes = v.validNotes.length !== 0 ? v.validNotes : requiredNotesForChord(v.chord)
   const isSuccess = v.validNotes.length > 0
-  const chordSymbol = chordToSymbol(v.chord);
+  const chordSymbol = toSymbol(v.chord);
 
   const Styled = styled(StyledVoicingRoot)({
     backgroundColor: isSuccess ? "rgba(0, 255, 0, 0.2)" : "rgba(255, 0, 0, 0.2)"

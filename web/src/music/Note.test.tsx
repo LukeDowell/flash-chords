@@ -1,4 +1,4 @@
-import {FLAT, genericInterval, layNotesOnKeyboard, Note, SHARP, sortNotes, standardizeNote, toNote} from "./Note";
+import {FLAT, genericInterval, Note, placeOnOctave, SHARP, sortNotes, standardizeNote, toNote} from "./Note";
 
 describe('Musical Notes', () => {
   test.each([
@@ -83,12 +83,14 @@ describe('Musical Notes', () => {
   )
 
   test.each([
-    [['Db', 'F', 'Ab', 'C'], ['Db4', 'F4', 'Ab4', 'C5']]
+    [['C', 'E', 'G', 'C'], ['C4', 'E4', 'G4', 'C5']],
+    [['G', 'B', 'D'], ['G4', 'B4', 'D5']],
+    [['D', 'F', 'A', 'C'], ['D4', 'F4', 'A4', 'C5']],
+    [['D', 'D'], ['D4', 'D5']],
   ])(
-    `%s should be placed on an octave to match %s`,
-    (input: string[], expected: string[]) => {
-      const result = layNotesOnKeyboard(input.map(toNote), 4)
-      expect(result).toEqual(expected.map(toNote))
+    '%s when placed on an octave should be %s',
+    (notes: string[], expected: string[]) => {
+      expect(placeOnOctave(4, notes.map(toNote))).toStrictEqual(expected.map(toNote))
     }
   )
 })
