@@ -158,13 +158,12 @@ export const genericInterval = (n1a: Note, n2a: Note): number => {
 }
 
 export const placeOnOctave = (octave: number, notes: Note[]): Note[] => {
-  // Assign all positions
   let currentOctave = octave;
 
-  return notes.map((n, i) => {
+  return notes.map((n, i, self) => {
     if (i !== 0) {
-      const tempNote = new Note(n.root, n.accidental, octave)
-      if (tempNote.isLowerThan(notes[i - 1])) currentOctave++
+      const tempNote = new Note(n.root, n.accidental, currentOctave)
+      if (tempNote.isLowerThan(self [i - 1])) currentOctave++
     }
     n.octave = currentOctave
     return n

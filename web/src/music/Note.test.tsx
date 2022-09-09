@@ -93,4 +93,14 @@ describe('Musical Notes', () => {
       expect(placeOnOctave(4, notes.map(toNote))).toStrictEqual(expected.map(toNote))
     }
   )
+
+  test.each([
+    [['F', 'Ab', 'C', 'Eb'], 4, ['F4', 'Ab4', 'C5', 'Eb5']],
+  ])(
+    `%s notes placed on octave %s should be %s`,
+    (notes: string[], octave: number, expectedNotes: string[]) => {
+      const placedNotes = placeOnOctave(4, notes.map(toNote))
+      expect(placedNotes).toStrictEqual(expectedNotes.map(toNote))
+    }
+  )
 })

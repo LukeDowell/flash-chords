@@ -19,15 +19,4 @@ describe('Keys', () => {
       expect(formattedNotes).toStrictEqual(expectedNotes.map(toNote))
     }
   )
-
-  test.each([
-    ['Fm7', 'Db', ['F4', 'Ab4', 'C5', 'Eb5']],
-  ])(
-    `%s required notes with octaves in key of %s should be %s`,
-    (symbol: string, key: string, expectedNotes: string[]) => {
-      const normalizedNotes = placeOnOctave(4, requiredNotesForChord(toChord(symbol)))
-      const formattedNotes = formatNotesInKey(normalizedNotes, MAJOR_KEYS[key])
-      expect(formattedNotes).toStrictEqual(expectedNotes.map(toNote))
-    }
-  )
 })
