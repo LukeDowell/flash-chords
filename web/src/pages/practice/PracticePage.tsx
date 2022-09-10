@@ -8,18 +8,10 @@ import {PracticeSettings} from "./PracticeSettings";
 import flashchordsLogo from '../../images/icon.svg'
 import {DEFAULT_PRACTICE_SETTINGS, Settings} from "./Settings";
 import {LinearProgress} from "@mui/material";
-import {
-  Chord,
-  ChordQuality,
-  toSymbol,
-  generateRandomChord,
-  isValidVoicing,
-  SeventhQuality
-} from "../../music/Chord";
+import {Chord, ChordQuality, generateRandomChord, isValidVoicing, SeventhQuality, toSymbol} from "../../music/Chord";
 import {Accidental, FLAT, Note, Root, SHARP} from "../../music/Note";
 import _ from "lodash";
 import {VoicingHistory, VoicingResult} from "./VoicingHistory";
-import {Measure} from "../../components/measure/Measure";
 
 export interface Props {
   piano: MIDIPiano,
@@ -102,24 +94,31 @@ export default function PracticePage({
                                        initialSettings = DEFAULT_PRACTICE_SETTINGS
                                      }: Props) {
   const [currentChord, setCurrentChord] = useState<Chord>(initialChord)
-  const [timeLastChordEnded, setTimeLastChordEnded] = useState(Date.now())
+  const [timeOfLastSuccess, setTimeOfLastSuccess] = useState(Date.now())
   const [shouldDisplaySuccess, setShouldDisplaySuccess] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [timerProgress, setTimerProgress] = useState(100)
   const [settings, setSettings] = useState({...DEFAULT_PRACTICE_SETTINGS, ...initialSettings})
   const [voicingResults, setVoicingResults] = useState<VoicingResult[]>([])
-  const [activeNotes, setActiveNotes] = useState<Note[]>([])
+
+  const generateNewChord = useCallback(() => {
+    let newChord = generateChordFromSettings(settings)
+    while (_.isEqual(currentChord, newChord)) {
+      newChord = generateChordFromSettings(settings)
+    }
+    setCurrentChord(newChord)
+  }, [currentChord, settings])
 
   const onCorrectVoicing = useCallback((chord: Chord, notes: Note[]) => {
     setShouldDisplaySuccess(true)
-    setTimeLastChordEnded(Date.now())
+    setTimeOfLastSuccess(Date.now())
     setVoicingResults([...voicingResults, {chord, validNotes: notes}])
-  }, [voicingResults, currentChord, settings])
+    generateNewChord()
+  }, [voicingResults, generateNewChord])
 
   useEffect(() => {
     const callback = (activeNotes: Note[]) => {
       if (!shouldDisplaySuccess) {
-        setActiveNotes(activeNotes)
         if (isValidVoicing(currentChord, activeNotes)) {
           onCorrectVoicing(currentChord, activeNotes)
         }
@@ -127,31 +126,22 @@ export default function PracticePage({
     };
     piano.setListener("PracticePage", callback)
     return () => piano.removeListener("PracticePage")
-  }, [currentChord, piano, settings, onCorrectVoicing])
+  }, [currentChord, piano, onCorrectVoicing, shouldDisplaySuccess])
 
   useInterval(() => {
-    const inTimeWindow = Date.now() - timeLastChordEnded <= 1000
+    const inTimeWindow = Date.now() - timeOfLastSuccess <= 1000
     if (!inTimeWindow && shouldDisplaySuccess) {
       setShouldDisplaySuccess(false)
-      let newChord = generateChordFromSettings(settings)
-      while (_.isEqual(currentChord, newChord)) {
-        newChord = generateChordFromSettings(settings)
-      }
-      setCurrentChord(newChord)
     }
   }, 100)
 
   useInterval(() => {
     if (!settings?.timerEnabled) return
-    const timeLeft = (timeLastChordEnded + (settings.timerSeconds * 1000)) - Date.now()
+    const timeLeft = (timeOfLastSuccess + (settings.timerSeconds * 1000)) - Date.now()
     if (timeLeft <= 0) {
       setVoicingResults([...voicingResults, {chord: currentChord, validNotes: []}])
-      let newChord = generateChordFromSettings(settings)
-      while (_.isEqual(currentChord, newChord)) {
-        newChord = generateChordFromSettings(settings)
-      }
-      setCurrentChord(newChord)
-      setTimeLastChordEnded(Date.now())
+      setTimeOfLastSuccess(Date.now())
+      generateNewChord()
     } else setTimerProgress(Math.floor((timeLeft / (settings.timerSeconds * 1000)) * 100))
   }, 100)
 

@@ -13,7 +13,7 @@ export default {
   argTypes: {
     musicalKey: {
       options: MAJOR_KEYS,
-      control: { type: 'list'}
+      control: {type: 'list'}
     }
   }
 } as ComponentMeta<typeof Measure>;

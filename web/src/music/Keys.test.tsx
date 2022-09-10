@@ -1,5 +1,5 @@
 import {requiredNotesForChord, toChord} from "./Chord";
-import {placeOnOctave, toNote} from "./Note";
+import {toNote} from "./Note";
 import {formatNotesInKey, MAJOR_KEYS} from "./Keys";
 
 describe('Keys', () => {

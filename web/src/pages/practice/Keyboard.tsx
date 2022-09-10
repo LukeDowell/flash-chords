@@ -44,7 +44,6 @@ const SpookyNoWidthFloat = styled('div')({
 
 export const Keyboard = ({activeNotes}: Props) => {
   const keys = KEYBOARD.map((note) => {
-
     const activeStyle = activeNotes.includes(note) ? {
       backgroundColor: "lightblue"
     } : {}

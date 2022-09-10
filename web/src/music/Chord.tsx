@@ -1,4 +1,4 @@
-import {Accidental, FLAT, hasAccidental, KEYBOARD, Note, Root, SHARP, standardizeNote, toNote} from "./Note";
+import {Accidental, FLAT, hasAccidental, KEYBOARD, Note, Root, SHARP, standardizeNote} from "./Note";
 import _ from "lodash";
 
 export type ChordQuality = "Major" | "Minor" | "Augmented" | "Diminished"
