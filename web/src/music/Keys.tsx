@@ -69,12 +69,19 @@ export const MAJOR_KEYS: Record<string, Key> = {
 }
 
 export const MINOR_KEYS: Record<string, Key> = {
-  'G': {
-    name: 'G',
-    notes: [toNote('G')],
-    quality: 'Natural Minor',
-    diatonicChords: MAJOR_KEYS['Bb'].diatonicChords
-  }
+  'Eb': new Key(['Bb', 'Cb', 'Db', 'Eb', 'F', 'Gb', 'Ab'].map(toNote), "Natural Minor"),
+  'Bb': new Key(['Bb', 'C', 'Db', 'Eb', 'F', 'Gb', 'Ab'].map(toNote), "Natural Minor"),
+  'F': new Key(['F', 'G', 'Ab', 'Bb', 'C', 'Db', 'Eb'].map(toNote), "Natural Minor"),
+  'C': new Key(['C', 'D', 'Eb', 'F', 'G', 'Ab', 'Bb'].map(toNote), "Natural Minor"),
+  'G': new Key(['G', 'A', 'Bb', 'C', 'D', 'Eb', 'F'].map(toNote), "Natural Minor"),
+  'D': new Key(['D', 'E', 'F', 'G', 'A', 'Bb', 'C'].map(toNote), "Natural Minor"),
+  'A': new Key(['A', 'B', 'C', 'D', 'E', 'F', 'G'].map(toNote), "Natural Minor"),
+  'E': new Key(['E', 'F#', 'G', 'A', 'B', 'C', 'D'].map(toNote), "Natural Minor"),
+  'B': new Key(['B', 'C#', 'D', 'E', 'F#', 'G', 'A'].map(toNote), "Natural Minor"),
+  'F#': new Key(['F#', 'G#', 'A', 'B', 'C#', 'D', 'E'].map(toNote), "Natural Minor"),
+  'C#': new Key(['C#', 'D#', 'E', 'F#', 'G#', 'A', 'B'].map(toNote), "Natural Minor"),
+  'G#': new Key(['G#', 'A#', 'B', 'C#', 'D#', 'E', 'F#'].map(toNote), "Natural Minor"),
+  'D#': new Key(['D#', 'E#', 'F#', 'G#', 'A#', 'B', 'C#'].map(toNote), "Natural Minor"),
 }
 
 /**

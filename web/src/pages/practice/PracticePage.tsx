@@ -109,24 +109,18 @@ export default function PracticePage({
     setCurrentChord(newChord)
   }, [currentChord, settings])
 
-  const onCorrectVoicing = useCallback((chord: Chord, notes: Note[]) => {
-    setShouldDisplaySuccess(true)
-    setTimeOfLastSuccess(Date.now())
-    setVoicingResults([...voicingResults, {chord, validNotes: notes}])
-    generateNewChord()
-  }, [voicingResults, generateNewChord])
-
   useEffect(() => {
     const callback = (activeNotes: Note[]) => {
-      if (!shouldDisplaySuccess) {
-        if (isValidVoicing(currentChord, activeNotes)) {
-          onCorrectVoicing(currentChord, activeNotes)
-        }
+      if (isValidVoicing(currentChord, activeNotes)) {
+        setShouldDisplaySuccess(true)
+        setTimeOfLastSuccess(Date.now())
+        setVoicingResults([...voicingResults, {chord: currentChord, validNotes: activeNotes}])
+        generateNewChord()
       }
     };
     piano.setListener("PracticePage", callback)
     return () => piano.removeListener("PracticePage")
-  }, [currentChord, piano, onCorrectVoicing, shouldDisplaySuccess])
+  }, [currentChord, piano, generateNewChord, voicingResults])
 
   useInterval(() => {
     const inTimeWindow = Date.now() - timeOfLastSuccess <= 1000
