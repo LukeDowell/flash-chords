@@ -70,7 +70,7 @@ export const toChord = (symbol: string): Chord => {
     /^[a-gA-G][#b]?(?:dim|m|aug)?$/g,
 
     // Seventh
-    /^[a-gA-G][#b]?(?:m|M|o|\u00f8|maj|dim)?7(b5)?$/g,
+    /^[a-gA-G][#b]?(?:mM?|(aug)?M|o|\u00f8|maj|dim)?7(b5)?$/g,
   ]
 
   if (!validExpressions.find((e) => e.test(symbol))) throw new Error(`invalid chord symbol format ${symbol}`)
@@ -85,29 +85,32 @@ export const toChord = (symbol: string): Chord => {
 
   // Seventh
   let seventh: "Major" | "Minor" | undefined
-  let quality: ChordQuality = "Major"
+  let quality: ChordQuality
   if (symbol.includes('7')) {
     if (symbol.includes("maj")) {
       quality = "Major"
       seventh = "Major"
-    } else if (/[mMo\u00f8]/g.test(symbol)) {
-      const a = symbol.charAt(symbol.length - 2)
-      if (a === "\u00f8" || symbol.includes('b5')) {
-        seventh = "Major"
-        quality = "Diminished"
-      } else if (a === "M" || a === "maj") {
-        seventh = "Major"
-        quality = "Major"
-      } else if (a === "o") {
-        seventh = "Minor"
-        quality = "Diminished"
-      } else if (a === "m") {
-        seventh = "Minor"
-        quality = "Minor"
-      }
-    } else {
+    } else if (symbol.includes('m7b5')) {
+      quality = "Diminished"
+      seventh = "Major"
+    } else if (symbol.includes('mM7')) {
+      quality = "Minor"
+      seventh = "Major"
+    } else if (symbol.includes("augM")) {
+      quality = "Augmented"
       seventh = "Minor"
+    } else if (symbol.includes("M7")) {
       quality = "Major"
+      seventh = "Major"
+    } else if (symbol.includes("o")) {
+      quality = "Diminished"
+      seventh = "Minor"
+    } else if (symbol.includes("m")) {
+      quality = "Minor"
+      seventh = "Minor"
+    } else {
+      quality = "Major"
+      seventh = "Minor"
     }
   } else if (symbol.includes("dim")) {
     quality = "Diminished"

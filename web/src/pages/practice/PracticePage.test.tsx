@@ -69,7 +69,7 @@ describe("the practice page", () => {
     expect(screen.queryByTestId('SettingsIcon')).not.toBeInTheDocument()
   })
 
-  it('should show the correct notes for a chord if the user fails to enter a vaid voicing in time', async () => {
+  it('should show the correct notes for a chord if the user fails to enter a valid voicing in time', async () => {
     const initialChord: Chord = {root: "C", quality: "Major"}
     const settings = {
       timerEnabled: true,

@@ -44,7 +44,7 @@ describe('the voicing history component', () => {
 
     render(<VoicingHistory voicingResults={voicingResults}/>)
 
-    const expected = await screen.findByText(/C#, F, G#, C/)
+    const expected = await screen.findByText(/Db, F, Ab, C/)
     expect(expected).toBeInTheDocument()
   })
 })

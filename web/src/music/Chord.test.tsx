@@ -9,6 +9,9 @@ describe('musical chords', () => {
     ["Abm7", {root: "A", accidental: FLAT, quality: "Minor", seventh: "Minor"} as Chord],
     ["DbM7", {root: "D", accidental: FLAT, quality: "Major", seventh: "Major"} as Chord],
     ["Dbmaj7", {root: "D", accidental: FLAT, quality: "Major", seventh: "Major"} as Chord],
+    ["CmM7", {root: "C", accidental: undefined, quality: "Minor", seventh: "Major"} as Chord],
+    ["AmM7", {root: "A", accidental: undefined, quality: "Minor", seventh: "Major"} as Chord],
+    ["EbaugM7", {root: "E", accidental: FLAT, quality: "Augmented", seventh: "Minor"} as Chord],
   ])(
     `%s should be parsed to %s`,
     (symbol: string, expectedChord: Chord) => expect(toChord(symbol)).toEqual(expectedChord)
@@ -44,10 +47,13 @@ describe('musical chords', () => {
     [["C#", "F", "G#", "C"], "DbM7"],
     [["G#", "B", "D#", "F#"], "Abm7"],
     [["C", "D#", "F#", "A#"], "Cm7b5"],
+    [["A", "C", "E", "G#"], "AmM7"],
+    [["D#", "G", "B", "D"], "EbaugM7"],
   ])(
     `%s should be the required notes for the symbol %s`,
     (notes: string[], chordSymbol: string) => {
-      const requiredNotes: Note[] = requiredNotesForChord(toChord(chordSymbol))
+      const chord = toChord(chordSymbol);
+      const requiredNotes: Note[] = requiredNotesForChord(chord)
       const expectedNotes: Note[] = notes.map(toNote)
       expect(requiredNotes).toEqual(expectedNotes)
     }

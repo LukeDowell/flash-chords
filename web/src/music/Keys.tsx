@@ -1,129 +1,78 @@
 import {Chord, toChord} from "./Chord";
-import {FLAT, Note, Root, SHARP, toNote} from "./Note";
+import {FLAT, Note, noteToSymbol, Root, SHARP, toNote} from "./Note";
 
-export interface Key {
+export type KeyQuality = "Major" | "Natural Minor" | "Harmonic Minor" | "Melodic Minor"
+
+export interface KeyInterface {
   name: string,
 
   notes: Note[],
 
-  quality: "major" | "minor",
+  quality: KeyQuality,
 
   /** Diatonic seventh chords for this key */
   diatonicChords: Chord[],
 }
 
-export const MAJOR_KEYS: Record<string, Key> = {
-  'Cb': {
-    name: 'Cb',
-    notes: ['Cb', 'Db', 'Eb', 'Fb', 'Gb', 'Ab', 'Bb'].map(toNote),
-    quality: "major",
-    diatonicChords: [].map(toChord)
-  },
+export class Key implements KeyInterface {
+  name: string;
+  notes: Note[];
+  quality: KeyQuality;
+  diatonicChords: Chord[];
 
-  'Gb': {
-    name: 'Gb',
-    notes: ['Gb', 'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'F'].map(toNote),
-    quality: "major",
-    diatonicChords: [].map(toChord)
-  },
-
-  'Db': {
-    name: 'Db',
-    notes: ['Db', 'Eb', 'F', 'Gb', 'Ab', 'Bb', 'C'].map(toNote),
-    quality: "major",
-    diatonicChords: ['Dbmaj7', 'Ebm7', 'Fm7', 'Gbmaj7', 'Ab7', 'Bbm7', 'Cm7b5'].map(toChord)
-  },
-
-  'Ab': {
-    name: 'Ab',
-    notes: ['Ab', 'Bb', 'C', 'Db', 'Eb', 'F', 'G'].map(toNote),
-    quality: "major",
-    diatonicChords: []
-  },
-
-  'Eb': {
-    name: 'Eb',
-    notes: ['Eb', 'F', 'G', 'Ab', 'Bb', 'C', 'D'].map(toNote),
-    quality: "major",
-    diatonicChords: []
-  },
-
-  'Bb': {
-    name: 'Bb',
-    notes: ['Bb', 'C', 'D', 'Eb', 'F', 'G', 'A'].map(toNote),
-    quality: "major",
-    diatonicChords: ['Bbmaj7', 'Cm7', 'Dm7', 'F7', 'Gm7', 'Am7b5'].map(toChord)
-  },
-
-  'F': {
-    name: 'F',
-    notes: ['F', 'G', 'A', 'Bb', 'C', 'D', 'E'].map(toNote),
-    quality: "major",
-    diatonicChords: ['Fmaj7', 'Gm7', 'Am7', 'Bbmaj7', 'C7', 'Dm7', 'Em7b5'].map(toChord)
-  },
-
-  'C': {
-    name: 'C',
-    notes: ['C', 'D', 'E', 'F', 'G', 'A', 'B'].map(toNote),
-    quality: "major",
-    diatonicChords: ["Cmaj7", "Dm7", "Em7", "Fmaj7", "G7", "Am7", "Bm7b5"].map(toChord)
-  },
-
-  'G': {
-    name: 'G',
-    notes: ['G', 'A', 'B', 'C', 'D', 'E', 'F#'].map(toNote),
-    quality: "major",
-    diatonicChords: ["Gmaj7", "Am7", "Bm7", "Cmaj7", "D7", "Em7", "F#7b5"].map(toChord)
-  },
-
-  'D': {
-    name: 'D',
-    notes: ['D', 'E', 'F#', 'G', 'A', 'B', 'C#'].map(toNote),
-    quality: 'major',
-    diatonicChords: ['Dmaj7', 'Em7', 'F#m7', 'Gmaj7', 'A7', 'Bm7', 'C#7b5'].map(toChord)
-  },
-
-  'A': {
-    name: 'A',
-    notes: ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#'].map(toNote),
-    quality: 'major',
-    diatonicChords: [].map(toChord)
-  },
-
-  'E': {
-    name: 'E',
-    notes: ['E', 'F#', 'G#', 'A', 'B', 'C#', 'D#'].map(toNote),
-    quality: 'major',
-    diatonicChords: ['Emaj7', 'F#m7', 'G#m7', 'Amaj7', 'B7', 'C#m7', 'D#m7b5'].map(toChord)
-  },
-
-  'B': {
-    name: 'B',
-    notes: ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#'].map(toNote),
-    quality: 'major',
-    diatonicChords: [].map(toChord)
-  },
-
-  'F#': {
-    name: 'F#',
-    notes: ['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'E#'].map(toNote),
-    quality: 'major',
-    diatonicChords: [].map(toChord)
-  },
-
-  'C#': {
-    name: 'C#',
-    notes: ['C#', 'D#', 'E#', 'F#', 'G#', 'A#', 'B#'].map(toNote),
-    quality: 'major',
-    diatonicChords: [].map(toChord)
+  constructor(notes: Note[], quality: KeyQuality) {
+    this.name = `${noteToSymbol(notes[0])} ${quality}`
+    this.notes = notes
+    this.quality = quality
+    this.diatonicChords = getDiatonicChords(notes, quality)
   }
+}
+
+const DIATONIC_QUALITIES: Record<KeyQuality, string[]> = {
+  'Major': ['maj7', 'm7', 'm7', 'maj7', '7', 'm7', 'm7b5'],
+  'Natural Minor': ['m7', 'm7b5', 'maj7', 'm7', 'm7', 'maj7', '7'],
+  'Harmonic Minor': ['m7', 'm7b5', 'mM7', 'm7', '7', 'maj7', 'o7'],
+  'Melodic Minor': ['mM7', 'm7', 'augM7', '7', '7', 'm7b5', 'm7b5'],
+}
+
+export const getDiatonicChords = (notes: Note[], quality: KeyQuality = "Major"): Chord[] => {
+  if (notes.length !== 7) throw new Error('Provided note array must have length of 7')
+  const noteSymbols = notes.map((n) => new Note(n.root, n.accidental, undefined)).map(noteToSymbol)
+  const [first, second, third, fourth, fifth, sixth, seventh] = noteSymbols
+  return [
+    first.concat(DIATONIC_QUALITIES[quality][0]),
+    second.concat(DIATONIC_QUALITIES[quality][1]),
+    third.concat(DIATONIC_QUALITIES[quality][2]),
+    fourth.concat(DIATONIC_QUALITIES[quality][3]),
+    fifth.concat(DIATONIC_QUALITIES[quality][4]),
+    sixth.concat(DIATONIC_QUALITIES[quality][5]),
+    seventh.concat(DIATONIC_QUALITIES[quality][6]),
+  ].map(toChord)
+}
+
+export const MAJOR_KEYS: Record<string, Key> = {
+  'Cb': new Key(['Cb', 'Db', 'Eb', 'Fb', 'Gb', 'Ab', 'Bb'].map(toNote), "Major"),
+  'Gb': new Key(['Gb', 'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'F'].map(toNote), "Major"),
+  'Db': new Key(['Db', 'Eb', 'F', 'Gb', 'Ab', 'Bb', 'C'].map(toNote), "Major"),
+  'Ab': new Key(['Ab', 'Bb', 'C', 'Db', 'Eb', 'F', 'G'].map(toNote), "Major"),
+  'Eb': new Key(['Eb', 'F', 'G', 'Ab', 'Bb', 'C', 'D'].map(toNote), "Major"),
+  'Bb': new Key(['Bb', 'C', 'D', 'Eb', 'F', 'G', 'A'].map(toNote), "Major"),
+  'F': new Key(['F', 'G', 'A', 'Bb', 'C', 'D', 'E'].map(toNote), "Major"),
+  'C': new Key(['C', 'D', 'E', 'F', 'G', 'A', 'B'].map(toNote), "Major"),
+  'G': new Key(['G', 'A', 'B', 'C', 'D', 'E', 'F#'].map(toNote), "Major"),
+  'D': new Key(['D', 'E', 'F#', 'G', 'A', 'B', 'C#'].map(toNote), "Major"),
+  'A': new Key(['A', 'B', 'C#', 'D', 'E', 'F#', 'G#'].map(toNote), "Major"),
+  'E': new Key(['E', 'F#', 'G#', 'A', 'B', 'C#', 'D#'].map(toNote), "Major"),
+  'B': new Key(['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#'].map(toNote), "Major"),
+  'F#': new Key(['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'E#'].map(toNote), "Major"),
+  'C#': new Key(['C#', 'D#', 'E#', 'F#', 'G#', 'A#', 'B#'].map(toNote), "Major"),
 }
 
 export const MINOR_KEYS: Record<string, Key> = {
   'G': {
     name: 'G',
     notes: [toNote('G')],
-    quality: 'minor',
+    quality: 'Natural Minor',
     diatonicChords: MAJOR_KEYS['Bb'].diatonicChords
   }
 }
