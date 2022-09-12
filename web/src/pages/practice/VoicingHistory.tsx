@@ -63,9 +63,9 @@ interface Props {
 }
 
 const keyForChord = (c: Chord): Key => {
-  let keyString = `${c.root}${c.accidental || ""}`;
-  if (c.quality === "Minor") return MINOR_KEYS[keyString]
-  return MAJOR_KEYS[keyString]
+  const keyString = `${c.root}${c.accidental?.symbol || ""}`;
+  const key = c.quality === "Minor" ? MINOR_KEYS[keyString] : MAJOR_KEYS[keyString]
+  return key
 }
 
 const toVoicingComponent = (v: VoicingResult, i: number) => {

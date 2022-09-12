@@ -762,3 +762,76 @@ I can see having to refactor the piano/activeNotes related code in the future as
 would be like? If I'm going to support arpeggios in the future I'll need to be able to see a history of notes. Maybe we 
 could have an array of the last 200 notes played or something like that, and "activeNotes" would just be reading 'key-down'
 events for the last x notes until we encountered a 'key-up' event
+
+
+## 9/10/2022
+
+Whew long break. I read a post on hackernews a few weeks ago and some person was talking about how the secret to working
+on side projects is to only work on them when you feel like it, and I seem to be taking that to heart. When I stopped I 
+was in the middle of making a staff component to presumably render a bunch of notes but I am 
+
+
+## 9/12/2022 
+
+Didn't even finish that last entry, wild. I do miss being in the habit of working on this, I took a detour and checked
+out some python + opencv stuff which was neat, but I don't think it has motivational-legs and thus I am going to return
+to this project. I just finished my very first piano recital this last weekend, I played a rendition of Merry-Go-Round of 
+Life by Joe Hisaishi. I was so nervous that my hands were shaking! I did okay though, definitely a few mistakes and awkward
+pauses, but I'm still satisfied with how it went. 
+
+I have refactored the way keys + diatonic chords work, I am not totally on-board with how it currently is because I think
+it's not going to work as well once I try and add extended chords, but for now I'm gonna let it sit. This is basically it:
+
+```typescript
+const DIATONIC_QUALITIES: Record<KeyQuality, string[]> = {
+  'Major': ['maj7', 'm7', 'm7', 'maj7', '7', 'm7', 'm7b5'],
+  'Natural Minor': ['m7', 'm7b5', 'maj7', 'm7', 'm7', 'maj7', '7'],
+  'Harmonic Minor': ['m7', 'm7b5', 'mM7', 'm7', '7', 'maj7', 'o7'],
+  'Melodic Minor': ['mM7', 'm7', 'augM7', '7', '7', 'm7b5', 'm7b5'],
+}
+
+export const getDiatonicChords = (notes: Note[], quality: KeyQuality = "Major"): Chord[] => {
+  if (notes.length !== 7) throw new Error('Provided note array must have length of 7')
+  const noteSymbols = notes.map((n) => new Note(n.root, n.accidental, undefined)).map(noteToSymbol)
+  const [first, second, third, fourth, fifth, sixth, seventh] = noteSymbols
+  return [
+    first.concat(DIATONIC_QUALITIES[quality][0]),
+    second.concat(DIATONIC_QUALITIES[quality][1]),
+    third.concat(DIATONIC_QUALITIES[quality][2]),
+    fourth.concat(DIATONIC_QUALITIES[quality][3]),
+    fifth.concat(DIATONIC_QUALITIES[quality][4]),
+    sixth.concat(DIATONIC_QUALITIES[quality][5]),
+    seventh.concat(DIATONIC_QUALITIES[quality][6]),
+  ].map(toChord)
+}
+
+export const MAJOR_KEYS: Record<string, Key> = {
+  'Cb': new Key(['Cb', 'Db', 'Eb', 'Fb', 'Gb', 'Ab', 'Bb'].map(toNote), "Major"),
+  'Gb': new Key(['Gb', 'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'F'].map(toNote), "Major"),
+// ...etc
+```
+
+Something that is starting to bug me a bit is how this app is oriented around seventh chords programmatically. Reducing
+the complexity of the chord is fine since it's basically just chopping off a section of a chord, but what about all 
+the different ways chords come together beyond a root voicing? I feel like a refactor is coming where, instead, I'd like
+the code to think of chords as an assemblage of scale degrees + modifiers. ({1, 3, b5, 7} for example)
+
+This is definitely due to me furthering my understanding of music theory over these last 8 (!!!) months, which is a good thing!
+
+I'm going to chew on that idea though and press onwards. Refactors have not been too painful thus far, so I am not worried. 
+In the immediate future, I am going to try and get out some improvements to the main practice app. Specifically I want
+to be able to select a key and restrict all generated chords to ones that "belong" in that key.
+
+I'm trying to figure out how to find an appropriate key for chords where it's not immediately obvious. I tried just
+pulling out a key based on the quality and root note of a given chord:
+
+```typescript
+const keyForChord = (c: Chord): Key => {
+  const keyString = `${c.root}${c.accidental?.symbol || ""}`;
+  const key = c.quality === "Minor" ? MINOR_KEYS[keyString] : MAJOR_KEYS[keyString]
+  return key
+}
+```
+
+but that doesn't work well, because there are more roots + qualities than there are keys. Where does something like `B#dim`
+fit in? Bit of an odd chord, and maybe the answer is that it just doesn't, but we will see what can be discovered.

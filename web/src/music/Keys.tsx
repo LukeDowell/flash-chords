@@ -28,6 +28,14 @@ export class Key implements KeyInterface {
   }
 }
 
+/**
+ * TODO
+ * Something about this bugs me but I don't have enough of a grounding
+ * in the theory yet to put my finger on why. I think I am tempted to
+ * try and model this solution by using degrees, instead. For melodic
+ * minor, I'd like to be able to say that it is the same as the major
+ * scale except with a flat third, and then derive the chords from there
+ */
 const DIATONIC_QUALITIES: Record<KeyQuality, string[]> = {
   'Major': ['maj7', 'm7', 'm7', 'maj7', '7', 'm7', 'm7b5'],
   'Natural Minor': ['m7', 'm7b5', 'maj7', 'm7', 'm7', 'maj7', '7'],
