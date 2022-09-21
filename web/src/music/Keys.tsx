@@ -1,5 +1,5 @@
-import {Chord, toChord} from "./Chord";
-import {FLAT, Note, noteToSymbol, Root, SHARP, toNote} from "./Note";
+import {Chord, requiredNotesForChord, toChord, toSymbol} from "./Chord";
+import {FLAT, NATURAL, Note, noteToSymbol, Root, SHARP, toNote} from "./Note";
 
 export type KeyQuality = "Major" | "Natural Minor" | "Harmonic Minor" | "Melodic Minor"
 
@@ -25,6 +25,10 @@ export class Key implements KeyInterface {
     this.notes = notes
     this.quality = quality
     this.diatonicChords = getDiatonicChords(notes, quality)
+  }
+
+  requiredNotes(c: Chord): Note[] {
+    return formatNotesInKey(requiredNotesForChord(c), this)
   }
 }
 
@@ -92,6 +96,22 @@ export const MINOR_KEYS: Record<string, Key> = {
   'D#': new Key(['D#', 'E#', 'F#', 'G#', 'A#', 'B', 'C#'].map(toNote), "Natural Minor"),
 }
 
+export const KEYS: Key[] = [
+  ...Object.values(MAJOR_KEYS),
+  ...Object.values(MINOR_KEYS)
+]
+
+export const keyOf = (root: string, quality: KeyQuality): Key | undefined => {
+  switch (quality) {
+    case "Major":
+      return MAJOR_KEYS[root] || undefined
+    case "Natural Minor":
+      return MINOR_KEYS[root] || undefined
+    default:
+      return undefined
+  }
+}
+
 /**
  * This function takes a series of notes and makes sure that they are rendered in a compatible
  * way for a given key.
@@ -104,35 +124,70 @@ export const MINOR_KEYS: Record<string, Key> = {
  */
 const allRoots: Root[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 export const formatNoteInKey = (note: Note, key: Key): Note => {
-  // Strip octave
   if (key.notes.some((n) => note.equalsWithoutOctave(n))) return note
-  else if (!note.accidental) {
-    const noteString = `${note?.root}${note?.accidental}`
-    throw new Error(`natural is unimplemented - note: ${noteString} key: ${key.name}`)
+
+  let newRoot
+  let newAccidental
+  if (note.accidental) {
+    const rootIndex = allRoots.indexOf(note.root)
+    let newIndex;
+    if (rootIndex + note.accidental.mod <= 0) newIndex = allRoots.length - 1
+    else if (rootIndex + note.accidental.mod >= allRoots.length) newIndex = 0
+    else newIndex = rootIndex + note.accidental.mod
+
+    newRoot = allRoots[newIndex]
+    newAccidental = note.accidental === FLAT ? SHARP : FLAT
+  } else {
+    // Natural accidental
+    newRoot = note.root
+    newAccidental = NATURAL
   }
 
-  // Root
-  const rootIndex = allRoots.indexOf(note.root)
-  let newIndex;
-  if (rootIndex + note.accidental.mod <= 0) newIndex = allRoots.length - 1
-  else if (rootIndex + note.accidental.mod >= allRoots.length) newIndex = 0
-  else newIndex = rootIndex + note.accidental.mod
-
-  const newRoot = allRoots[newIndex]
-
-  // Octave
   let newOctave = note.octave
   if (note.octave && (note.root === 'C' || newRoot === 'C')) {
     if (note.root === 'C' && newRoot === 'B') newOctave = note.octave - 1
     else if (newRoot === 'C' && note.root === 'B') newOctave = note.octave + 1
   }
 
-  // Accidental
-  let newAccidental = note.accidental === FLAT ? SHARP : FLAT
-
   return new Note(newRoot, newAccidental, newOctave)
 }
 
 export const formatNotesInKey = (notes: Note[], key: Key): Note[] => {
   return notes.map((n) => formatNoteInKey(n, key))
+}
+
+/**
+ * Attempts to find a key in which the provided chord occurs naturally,
+ * or in which the provided chord's required notes all exist
+ *
+ * A valid key:
+ *  cannot mix accidentals
+ *  cannot have any natural accidentals
+ *  cannot have two notes with the same root, i.e no C and C#
+ *  must contain the root of the provided chord
+ */
+export const formattedNotesForChord = (c: Chord): Note[] => {
+  const chordRoot = new Note(c.root, c.accidental)
+  const normalizedNotes = requiredNotesForChord(c)
+  const validKeys = KEYS.filter((key) => {
+    const chordNotesInKey = formatNotesInKey(normalizedNotes, key)
+    const chordNotesAsString = chordNotesInKey.map(n => n.toString()).join()
+    const chordNotesOnlyRoots = chordNotesInKey.map(n => n.root)
+    const hopefullyUniqueRoots = [...new Set(chordNotesOnlyRoots)]
+    const keyHasAllNotes = chordNotesInKey.every(n => key.notes.some(kn => n.equalsWithoutOctave(kn)))
+
+    if (!chordNotesInKey.some(n => chordRoot.equalsWithoutOctave(n))) return false
+    else if (chordNotesAsString.includes('#') && chordNotesAsString.includes('b')) return false
+    else if (hopefullyUniqueRoots.length !== chordNotesOnlyRoots.length) return false
+    else if (chordNotesInKey.some(n => n.accidental?.symbol === NATURAL.symbol)) return false
+    else if (!keyHasAllNotes) return false
+
+    return true
+  })
+
+  if (validKeys.length === 0) {
+    throw new Error(`No valid keys found for chord ${toSymbol(c)}`)
+  }
+
+  return formatNotesInKey(normalizedNotes, validKeys[0])
 }

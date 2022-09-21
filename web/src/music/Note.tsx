@@ -26,16 +26,20 @@ export class Note implements NoteInterface {
   equalsWithoutOctave(other: Note): boolean {
     return _.isEqual({...other, octave: undefined}, {...this, octave: undefined})
   }
+
+  toString(): string {
+    return `${this.root}${this.accidental?.symbol || ""}${this.octave || ""}`
+  }
 }
 
 export type Accidental = {
-  symbol: "#" | "b",
+  symbol: "#" | "b" | "♮",
 
   /**
    * Semitone modifier. This is the amount of half steps
    * from the root note.
    */
-  mod: 1 | -1
+  mod: 1 | -1 | 0
 }
 
 export const SHARP: Accidental = {
@@ -46,6 +50,11 @@ export const SHARP: Accidental = {
 export const FLAT: Accidental = {
   symbol: "b",
   mod: -1
+}
+
+export const NATURAL: Accidental = {
+  symbol: "♮",
+  mod: 0
 }
 
 export const hasAccidental = (s: string): boolean => s.includes("#") || s.includes("b")
@@ -99,13 +108,10 @@ const lowerNote = (a: Note, b: Note) => {
 /** Lowest to highest */
 export const sortNotes = (notes: Note[]): Note[] => notes.sort((a, b) => {
   if (a.isLowerThan(b)) return -1;
-
   return 1
 })
 
-export const notesToString = (notes: Note[]): string => notes.map((n) => {
-  return `${n.root}${n.accidental?.symbol || ""}${n?.octave || ""}`
-}).join(", ")
+export const notesToString = (notes: Note[]): string => notes.map(n => n.toString()).join(", ")
 
 /**
  * Standardize all notes onto the same notation that the keyboard uses

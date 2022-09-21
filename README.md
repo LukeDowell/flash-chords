@@ -835,3 +835,42 @@ const keyForChord = (c: Chord): Key => {
 
 but that doesn't work well, because there are more roots + qualities than there are keys. Where does something like `B#dim`
 fit in? Bit of an odd chord, and maybe the answer is that it just doesn't, but we will see what can be discovered.
+
+
+## 09/20/2022
+
+I've run into a snag with the formatting of each chord. My initial pass looks like this:
+
+```typescript
+export const formattedNotesForChord = (c: Chord): Note[] => {
+  const chordRoot = new Note(c.root, c.accidental)
+  const normalizedNotes = requiredNotesForChord(c)
+  const validKeys = KEYS.filter((key) => {
+    const chordNotesInKey = formatNotesInKey(normalizedNotes, key)
+    const chordNotesAsString = chordNotesInKey.map(n => n.toString()).join()
+    const chordNotesOnlyRoots = chordNotesInKey.map(n => n.root)
+    const hopefullyUniqueRoots = [...new Set(chordNotesOnlyRoots)]
+    const keyHasAllNotes = chordNotesInKey.every(n => key.notes.some(kn => n.equalsWithoutOctave(kn)))
+
+    if (!chordNotesInKey.some(n => chordRoot.equalsWithoutOctave(n))) return false
+    else if (chordNotesAsString.includes('#') && chordNotesAsString.includes('b')) return false
+    else if (hopefullyUniqueRoots.length !== chordNotesOnlyRoots.length) return false
+    else if (chordNotesInKey.some(n => n.accidental?.symbol === NATURAL.symbol)) return false
+    else if (!keyHasAllNotes) return false
+
+    return true
+  })
+
+  if (validKeys.length === 0) {
+    throw new Error(`No valid keys found for chord ${toSymbol(c)}`)
+  }
+
+  return formatNotesInKey(normalizedNotes, validKeys[0])
+}
+```
+
+This is all fine and dandy until you get to a 'weird' chord, my classic choice being `B#dim`. I had to try and add naturals
+to the `formatNotesInKey` function to support this feature and I'm thinking I didn't do it quite right. When testing on
+`B#dim` in the key of `C# major`, I end up getting the notes of `Cnatural, D# and F#`. This is because my "normalization" 
+code is divorced from the code that then translates those normalized notes into a key-aware context, and thus doesn't
+know how to handle things like B#. I'm guessing it's a safe bet to assume that Fb will provide similar issues. 

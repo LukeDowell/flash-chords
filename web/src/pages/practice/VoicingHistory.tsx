@@ -2,7 +2,7 @@ import * as React from 'react'
 import {styled} from "@mui/material"
 import {Chord, requiredNotesForChord, toSymbol} from "../../music/Chord";
 import {Note, notesToString} from "../../music/Note";
-import {formatNotesInKey, Key, MAJOR_KEYS, MINOR_KEYS} from "../../music/Keys";
+import {formatNotesInKey, formattedNotesForChord} from "../../music/Keys";
 
 const StyledRoot = styled('div')({
   display: "flex",
@@ -62,14 +62,8 @@ interface Props {
   voicingResults: VoicingResult[]
 }
 
-const keyForChord = (c: Chord): Key => {
-  const keyString = `${c.root}${c.accidental?.symbol || ""}`;
-  const key = c.quality === "Minor" ? MINOR_KEYS[keyString] : MAJOR_KEYS[keyString]
-  return key
-}
-
 const toVoicingComponent = (v: VoicingResult, i: number) => {
-  const notes = v.validNotes.length !== 0 ? v.validNotes : formatNotesInKey(requiredNotesForChord(v.chord), keyForChord(v.chord))
+  const notes = v.validNotes.length !== 0 ? v.validNotes : formattedNotesForChord(v.chord)
   const isSuccess = v.validNotes.length > 0
   const chordSymbol = toSymbol(v.chord);
 
