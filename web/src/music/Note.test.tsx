@@ -2,7 +2,8 @@ import {
   DOUBLE_FLAT,
   DOUBLE_SHARP,
   FLAT,
-  genericInterval, NATURAL,
+  genericInterval,
+  NATURAL,
   Note,
   placeOnOctave,
   SHARP,
@@ -71,6 +72,8 @@ describe('Musical Notes', () => {
     ["Cb", "B"],
     ["C#", "C#"],
     ["Db", "C#"],
+    ["C##", "D"],
+    ["Fbb", "D#"],
   ])(
     `%s should be standardized to %s`,
     (unstandard, standard) => expect(standardizeNote(toNote(unstandard))).toEqual(toNote(standard))

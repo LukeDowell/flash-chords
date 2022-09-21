@@ -2,6 +2,8 @@ import _ from "lodash";
 
 export type Root = "A" | "B" | "C" | "D" | "E" | "F" | "G"
 
+export const ALL_ROOTS: Root[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+
 export interface NoteInterface {
   root: Root
   accidental?: Accidental,
@@ -127,18 +129,11 @@ export const notesToString = (notes: Note[]): string => notes.map(n => n.toStrin
  * @param n
  */
 export const standardizeNote = (n: Note): Note => {
-  if (_.isEqual(n.accidental, FLAT)) {
-    const newRoot = n.root === "A" ?
-      String.fromCharCode(71) as Root :
-      String.fromCharCode(n.root.charCodeAt(0) - 1) as Root
-    const newOctave = n.root === "C" && n.octave ? n.octave - 1 : n.octave
-    let newAccidental = undefined;
-    if (newRoot !== "E" && newRoot !== "B") newAccidental = SHARP
-    return new Note(newRoot, newAccidental, newOctave)
-  } else if (_.isEqual(n.accidental, SHARP) && (n.root === "B" || n.root === "E")) {
-    const newRoot = String.fromCharCode(n.root.charCodeAt(0) + 1) as Root
-    const newOctave = newRoot === "C" && n.octave ? n.octave + 1 : n.octave // Increment if we go from B to C
-    return new Note(newRoot, undefined, newOctave)
+  if (n.accidental) {
+    const tempNote = new Note(n.root, undefined, 4)
+    const tempIndex = KEYBOARD.findIndex(kn => _.isEqual(kn, tempNote))
+    const newNote = KEYBOARD[tempIndex + n.accidental.mod]
+    return new Note(newNote.root, newNote.accidental, n.octave)
   } else return n
 }
 

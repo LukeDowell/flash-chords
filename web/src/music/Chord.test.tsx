@@ -50,7 +50,7 @@ describe('musical chords', () => {
     [["A", "C", "E", "G#"], "AmM7"],
     [["D#", "G", "B", "D"], "EbaugM7"],
   ])(
-    `%s should be the required notes for the symbol %s`,
+    `%s should be the required standardized notes for the symbol %s`,
     (notes: string[], chordSymbol: string) => {
       const chord = toChord(chordSymbol);
       const requiredNotes: Note[] = requiredNotesForChord(chord)

@@ -1,6 +1,6 @@
 import {requiredNotesForChord, toChord} from "./Chord";
 import {toNote} from "./Note";
-import {formatNotesInKey, getDiatonicChords, formattedNotesForChord, KeyQuality, MAJOR_KEYS, KEYS, keyOf} from "./Keys";
+import {formatNotesInKey, getDiatonicChords, keyOf, KeyQuality, MAJOR_KEYS, symanticFormat} from "./Keys";
 
 describe('Keys', () => {
   test.each([
@@ -13,7 +13,7 @@ describe('Keys', () => {
     ['Cm7b5', 'Db', ['C', 'Eb', 'Gb', 'Bb']],
     ['Ebmaj7', 'F', ['Eb', 'G', 'Bb', 'D']],
     ['B#dim', 'C#', ['B#', 'D#', 'F#']],
-    ['Fbm7b5', 'C#', ['Fb', '']],
+    ['Cb7', 'Cb', ['Cb', 'Eb', 'Gb', 'A\u266E']],
   ])(
     `%s required notes in key of %s should be %s`,
     (symbol: string, key: string, expectedNotes: string[]) => {
@@ -50,12 +50,13 @@ describe('Keys', () => {
     ['Ebmaj7', ['Eb', 'G', 'Bb', 'D']],
     ['Ebm7', ['Eb', 'Gb', 'Bb', 'Db']],
     ['Gm', ['G', 'Bb', 'D']],
-    ['B#dim', ['B#', 'D#', 'F#']]
+    ['B#dim', ['B#', 'D#', 'F#']],
+    ['E#7', ['E#', 'A♮', 'C♮', 'D#']]
   ])(
     `%s required notes formatted in key should be %s`,
     (chordSymbol: string, expectedNotes: string[]) => {
       const chord = toChord(chordSymbol)
-      const notes = formattedNotesForChord(chord)
+      const notes = symanticFormat(requiredNotesForChord(chord), chord)
       expect(notes).toStrictEqual(expectedNotes.map(toNote))
     }
   )
