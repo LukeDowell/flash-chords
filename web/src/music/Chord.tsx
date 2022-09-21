@@ -1,4 +1,4 @@
-import {Accidental, FLAT, hasAccidental, KEYBOARD, Note, Root, SHARP, standardizeNote} from "./Note";
+import {Accidental, FLAT, getAccidental, KEYBOARD, Note, Root, SHARP, standardizeNote} from "./Note";
 import _ from "lodash";
 
 export type ChordQuality = "Major" | "Minor" | "Augmented" | "Diminished"
@@ -67,21 +67,16 @@ export const toSymbol = (c: Chord) => {
 export const toChord = (symbol: string): Chord => {
   const validExpressions = [
     // Triad
-    /^[a-gA-G][#b]?(?:dim|m|aug)?$/g,
+    /^[A-G][#b]?[#b\u266E]?(?:dim|m|aug)?$/g,
 
     // Seventh
-    /^[a-gA-G][#b]?(?:mM?|(aug)?M|o|\u00f8|maj|dim)?7(b5)?$/g,
+    /^[A-G][#b]?[#b\u266E]?(?:mM?|(aug)?M|o|\u00f8|maj|dim)?7(b5)?$/g,
   ]
 
   if (!validExpressions.find((e) => e.test(symbol))) throw new Error(`invalid chord symbol format ${symbol}`)
 
   const root = symbol.charAt(0) as Root
-  let rootAccidental: Accidental | undefined
-
-  if (hasAccidental(symbol)) {
-    if (symbol.charAt(1) === "b") rootAccidental = FLAT
-    else if (symbol.charAt(1) === "#") rootAccidental = SHARP
-  }
+  let rootAccidental = getAccidental(symbol.replace('b5', '')) // remove half diminished to avoid confusion with the 'b'
 
   // Seventh
   let seventh: "Major" | "Minor" | undefined

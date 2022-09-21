@@ -81,7 +81,7 @@ export const MAJOR_KEYS: Record<string, Key> = {
 }
 
 export const MINOR_KEYS: Record<string, Key> = {
-  'Eb': new Key(['Bb', 'Cb', 'Db', 'Eb', 'F', 'Gb', 'Ab'].map(toNote), "Natural Minor"),
+  'Eb': new Key(['Eb', 'F', 'Gb', 'Ab', 'Bb', 'Cb', 'Db'].map(toNote), "Natural Minor"),
   'Bb': new Key(['Bb', 'C', 'Db', 'Eb', 'F', 'Gb', 'Ab'].map(toNote), "Natural Minor"),
   'F': new Key(['F', 'G', 'Ab', 'Bb', 'C', 'Db', 'Eb'].map(toNote), "Natural Minor"),
   'C': new Key(['C', 'D', 'Eb', 'F', 'G', 'Ab', 'Bb'].map(toNote), "Natural Minor"),
@@ -96,9 +96,42 @@ export const MINOR_KEYS: Record<string, Key> = {
   'D#': new Key(['D#', 'E#', 'F#', 'G#', 'A#', 'B', 'C#'].map(toNote), "Natural Minor"),
 }
 
+export const HARMONIC_MINOR_KEYS: Record<string, Key> = {
+  'Eb': new Key(['Eb', 'F', 'Gb', 'Ab', 'Bb', 'Cb', 'D'].map(toNote), "Harmonic Minor"),
+  'Bb': new Key(['Bb', 'C', 'Db', 'Eb', 'F', 'Gb', 'A'].map(toNote), "Harmonic Minor"),
+  'F': new Key(['F', 'G', 'Ab', 'Bb', 'C', 'Db', 'E'].map(toNote), "Harmonic Minor"),
+  'C': new Key(['C', 'D', 'Eb', 'F', 'G', 'Ab', 'B'].map(toNote), "Harmonic Minor"),
+  'G': new Key(['G', 'A', 'Bb', 'C', 'D', 'Eb', 'F#'].map(toNote), "Harmonic Minor"),
+  'D': new Key(['D', 'E', 'F', 'G', 'A', 'Bb', 'C#'].map(toNote), "Harmonic Minor"),
+  'A': new Key(['A', 'B', 'C', 'D', 'E', 'F', 'G#'].map(toNote), "Harmonic Minor"),
+  'E': new Key(['E', 'F#', 'G', 'A', 'B', 'C', 'D#'].map(toNote), "Harmonic Minor"),
+  'B': new Key(['B', 'C#', 'D', 'E', 'F#', 'G', 'A#'].map(toNote), "Harmonic Minor"),
+  'F#': new Key(['F#', 'G#', 'A', 'B', 'C#', 'D', 'E#'].map(toNote), "Harmonic Minor"),
+  'C#': new Key(['C#', 'D#', 'E', 'F#', 'G#', 'A', 'B#'].map(toNote), "Harmonic Minor"),
+  'G#': new Key(['G#', 'A#', 'B', 'C#', 'D#', 'E', 'F##'].map(toNote), "Harmonic Minor"),
+  'D#': new Key(['D#', 'E#', 'F#', 'G#', 'A#', 'B', 'C##'].map(toNote), "Harmonic Minor"),
+}
+
+export const MELODIC_MINOR_KEYS: Record<string, Key> = {
+  'Eb': new Key(['Eb', 'F', 'Gb', 'Ab', 'Bb', 'Cb', 'D'].map(toNote), "Melodic Minor"),
+  'Bb': new Key(['Bb', 'C', 'Db', 'Eb', 'F', 'Gb', 'A'].map(toNote), "Melodic Minor"),
+  'F': new Key(['F', 'G', 'Ab', 'Bb', 'C', 'Db', 'E'].map(toNote), "Melodic Minor"),
+  'C': new Key(['C', 'D', 'Eb', 'F', 'G', 'Ab', 'B'].map(toNote), "Melodic Minor"),
+  'G': new Key(['G', 'A', 'Bb', 'C', 'D', 'Eb', 'F#'].map(toNote), "Melodic Minor"),
+  'D': new Key(['D', 'E', 'F', 'G', 'A', 'Bb', 'C#'].map(toNote), "Melodic Minor"),
+  'A': new Key(['A', 'B', 'C', 'D', 'E', 'F', 'G#'].map(toNote), "Melodic Minor"),
+  'E': new Key(['E', 'F#', 'G', 'A', 'B', 'C', 'D#'].map(toNote), "Melodic Minor"),
+  'B': new Key(['B', 'C#', 'D', 'E', 'F#', 'G', 'A#'].map(toNote), "Melodic Minor"),
+  'F#': new Key(['F#', 'G#', 'A', 'B', 'C#', 'D', 'E#'].map(toNote), "Melodic Minor"),
+  'C#': new Key(['C#', 'D#', 'E', 'F#', 'G#', 'A', 'B#'].map(toNote), "Melodic Minor"),
+  'G#': new Key(['G#', 'A#', 'B', 'C#', 'D#', 'E', 'F##'].map(toNote), "Melodic Minor"),
+  'D#': new Key(['D#', 'E#', 'F#', 'G#', 'A#', 'B', 'C##'].map(toNote), "Melodic Minor"),
+}
+
 export const KEYS: Key[] = [
   ...Object.values(MAJOR_KEYS),
-  ...Object.values(MINOR_KEYS)
+  ...Object.values(MINOR_KEYS),
+  ...Object.values(MELODIC_MINOR_KEYS),
 ]
 
 export const keyOf = (root: string, quality: KeyQuality): Key | undefined => {

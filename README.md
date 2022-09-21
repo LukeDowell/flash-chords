@@ -874,3 +874,14 @@ to the `formatNotesInKey` function to support this feature and I'm thinking I di
 `B#dim` in the key of `C# major`, I end up getting the notes of `Cnatural, D# and F#`. This is because my "normalization" 
 code is divorced from the code that then translates those normalized notes into a key-aware context, and thus doesn't
 know how to handle things like B#. I'm guessing it's a safe bet to assume that Fb will provide similar issues. 
+
+Maybe the solution is treat B# and Fb as normal values for a normalized keyboard? It doesn't sound great when I type it 
+out, especially since with the Fb it breaks the promise that all naturalized notes can only be sharps. 
+
+Ah crap, in my debugging of this particular problem, I discovered that keys CAN have mixed accidentals. I'm not sure if
+this will actually break anything, I just know I have made that assumption even prior to writing the above block of code.
+
+Double crap, also just came across my first double sharp. These minor keys get weird. Kind of seems tangentially related to my current issue actually
+since I really doubt that the addition of double sharp will matter too much. How can I calculate whether or not a note
+is symantically similar to another note? In the `B#dim` case, B# is going to be semantically similar to C, and if that is
+the case, I should leave it alone. 

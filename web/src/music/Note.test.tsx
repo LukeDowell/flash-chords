@@ -1,4 +1,15 @@
-import {FLAT, genericInterval, Note, placeOnOctave, SHARP, sortNotes, standardizeNote, toNote} from "./Note";
+import {
+  DOUBLE_FLAT,
+  DOUBLE_SHARP,
+  FLAT,
+  genericInterval, NATURAL,
+  Note,
+  placeOnOctave,
+  SHARP,
+  sortNotes,
+  standardizeNote,
+  toNote
+} from "./Note";
 
 describe('Musical Notes', () => {
   test.each([
@@ -10,7 +21,9 @@ describe('Musical Notes', () => {
     ['D#4', 'E4'],
     ['C#4', 'D#4'],
     ['B3', 'C#4'],
-    ['C3', 'A3']
+    ['C3', 'A3'],
+    ['F##3', 'G#3'],
+    ['C#5', 'C##5']
   ])(
     `%s should be lower than %s`,
     (lower: string, higher: string) => expect(toNote(lower).isLowerThan(toNote(higher))).toBeTruthy()
@@ -66,7 +79,10 @@ describe('Musical Notes', () => {
   test.each([
     ["C2", new Note("C", undefined, 2)],
     ["Cb2", new Note("C", FLAT, 2)],
+    ["Cbb2", new Note("C", DOUBLE_FLAT, 2)],
     ["F#5", new Note("F", SHARP, 5)],
+    ["F##5", new Note("F", DOUBLE_SHARP, 5)],
+    ["B\u266E5", new Note("B", NATURAL, 5)],
   ])(
     `%s should be parsed to %s`,
     (input: string, expectedNote: Note) => expect(toNote(input)).toEqual(expectedNote)

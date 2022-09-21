@@ -33,18 +33,28 @@ export class Note implements NoteInterface {
 }
 
 export type Accidental = {
-  symbol: "#" | "b" | "♮",
+  symbol: "#" | "##" | "b" | "bb" | "\u266E",
 
   /**
    * Semitone modifier. This is the amount of half steps
    * from the root note.
    */
-  mod: 1 | -1 | 0
+  mod: 2 | 1 | 0 | -1 | -2
+}
+
+export const DOUBLE_SHARP: Accidental = {
+  symbol: "##",
+  mod: 2
 }
 
 export const SHARP: Accidental = {
   symbol: "#",
   mod: 1
+}
+
+export const DOUBLE_FLAT: Accidental = {
+  symbol: "bb",
+  mod: -2
 }
 
 export const FLAT: Accidental = {
@@ -53,31 +63,30 @@ export const FLAT: Accidental = {
 }
 
 export const NATURAL: Accidental = {
-  symbol: "♮",
+  symbol: "\u266E", // ♮
   mod: 0
 }
 
-export const hasAccidental = (s: string): boolean => s.includes("#") || s.includes("b")
+export const getAccidental = (s: string): Accidental | undefined => {
+  const accidentals = [NATURAL, SHARP, DOUBLE_SHARP, FLAT, DOUBLE_FLAT].filter(a => s.includes(a.symbol))
+  if (accidentals.length > 2) throw new Error(`too many accidentals found for input ${s}`)
+  else if (accidentals.includes(DOUBLE_FLAT) && accidentals.includes(FLAT)) return DOUBLE_FLAT
+  else if (accidentals.includes(DOUBLE_SHARP) && accidentals.includes(SHARP)) return DOUBLE_SHARP
+  else return accidentals.pop()
+}
 
 export const noteToSymbol = (n: Note) => `${n.root}${n?.accidental?.symbol || ""}${n.octave || ""}`
 
 export const toNote = (s: string): Note => {
-  const validNote = /^[a-gA-G][#b]?[0-8]?$/g
-  if (!validNote.test(s)) throw new Error(`invalid note format ${s}`)
+  if (!/^[A-G][#b\u266E]?[#b]?[0-9]?$/g.test(s)) throw new Error(`invalid note format ${s}`)
 
   const root = s.charAt(0) as Root
   if (s.length === 1) return new Note(root)
 
-  let accidental: undefined | Accidental
-  if (hasAccidental(s)) {
-    const a = s.charAt(1)
-    if (a === "b") accidental = {symbol: "b", mod: -1}
-    else accidental = {symbol: "#", mod: 1}
-  }
+  const accidental = getAccidental(s)
 
   let octave: undefined | number
-  if (/[0-9]/g.test(s) && !accidental) octave = parseInt(s.charAt(1))
-  else if (/[0-9]/g.test(s) && accidental) octave = parseInt(s.charAt(2))
+  if (/[0-9]/g.test(s)) octave = parseInt(s.charAt(s.length - 1))
 
   return new Note(root, accidental, octave)
 }

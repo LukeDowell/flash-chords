@@ -4,15 +4,16 @@ import {formatNotesInKey, getDiatonicChords, formattedNotesForChord, KeyQuality,
 
 describe('Keys', () => {
   test.each([
-    // ['Dbmaj7', 'Db', ['Db', 'F', 'Ab', 'C']],
-    // ['Ebm7', 'Db', ['Eb', 'Gb', 'Bb', 'Db']],
-    // ['Fm7', 'Db', ['F', 'Ab', 'C', 'Eb']],
-    // ['Gbmaj7', 'Db', ['Gb', 'Bb', 'Db', 'F']],
-    // ['Ab7', 'Db', ['Ab', 'C', 'Eb', 'Gb']],
-    // ['Bbm7', 'Db', ['Bb', 'Db', 'F', 'Ab']],
-    // ['Cm7b5', 'Db', ['C', 'Eb', 'Gb', 'Bb']],
-    // ['Ebmaj7', 'F', ['Eb', 'G', 'Bb', 'D']],
+    ['Dbmaj7', 'Db', ['Db', 'F', 'Ab', 'C']],
+    ['Ebm7', 'Db', ['Eb', 'Gb', 'Bb', 'Db']],
+    ['Fm7', 'Db', ['F', 'Ab', 'C', 'Eb']],
+    ['Gbmaj7', 'Db', ['Gb', 'Bb', 'Db', 'F']],
+    ['Ab7', 'Db', ['Ab', 'C', 'Eb', 'Gb']],
+    ['Bbm7', 'Db', ['Bb', 'Db', 'F', 'Ab']],
+    ['Cm7b5', 'Db', ['C', 'Eb', 'Gb', 'Bb']],
+    ['Ebmaj7', 'F', ['Eb', 'G', 'Bb', 'D']],
     ['B#dim', 'C#', ['B#', 'D#', 'F#']],
+    ['Fbm7b5', 'C#', ['Fb', '']],
   ])(
     `%s required notes in key of %s should be %s`,
     (symbol: string, key: string, expectedNotes: string[]) => {
@@ -44,11 +45,11 @@ describe('Keys', () => {
   )
 
   test.each([
-    // ['Cmaj7', ['C', 'E', 'G', 'B']],
-    // ['C', ['C', 'E', 'G']],
-    // ['Ebmaj7', ['Eb', 'G', 'Bb', 'D']],
-    // ['Ebm7', ['Eb', 'Gb', 'Bb', 'Db']],
-    // ['Gm', ['G', 'Bb', 'D']],
+    ['Cmaj7', ['C', 'E', 'G', 'B']],
+    ['C', ['C', 'E', 'G']],
+    ['Ebmaj7', ['Eb', 'G', 'Bb', 'D']],
+    ['Ebm7', ['Eb', 'Gb', 'Bb', 'Db']],
+    ['Gm', ['G', 'Bb', 'D']],
     ['B#dim', ['B#', 'D#', 'F#']]
   ])(
     `%s required notes formatted in key should be %s`,
