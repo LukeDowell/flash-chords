@@ -20,6 +20,11 @@ export interface Props {
 }
 
 export const generateChordFromSettings = (settings: Settings) => {
+  if (settings.activeKey) {
+    const chords = settings.activeKey.diatonicChords
+    return chords[Math.floor(Math.random() * chords.length)]
+  }
+
   const roots = ["A", "B", "C", "D", "E", "F", "G"] as Root[]
   const qualities: Array<ChordQuality> = []
   const accidentals: Array<Accidental> = []

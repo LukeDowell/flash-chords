@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {styled} from "@mui/material"
 import {Chord, requiredNotesForChord, toSymbol} from "../../music/Chord";
-import {Note, notesToString} from "../../music/Note";
+import {NATURAL, Note} from "../../music/Note";
 import {symanticFormat} from "../../music/Keys";
 
 const StyledRoot = styled('div')({
@@ -64,6 +64,9 @@ interface Props {
 
 const toVoicingComponent = (v: VoicingResult, i: number) => {
   const notes = v.validNotes.length !== 0 ? symanticFormat(v.validNotes, v.chord) : symanticFormat(requiredNotesForChord(v.chord), v.chord)
+  const prettyNotes = notes.map(n => new Note(n.root, n.accidental))
+    .map(n => n.toString().replace(NATURAL.symbol, ''))
+    .join(', ')
   const isSuccess = v.validNotes.length > 0
   const chordSymbol = toSymbol(v.chord);
 
@@ -73,7 +76,7 @@ const toVoicingComponent = (v: VoicingResult, i: number) => {
 
   return <Styled key={i} data-testid={isSuccess ? `${chordSymbol}-valid-voicing` : `${chordSymbol}-invalid-voicing`}>
     <span className="chord">{chordSymbol}</span>
-    <span className="notes">{notesToString(notes.map((n) => new Note(n.root, n.accidental)))}</span>
+    <span className="notes">{prettyNotes}</span>
   </Styled>
 }
 

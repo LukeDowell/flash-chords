@@ -203,6 +203,8 @@ export const formatNotesInKey = (notes: Note[], key: Key): Note[] => {
  *  cannot have any natural accidentals
  *  cannot have two notes with the same root, i.e no C and C#
  *  must contain the root of the provided chord
+ *
+ *  TODO hmm in hindsight almost none of the above is true, interesting.
  */
 export const symanticFormat = (notes: Note[], chord?: Chord): Note[] => {
   const chordRoot = chord ? new Note(chord.root, chord.accidental) : notes[0]
@@ -213,7 +215,7 @@ export const symanticFormat = (notes: Note[], chord?: Chord): Note[] => {
     const hopefullyUniqueRoots = [...new Set(chordNotesOnlyRoots)]
 
     if (!chordNotesInKey.some(n => chordRoot.equalsWithoutOctave(n))) return false
-    else if (chordNotesAsString.includes('#') && chordNotesAsString.includes('b')) return false // TODO this won't be true for too long, some of the weird minor keys have this
+    else if (chordNotesAsString.includes('#') && chordNotesAsString.includes('b')) return false
     else if (hopefullyUniqueRoots.length !== chordNotesOnlyRoots.length) return false
 
     return true
@@ -238,7 +240,8 @@ export const symanticFormat = (notes: Note[], chord?: Chord): Note[] => {
   if (validKeysAndNotes.length === 0) {
     const key = KEYS.find(k => k.notes[0].equalsWithoutOctave(chordRoot))
     if (!key) {
-      throw new Error(`No valid keys found for notes ${notes.map(n => n.toString()).join(', ')} with chord root ${noteToSymbol(chordRoot)}`)
+      console.error(`No valid keys found for notes ${notes.map(n => n.toString()).join(', ')} with chord root ${noteToSymbol(chordRoot)}`)
+      return notes
     }
     return formatNotesInKey(notes, key)
   }

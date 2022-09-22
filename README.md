@@ -885,3 +885,12 @@ Double crap, also just came across my first double sharp. These minor keys get w
 since I really doubt that the addition of double sharp will matter too much. How can I calculate whether or not a note
 is symantically similar to another note? In the `B#dim` case, B# is going to be semantically similar to C, and if that is
 the case, I should leave it alone. 
+
+
+## 09/21/2022
+
+Well, it's very late, but I believe I am 95% of the way done with human readable chord formatting. Wow! That was way harder
+than I thought it would be, although I suspect that some difficulty is coming from myself. I did have one crash while
+testing before I added some extra logging and I suspect that the input chord was a `A#augM7` which is sort of intense 
+as far as chords go. Tomorrow I'll clean up what I wrote today, and then I will try and get key-specific chord generation
+going before my lesson! 

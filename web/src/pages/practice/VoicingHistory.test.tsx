@@ -51,7 +51,7 @@ describe('the voicing history component', () => {
 
   test.each([
     ['DbM7', ['Db', 'F', 'Ab', 'C']],
-    ['E#7', ['E#', 'A♮', 'C♮', 'D#']],
+    ['E#7', ['E#', 'A', 'C', 'D#']],
   ])(
     `should render the required notes for a seventh voicing if none are provided`,
     async (chordSymbol: string, expectedNotes: string[]) => {
