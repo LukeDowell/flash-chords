@@ -78,8 +78,13 @@ Keys: E2, G2, C3, E3
 2. Transpose any non-root notes to come after the lowest root note
 
        Keys: C3, E3, G3
+ 
 
 3. Depending on the quality, calculate the required notes that should follow the root by interval
+=======
+
+4. Depending on the quality, calculate the required notes that should follow the root by interval
+>>>>>>> origin/main
 The quality is major, so we need a major third followed by a minor third, or 4 steps up the keyboard
 followed by 3 steps.
 
@@ -529,7 +534,11 @@ I've started adding key information, started with C major and started working my
 into Fm7b5. I have just realized I haven't finished my chord implementation, and that my current structure doesn't 
 fit very elegantly into it.
 
+<<<<<<< HEAD
 The quick and dirty way will be to just add "Half-Diminished" as a seventh quality type and then ignore whatever
+=======
+The quick and dirty way will be to just add "Half-Dimished" as a seventh quality type and then ignore whatever
+>>>>>>> origin/main
 value "quality" has on a given chord, but that feels kind of lame. I wonder if it would be better to build my
 data structure around the idea of a first, third, fifth, seventh, and so on. Does that make it harder to calculate
 semitones? It certainly seems to mirror the domain language better than just considering major/minor triad + some kind 
@@ -893,6 +902,7 @@ than I thought it would be, although I suspect that some difficulty is coming fr
 testing before I added some extra logging and I suspect that the input chord was a `A#augM7` which is sort of intense 
 as far as chords go. Tomorrow I'll clean up what I wrote today, and then I will try and get key-specific chord generation
 going before my lesson! 
+<<<<<<< HEAD
 
 ## 01/30/2023
 
