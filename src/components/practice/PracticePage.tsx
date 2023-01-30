@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import MIDIPiano from "@/lib/music/MIDIPiano";
-import styled from "@emotion/styled";
 import CheckIcon from '@mui/icons-material/Check'
 import useInterval from "@/lib/utility";
 import {Close as CloseIcon, Settings as SettingsIcon} from "@mui/icons-material";
@@ -12,6 +11,7 @@ import {Chord, ChordQuality, generateRandomChord, isValidVoicing, SeventhQuality
 import {Accidental, FLAT, Note, Root, SHARP} from "@/lib/music/Note";
 import _ from "lodash";
 import {VoicingHistory, VoicingResult} from "./VoicingHistory";
+import styled from "styled-components";
 
 export interface Props {
   piano: MIDIPiano,
@@ -146,7 +146,7 @@ export default function PracticePage({
 
   return <StyledRoot>
     <div className="prompt-header">
-      <LogoSvg/>
+      <LogoSvg height={40} width={40}/>
       {
         (isSettingsOpen
           && <CloseIcon className="button" onClick={() => setIsSettingsOpen(false)}/>
