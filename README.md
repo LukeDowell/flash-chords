@@ -1,6 +1,6 @@
 Chord Notation Practice
 =====================
-[![Tests](https://github.com/LukeDowell/chord-notation/actions/workflows/push.yml/badge.svg)](https://github.com/LukeDowell/chord-notation/actions/workflows/push.yml)
+[![Test & Build](https://github.com/LukeDowell/flash-chords/actions/workflows/build-main.yaml/badge.svg)](https://github.com/LukeDowell/flash-chords/actions/workflows/build-main.yaml)
 
 https://flashchords.app/
 
@@ -894,7 +894,6 @@ than I thought it would be, although I suspect that some difficulty is coming fr
 testing before I added some extra logging and I suspect that the input chord was a `A#augM7` which is sort of intense 
 as far as chords go. Tomorrow I'll clean up what I wrote today, and then I will try and get key-specific chord generation
 going before my lesson! 
-<<<<<<< HEAD
 
 ## 01/30/2023
 
