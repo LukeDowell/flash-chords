@@ -78,13 +78,9 @@ Keys: E2, G2, C3, E3
 2. Transpose any non-root notes to come after the lowest root note
 
        Keys: C3, E3, G3
- 
 
 3. Depending on the quality, calculate the required notes that should follow the root by interval
-=======
 
-4. Depending on the quality, calculate the required notes that should follow the root by interval
->>>>>>> origin/main
 The quality is major, so we need a major third followed by a minor third, or 4 steps up the keyboard
 followed by 3 steps.
 
@@ -534,11 +530,7 @@ I've started adding key information, started with C major and started working my
 into Fm7b5. I have just realized I haven't finished my chord implementation, and that my current structure doesn't 
 fit very elegantly into it.
 
-<<<<<<< HEAD
 The quick and dirty way will be to just add "Half-Diminished" as a seventh quality type and then ignore whatever
-=======
-The quick and dirty way will be to just add "Half-Dimished" as a seventh quality type and then ignore whatever
->>>>>>> origin/main
 value "quality" has on a given chord, but that feels kind of lame. I wonder if it would be better to build my
 data structure around the idea of a first, third, fifth, seventh, and so on. Does that make it harder to calculate
 semitones? It certainly seems to mirror the domain language better than just considering major/minor triad + some kind 
@@ -943,4 +935,20 @@ The TODO list is as follows:
 1. Migrate the repository to NextJS
 2. Create a POC with VexFlow to see if it's a viable staff rendering solution
 3. Begin work on the chord progression feature page
-* 
+
+
+*Part 2*
+
+Ok so I'm mostly transitioned over to NextJS. I am, however, getting a nasty hydration error!
+
+```
+Unhandled Runtime Error
+Error: Text content does not match server-rendered HTML.
+
+See more info here: https://nextjs.org/docs/messages/react-hydration-error
+```
+
+This was spooky at first, but the more I read about it the more it completely makes sense. NextJS is trying to render
+everything server-side by default, and Flash Chords never had to worry about that even being possible in the previous
+structure. I suspect that my current issue is because I am rendering practice page content that only appears if you have
+a valid MIDI device, which of course the server will not. 
