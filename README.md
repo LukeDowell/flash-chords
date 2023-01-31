@@ -951,3 +951,30 @@ This was spooky at first, but the more I read about it the more it completely ma
 everything server-side by default, and Flash Chords never had to worry about that even being possible in the previous
 structure. I suspect that my current issue is because I am rendering practice page content that only appears if you have
 a valid MIDI device, which of course the server will not. 
+
+If I had just opened the console up, I'd have saved myself quite a bit of time! Here is the message it spits out:
+`Warning: Text content did not match. Server: "Em7" Client: "AM7"`
+
+Related to the above paragraph, this is the constructor for the current PracticePage component:
+```typescript
+export default function PracticePage({
+                                       piano,
+                                       initialChord = generateRandomChord(),
+// ...
+```
+
+The default parameter must be called both times and obviously end up with a different result each time! To fix this,
+I'm just going to add the initial chord parameter to the parent page and pass it in. I'm not a huge fan of that solution
+though, I'm wondering if there is a way that makes more sense...
+
+Nothing immediately comes to mind. I suppose this won't really bug me once I actually start slicing up logical pages
+instead of just plopping everything in index. 
+
+
+
+Well well well, look what we have here:
+![staff rendering](./doc/rendering-staff.png)
+
+Vexflow is pretty slick and seems plenty fast! In fact, it looks like they provide more than enough styling and 
+control options for our needs. It wasn't even that hard to convert the existing chord data structure to something
+render-able! I think that is plenty enough work for today, what a good result to end on.

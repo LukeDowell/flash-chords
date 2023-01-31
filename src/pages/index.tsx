@@ -1,9 +1,11 @@
 import Head from 'next/head'
 import '@/styles/index.module.css'
-import { styled } from "@mui/material/styles";
+import {styled} from "@mui/material/styles";
 import React, {useEffect, useState} from "react";
 import MIDIPiano from "@/lib/music/MIDIPiano";
 import PracticePage from "@/components/practice/PracticePage";
+import {Chord, toChord} from "@/lib/music/Chord";
+import {GetStaticProps} from "next";
 
 
 const StyledRoot = styled('div')({
@@ -15,7 +17,15 @@ const StyledRoot = styled('div')({
   height: '1000px',
 })
 
-export default function HomePage() {
+export const getStaticProps: GetStaticProps = () => {
+  return {
+    props: {
+      initialChord: toChord("Dbmaj7")
+    }
+  }
+}
+
+export default function HomePage({ initialChord = toChord("Dbmaj7") }: {initialChord: Chord}) {
   const [hasLoadedMidi, setHasLoadedMidi] = useState(false)
   const [midiPiano, setMidiPiano] = useState<MIDIPiano | undefined>(undefined)
   const [midiAccess, setMidiAccess] = useState<WebMidi.MIDIAccess | undefined>(undefined)
@@ -63,7 +73,7 @@ export default function HomePage() {
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
       </Head>
       <StyledRoot>
-        <PracticePage piano={midiPiano || new MIDIPiano()}/>
+        <PracticePage piano={midiPiano || new MIDIPiano()} initialChord={initialChord}/>
         {errorMessage.length > 0 &&
           <h3>{errorMessage}</h3>
         }

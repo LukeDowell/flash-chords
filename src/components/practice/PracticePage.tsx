@@ -6,12 +6,12 @@ import {Close as CloseIcon, Settings as SettingsIcon} from "@mui/icons-material"
 import {PracticeSettings} from "./PracticeSettings";
 import LogoSvg from '@/components/images/Icon'
 import {DEFAULT_PRACTICE_SETTINGS, Settings} from "./Settings";
-import {LinearProgress} from "@mui/material";
 import {Chord, ChordQuality, generateRandomChord, isValidVoicing, SeventhQuality, toSymbol} from "@/lib/music/Chord";
 import {Accidental, FLAT, Note, Root, SHARP} from "@/lib/music/Note";
 import _ from "lodash";
 import {VoicingHistory, VoicingResult} from "./VoicingHistory";
-import { styled } from "@mui/material/styles";
+import {styled} from "@mui/material/styles";
+import {Staff} from "@/components/practice/Staff";
 
 export interface Props {
   piano: MIDIPiano,
@@ -160,8 +160,9 @@ export default function PracticePage({
       <h2 className="current-chord-symbol">{toSymbol(currentChord)}</h2>
       {shouldDisplaySuccess && <CheckIcon style={{color: "green"}}/>}
     </ChordSymbolPrompt>
-    {settings?.timerEnabled &&
-      <LinearProgress className="timer" variant="determinate" value={timerProgress}/>
+    <Staff chord={currentChord} />
+    {settings?.timerEnabled && <></>
+      // <LinearProgress className="timer" variant="determinate" value={timerProgress}/>
     }
     <VoicingHistory voicingResults={voicingResults}/>
   </StyledRoot>
