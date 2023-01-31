@@ -11,7 +11,7 @@ import {Chord, ChordQuality, generateRandomChord, isValidVoicing, SeventhQuality
 import {Accidental, FLAT, Note, Root, SHARP} from "@/lib/music/Note";
 import _ from "lodash";
 import {VoicingHistory, VoicingResult} from "./VoicingHistory";
-import styled from "styled-components";
+import { styled } from "@mui/material/styles";
 
 export interface Props {
   piano: MIDIPiano,

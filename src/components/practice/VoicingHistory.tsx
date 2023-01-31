@@ -1,5 +1,5 @@
 import * as React from 'react'
-import styled from "styled-components"
+import { styled } from "@mui/material/styles"
 import {Chord, requiredNotesForChord, toSymbol} from "@/lib/music/Chord";
 import {NATURAL, Note} from "@/lib/music/Note";
 import {symanticFormat} from "@/lib/music/Keys";

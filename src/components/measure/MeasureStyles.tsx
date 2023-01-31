@@ -2,7 +2,7 @@ import WholeNoteSvg from "@/components/images/WholeNote";
 import SharpSvg from "@/components/images/AccidentalSharp";
 import FlatSvg from "@/components/images/AccidentalFlat";
 import {MeasureStyles} from "./Measure";
-import styled from "styled-components";
+import { styled } from "@mui/material/styles";
 
 export const StyledRoot = styled('div')<MeasureStyles>(props => ({
   display: 'flex',

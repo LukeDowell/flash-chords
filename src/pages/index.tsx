@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import '@/styles/index.module.css'
-import styled from "styled-components";
+import { styled } from "@mui/material/styles";
 import React, {useEffect, useState} from "react";
 import MIDIPiano from "@/lib/music/MIDIPiano";
 import PracticePage from "@/components/practice/PracticePage";
