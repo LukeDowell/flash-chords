@@ -25,7 +25,7 @@ export const getStaticProps: GetStaticProps = () => {
   }
 }
 
-export default function HomePage({ initialChord = toChord("Dbmaj7") }: {initialChord: Chord}) {
+export default function HomePage({initialChord = toChord("Dbmaj7")}: { initialChord?: Chord }) {
   const [hasLoadedMidi, setHasLoadedMidi] = useState(false)
   const [midiPiano, setMidiPiano] = useState<MIDIPiano | undefined>(undefined)
   const [midiAccess, setMidiAccess] = useState<WebMidi.MIDIAccess | undefined>(undefined)

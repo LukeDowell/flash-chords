@@ -22,7 +22,6 @@
       "@/styles/*": ["src/styles/*"],
       "@/lib/*": ["src/lib/*"],
       "@/public/*": ["public/*"],
-      "@/__tests__/*": ["src/__tests__/*"],
     },
     "plugins": [
       {

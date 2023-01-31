@@ -3,15 +3,15 @@ import MIDIPiano from "@/lib/music/MIDIPiano";
 import CheckIcon from '@mui/icons-material/Check'
 import useInterval from "@/lib/utility";
 import {Close as CloseIcon, Settings as SettingsIcon} from "@mui/icons-material";
-import {PracticeSettings} from "./PracticeSettings";
+import {PracticeSettings} from "@/components/settings/PracticeSettings";
 import LogoSvg from '@/components/images/Icon'
-import {DEFAULT_PRACTICE_SETTINGS, Settings} from "./Settings";
+import {DEFAULT_PRACTICE_SETTINGS, Settings} from "@/components/settings/Settings";
 import {Chord, ChordQuality, generateRandomChord, isValidVoicing, SeventhQuality, toSymbol} from "@/lib/music/Chord";
 import {Accidental, FLAT, Note, Root, SHARP} from "@/lib/music/Note";
 import _ from "lodash";
 import {VoicingHistory, VoicingResult} from "./VoicingHistory";
 import {styled} from "@mui/material/styles";
-import {Staff} from "@/components/practice/Staff";
+import {Staff} from "@/components/staff/Staff";
 
 export interface Props {
   piano: MIDIPiano,
@@ -160,7 +160,7 @@ export default function PracticePage({
       <h2 className="current-chord-symbol">{toSymbol(currentChord)}</h2>
       {shouldDisplaySuccess && <CheckIcon style={{color: "green"}}/>}
     </ChordSymbolPrompt>
-    <Staff chord={currentChord} />
+    <Staff chord={currentChord}/>
     {settings?.timerEnabled && <></>
       // <LinearProgress className="timer" variant="determinate" value={timerProgress}/>
     }

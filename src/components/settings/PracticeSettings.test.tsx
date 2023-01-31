@@ -1,8 +1,8 @@
 import React from 'react'
 import userEvent from "@testing-library/user-event";
-import {PracticeSettings} from "@/components/practice/PracticeSettings";
 import {render, screen} from "@testing-library/react";
-import {DEFAULT_PRACTICE_SETTINGS} from "@/components/practice/Settings";
+import {PracticeSettings} from "./PracticeSettings";
+import {DEFAULT_PRACTICE_SETTINGS} from "./Settings";
 
 describe('the practice settings component', () => {
   it('should callback with any settings changes', async () => {

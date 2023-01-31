@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {render, screen} from '@testing-library/react'
-import HomePage from "@/pages/index";
-import {mockRequestMIDIAccess} from "../../../jest.setup";
+import HomePage from "./index.page";
+import {mockRequestMIDIAccess} from "../../jest.setup";
 
 describe('the index page', () => {
   beforeEach(() => {

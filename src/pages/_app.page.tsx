@@ -7,10 +7,14 @@ import {CacheProvider} from "@emotion/react";
 
 const clientSideEmotionCache = createEmotionCache()
 
-export default function App({Component, emotionCache = clientSideEmotionCache, pageProps}: AppProps & { emotionCache: EmotionCache }) {
+export default function App({
+                              Component,
+                              emotionCache = clientSideEmotionCache,
+                              pageProps
+                            }: AppProps & { emotionCache: EmotionCache }) {
   return <>
     <CacheProvider value={emotionCache}>
-      <CssBaseline />
+      <CssBaseline/>
       <Component {...pageProps} />
     </CacheProvider>
   </>
