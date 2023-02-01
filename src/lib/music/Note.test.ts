@@ -11,6 +11,7 @@ import {
   standardizeNote,
   toNote
 } from "@/lib/music/Note";
+import _ from "lodash";
 
 describe('Musical Notes', () => {
   test.each([
@@ -122,4 +123,20 @@ describe('Musical Notes', () => {
       expect(placedNotes).toStrictEqual(expectedNotes.map(toNote))
     }
   )
+
+  it('should be equivalent', () => {
+    expect(Note.of('B#').isEquivalent(Note.of('C'))).toBe(true)
+    expect(Note.of('C#').isEquivalent(Note.of('Db'))).toBe(true)
+    expect(Note.of('E#').isEquivalent(Note.of('F'))).toBe(true)
+    expect(Note.of('Gb').isEquivalent(Note.of('F#'))).toBe(true)
+    expect(Note.of('C').isEquivalent(Note.of('C'))).toBe(true)
+    expect(Note.of('C4').isEquivalent(Note.of('C4'))).toBe(true)
+  })
+
+  it('should not be equivalent', () => {
+    expect(Note.of('B#').isEquivalent(Note.of('B'))).toBe(false)
+    expect(Note.of('C#').isEquivalent(Note.of('Gb'))).toBe(false)
+    expect(Note.of('C4').isEquivalent(Note.of('C5'))).toBe(false)
+    expect(Note.of('Ab').isEquivalent(Note.of('Bb'))).toBe(false)
+  })
 })

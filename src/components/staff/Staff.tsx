@@ -1,7 +1,7 @@
 import React, {useEffect} from "react"
-import {Formatter, Renderer, Stave, StaveNote, Voice} from "vexflow";
-import {Chord, generateRandomChord, requiredNotesForChord} from "@/lib/music/Chord";
-import {NATURAL, placeOnOctave} from "@/lib/music/Note";
+import {Formatter, Renderer, RuntimeError, Stave, StaveNote, TextNote, Voice} from "vexflow";
+import {Chord, generateRandomChord, requiredNotesForChord, toSymbol} from "@/lib/music/Chord";
+import {NATURAL, Note, placeOnOctave} from "@/lib/music/Note";
 import {symanticFormat} from "@/lib/music/Keys";
 
 interface Props {
@@ -12,7 +12,7 @@ export function Staff({chord = generateRandomChord()}: Props) {
   const requiredNotes = symanticFormat(requiredNotesForChord(chord), chord)
   const laidOnKeyboard = placeOnOctave(4, requiredNotes)
   const vexNotes = laidOnKeyboard
-    .filter(n => n.accidental !== NATURAL)
+    .map(n => n.accidental === NATURAL ? new Note(n.root, undefined, n.octave) : n)
     .map(n => `${n.root}${n.accidental?.symbol || ""}/${n.octave || ""}`)
 
   useEffect(() => {
@@ -23,25 +23,34 @@ export function Staff({chord = generateRandomChord()}: Props) {
 
     const renderer = new Renderer(element, Renderer.Backends.SVG)
     const context = renderer.getContext()
-    renderer.resize(500, 500)
+    renderer.resize(400, 150)
 
-    const stave = new Stave(10, 40, 400)
+    let stave = new Stave(10, 40, 350)
     try {
-      stave.addClef('treble').addTimeSignature('4/4').addKeySignature(`${chord.root}${chord.accidental?.symbol || ""}`)
+      stave.addClef('treble')
+        .addTimeSignature('4/4')
+        .addKeySignature(`${chord.root}${chord.accidental?.symbol || ""}`)
       stave.setContext(context).draw()
     } catch (e) {
-      console.log(`Error in staff! Probably a bad key signature, womp womp. ${e}`)
-      return
+      if (e instanceof RuntimeError && e.message.includes('BadKeySignature')) {
+        stave = new Stave(10, 40, 400)
+        stave.addClef('treble')
+          .addTimeSignature('4/4')
+          .addKeySignature('C')
+        stave.setContext(context).draw()
+      } else {
+        console.log(e)
+        return
+      }
     }
 
-    const notes = [
-      new StaveNote({keys: vexNotes, duration: "w"})
-    ]
+    const voice = new Voice("4/4")
+    voice.addTickables([new StaveNote({keys: vexNotes, duration: "w"}),])
 
-    const voice = new Voice({num_beats: 4, beat_value: 4})
-    voice.addTickables(notes)
+    new Formatter()
+      .joinVoices([voice])
+      .format([voice])
 
-    new Formatter().joinVoices([voice]).format([voice], 350)
     voice.draw(context, stave)
   }, [chord])
 

@@ -968,9 +968,7 @@ I'm just going to add the initial chord parameter to the parent page and pass it
 though, I'm wondering if there is a way that makes more sense...
 
 Nothing immediately comes to mind. I suppose this won't really bug me once I actually start slicing up logical pages
-instead of just plopping everything in index. 
-
-
+instead of just plopping everything in index.
 
 Well well well, look what we have here:
 ![staff rendering](./doc/rendering-staff.png)
@@ -978,3 +976,14 @@ Well well well, look what we have here:
 Vexflow is pretty slick and seems plenty fast! In fact, it looks like they provide more than enough styling and 
 control options for our needs. It wasn't even that hard to convert the existing chord data structure to something
 render-able! I think that is plenty enough work for today, what a good result to end on.
+
+## 1/31/2023 
+
+Today I'd like to begin on the chord progression page. For this to be useful, I'd like to be able to pick one of many 
+common chord progressions in several keys. There should be a ticker on an adjustable BPM, and I should be able to assert
+whether I played the progression correctly and in time.
+
+## 2/1/2023
+
+I tricked myself into trying out the chord / required notes / format in key stuff again. I don't like what I currently 
+have it feels very overcomplicated to me. Hopefully the Chris Ford talk provides good inspiration.

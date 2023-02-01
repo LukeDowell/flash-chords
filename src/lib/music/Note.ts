@@ -21,12 +21,20 @@ export class Note implements NoteInterface {
     this.octave = octave
   }
 
+  static of(symbol: string): Note {
+    return toNote(symbol)
+  }
+
   isLowerThan(other: Note): boolean {
     return _.isEqual(lowerNote(this, other), this)
   }
 
   equalsWithoutOctave(other: Note): boolean {
     return _.isEqual({...other, octave: undefined}, {...this, octave: undefined})
+  }
+
+  isEquivalent(other: Note): boolean {
+    return _.isEqual(standardizeNote(this), standardizeNote(other))
   }
 
   toString(): string {
@@ -93,6 +101,7 @@ export const toNote = (s: string): Note => {
   return new Note(root, accidental, octave)
 }
 
+// TODO below is probably wrong
 export const notesFromLowestToHighest: Root[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
 
 const lowerNote = (a: Note, b: Note) => {
@@ -122,8 +131,6 @@ export const sortNotes = (notes: Note[]): Note[] => notes.sort((a, b) => {
   return 1
 })
 
-export const notesToString = (notes: Note[]): string => notes.map(n => n.toString()).join(", ")
-
 /**
  * Standardize all notes onto the same notation that the keyboard uses
  * @param n
@@ -133,7 +140,7 @@ export const standardizeNote = (n: Note): Note => {
     const tempNote = new Note(n.root, undefined, 4)
     const tempIndex = KEYBOARD.findIndex(kn => _.isEqual(kn, tempNote))
     const newNote = KEYBOARD[tempIndex + n.accidental.mod]
-    return new Note(newNote.root, newNote.accidental, n.octave)
+    return new Note(newNote.root, newNote.accidental, n.octave ? newNote.octave : undefined)
   } else return n
 }
 
