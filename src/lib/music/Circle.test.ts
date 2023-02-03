@@ -1,6 +1,7 @@
 import {circleMajorKeys, FChord, stepFrom} from "@/lib/music/Circle";
-import {Note} from "@/lib/music/Note";
+import {Note, toNote} from "@/lib/music/Note";
 import {MAJOR_SCALE} from "@/lib/music/Scale";
+import _ from "lodash";
 
 describe('a chord',  () => {
   it('should calculate its intervals', () => {
@@ -23,11 +24,16 @@ describe('the circle of fifths', () => {
   })
 
   it('should make a circle of fifths key based on the number of accidentals', () => {
-    const keys = circleMajorKeys(1)
-    expect(keys).toContainEqual({
+    expect(circleMajorKeys(1)).toStrictEqual({
+      root: Note.of('G'),
+      scale: MAJOR_SCALE,
+      notes: ['G', 'A', 'B', 'C', 'D', 'E', 'F#'].map(Note.of)
+    })
+
+    expect(circleMajorKeys(-1)).toStrictEqual({
       root: Note.of('F'),
       scale: MAJOR_SCALE,
-      notes: ['F', 'G', 'A', 'Bb', 'C', 'D', 'E']
+      notes: ['F', 'G', 'A', 'Bb', 'C', 'D', 'E'].map(Note.of)
     })
   })
 })

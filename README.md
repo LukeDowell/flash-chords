@@ -1034,3 +1034,30 @@ Bummer, frustrating end to the day. First I had some WSL issues where my windows
 node interpreter running on WSL, then I started having extremely odd issues running tests in general. Imports would be 
 undefined, console logs not working at all, source maps not lining up for the debugger...perhaps tomorrow all will be 
 well.
+
+
+## 2/3/2023
+
+Progress past the annoying issues I was having. First, this lovely person posted a workaround for the issue I was having
+here: https://youtrack.jetbrains.com/issue/WEB-59241#focus=Comments-27-6837328.0-0
+
+Second, my problem with the undefined imports was because I was using Scale and casting in a bad way. My scales are classes
+and I was treating them as interfaces. The fix was to turn code that looked like this:
+
+```typescript
+export const WHOLE_TONE_SCALE = {name: "Whole Tone", intervals: [2, 2, 2, 2, 2, 2]} as Scale
+export const MAJOR_SCALE = {name: "Major", intervals: [2, 2, 1, 2, 2, 2, 1]} as Scale
+```
+
+into this:
+
+```typescript
+export const WHOLE_TONE_SCALE = new Scale("Whole Tone", [2, 2, 2, 2, 2, 2])
+export const MAJOR_SCALE = new Scale("Major", [2, 2, 1, 2, 2, 2, 1])
+```
+
+I have done this before on accident while refactoring interfaces / classes, I should probably just up my linter
+to ban any use of `as`. What was confusing about the whole thing was that my imports were resulting in `undefined` in
+the debugger. The crazy dark magic of transpilation / bundling / minifying code is one of my least favorite parts of
+using typescript. I'm not quite sure why I subjectively feel as though it's flakier and harder to work with than something
+like Java, but I certainly do.

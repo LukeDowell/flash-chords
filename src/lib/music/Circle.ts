@@ -111,13 +111,13 @@ export const stepFrom = (n: Root, steps: number): Root => {
  * could be considered the index of the circle, with -7 and 7 being
  * Cb and C# respectively
  */
-export function circleMajorKeys(numAccidentals: number): FKey {
-  let accidentals: Root[];
+export const circleMajorKeys = (numAccidentals: number): FKey => {
+  let accidentals: Root[] = []
   if (numAccidentals !== 0) {
     accidentals = numAccidentals > 0
       ? _.range(0, numAccidentals - 1).map(a => stepFrom('F', 4 * a))
       : _.range(0, numAccidentals + 1, -1).map(a => stepFrom('B', -4 * a))
-  } else accidentals = []
+  }
 
   const root = stepFrom("C" as Root, numAccidentals * 4)
   const keyCenter = accidentals.includes(root)
@@ -126,13 +126,15 @@ export function circleMajorKeys(numAccidentals: number): FKey {
 
   const keyIndex = findNoteOnKeyboard(keyCenter)
   const keyNotes = MAJOR_SCALE.intervalsFromRoot.map(i => KEYBOARD[keyIndex + i])
-  console.log("!!!!!!!!!!!!!!!!!!!")
-  console.log(MAJOR_SCALE)
+    .map(n => new Note(n.root, n.accidental, undefined))
+
+  // TODO how to do flat / error correction?
+
   return {
     root: keyCenter,
     scale: MAJOR_SCALE,
-    notes: Array.of(keyCenter).concat(keyNotes)
-  } as FKey
+    notes: Array.of(keyCenter).concat(keyNotes.slice(0, keyNotes.length - 1)) // Drop the repeated root
+  }
 }
 
 // const CIRCLE_OF_FIFTHS: { [note: string]: Record<'Major' | 'Minor', FKey> } = _.chain(_.range(-7, 7))

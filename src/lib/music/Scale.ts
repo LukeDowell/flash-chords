@@ -18,12 +18,12 @@ export class Scale {
   }
 }
 
-export const WHOLE_TONE_SCALE = {name: "Whole Tone", intervals: [2, 2, 2, 2, 2, 2]} as Scale
-export const MAJOR_SCALE = {name: "Major", intervals: [2, 2, 1, 2, 2, 2, 1]} as Scale
-export const NATURAL_MINOR_SCALE = {name: "Natural Minor", intervals: [2, 1, 2, 2, 1, 2, 2]} as Scale
-export const HARMONIC_MINOR_SCALE = {name: "Harmonic Minor", intervals: [2, 1, 2, 2, 1, 3, 1]} as Scale
-export const PENTATONIC_SCALE = {name: "Pentatonic", intervals: [2, 2, 3, 2, 3]} as Scale
-export const BLUES_SCALE = {name: "Blues", intervals: [3, 2, 1, 1, 3, 2]} as Scale
+export const WHOLE_TONE_SCALE = new Scale("Whole Tone", [2, 2, 2, 2, 2, 2])
+export const MAJOR_SCALE = new Scale("Major", [2, 2, 1, 2, 2, 2, 1])
+export const NATURAL_MINOR_SCALE = new Scale("Natural Minor", [2, 1, 2, 2, 1, 2, 2])
+export const HARMONIC_MINOR_SCALE = new Scale("Harmonic Minor", [2, 1, 2, 2, 1, 3, 1])
+export const PENTATONIC_SCALE = new Scale("Pentatonic", [2, 2, 3, 2, 3])
+export const BLUES_SCALE = new Scale("Blues", [3, 2, 1, 1, 3, 2])
 
 export const SCALES: Record<ScaleQuality, Scale> = {
   "Major": MAJOR_SCALE,
