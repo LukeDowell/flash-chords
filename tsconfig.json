@@ -16,6 +16,8 @@
     "jsxImportSource": "@emotion/react",
     "incremental": true,
     "baseUrl": "./",
+    "sourceMap": true,
+    "sourceRoot": "~/workspace/grainger/flashchords/src",
     "paths": {
       "@/components/*": ["src/components/*"],
       "@/pages/*": ["src/pages/*"],
@@ -31,12 +33,11 @@
   },
   "include": [
     "next-env.d.ts",
-    "next.config.js",
-    "jest.config.js",
-    "jest.setup.js",
     "types.d.ts",
     "**/*.ts",
+    "**/*.test.ts",
     "**/*.tsx",
+    "**/*.test.tsx",
   ],
   "exclude": ["node_modules"]
 }

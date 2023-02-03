@@ -159,6 +159,11 @@ export const KEYBOARD: Note[] = [
   "C8",
 ].map(toNote)
 
+export const findNoteOnKeyboard = (note: Note): number => {
+  const n = standardizeNote(note)
+  return KEYBOARD.findIndex((k) => note.octave ? n.isEquivalent(k) : n.equalsWithoutOctave(k))
+}
+
 export const genericInterval = (n1a: Note, n2a: Note): number => {
   if (n1a?.octave === undefined || n2a?.octave === undefined) throw new Error('cannot calculate generic interval without octave information')
 

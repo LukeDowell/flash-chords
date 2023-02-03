@@ -13,8 +13,7 @@ const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'jest-environment-jsdom',
   testMatch: ['**/*.test.[jt]s?(x)'],
-  // Matching paths listed in tsconfig.json
-  moduleNameMapper: {
+  moduleNameMapper: { // Matching paths listed in tsconfig.json
     "@/components/(.*)": ["<rootDir>/src/components/$1"],
     "@/pages/(.*)": ["<rootDir>/src/pages/$1"],
     "@/styles/(.*)": ["<rootDir>/src/styles/$1"],

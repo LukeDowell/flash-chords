@@ -1,7 +1,8 @@
-import {KEYBOARD, Note, standardizeNote} from "@/lib/music/Note";
-import {ChordQuality} from "@/lib/music/Chord";
+import {findNoteOnKeyboard, FLAT, KEYBOARD, Note, Root, SHARP, standardizeNote} from "@/lib/music/Note";
+import {ChordQuality, SeventhQuality} from "@/lib/music/Chord";
 import _ from "lodash";
-import {Scale} from "@/lib/music/Scale";
+import {MAJOR_SCALE, Scale} from "@/lib/music/Scale";
+
 
 export type ChordDegree = 0 | 1 | 2 | 3 | 4 | 5
 export const THIRD = 0
@@ -28,6 +29,12 @@ export interface PianoKey {
   note: Note
 }
 
+export interface FKey {
+  root: Note
+  scale: Scale
+  notes: Note[]
+}
+
 export class FChord {
   /**
    * The root of a given chord, eg. C or Db or
@@ -40,6 +47,11 @@ export class FChord {
   readonly quality: ChordQuality
 
   /**
+   * The quality of the seventh note of this chord. eg. "Dominant" or "Half-diminished"
+   */
+  readonly seventhQuality: SeventhQuality | null
+
+  /**
    * Any kind of extensions the chord may have. Sevenths, 9ths, #11th, b13, etc
    * These extensions will be considered when calculating the "required" notes
    * for a given chord.
@@ -48,9 +60,11 @@ export class FChord {
 
   constructor(root: Note,
               quality: ChordQuality = "Major",
+              seventhQuality: SeventhQuality | null = null,
               extensions: Array<[ChordDegree, Third]> = []) {
     this.root = root
     this.quality = quality
+    this.seventhQuality = seventhQuality
     this.extensions = extensions
   }
 
@@ -80,12 +94,48 @@ export class FChord {
   }
 }
 
-export class FKey {
-  readonly root: Note
-  readonly scale: Scale
+const ROOT_NOTES: Root[] = ["A", "B", "C", "D", "E", "F", "G"]
 
-  constructor(root: Note, scale: Scale) {
-    this.root = root
-    this.scale = scale
-  }
+/** Steps away from a given note. 4 steps up from C is G, for an interval of 5 */
+export const stepFrom = (n: Root, steps: number): Root => {
+  const i = ROOT_NOTES.indexOf(n)
+  const j = steps + i
+  if (j > ROOT_NOTES.length - 1) return stepFrom(ROOT_NOTES[0], j % ROOT_NOTES.length)
+  if (j < 0) return stepFrom(ROOT_NOTES[ROOT_NOTES.length - 1], steps + i + 1)
+  return ROOT_NOTES[j]
 }
+
+/**
+ * Creates an array of the keys found on the circle of fifths based
+ * on the number of accidentals that key has. The number of accidentals
+ * could be considered the index of the circle, with -7 and 7 being
+ * Cb and C# respectively
+ */
+export function circleMajorKeys(numAccidentals: number): FKey {
+  let accidentals: Root[];
+  if (numAccidentals !== 0) {
+    accidentals = numAccidentals > 0
+      ? _.range(0, numAccidentals - 1).map(a => stepFrom('F', 4 * a))
+      : _.range(0, numAccidentals + 1, -1).map(a => stepFrom('B', -4 * a))
+  } else accidentals = []
+
+  const root = stepFrom("C" as Root, numAccidentals * 4)
+  const keyCenter = accidentals.includes(root)
+    ? new Note(root, numAccidentals > 0 ? SHARP : FLAT)
+    : new Note(root)
+
+  const keyIndex = findNoteOnKeyboard(keyCenter)
+  const keyNotes = MAJOR_SCALE.intervalsFromRoot.map(i => KEYBOARD[keyIndex + i])
+  console.log("!!!!!!!!!!!!!!!!!!!")
+  console.log(MAJOR_SCALE)
+  return {
+    root: keyCenter,
+    scale: MAJOR_SCALE,
+    notes: Array.of(keyCenter).concat(keyNotes)
+  } as FKey
+}
+
+// const CIRCLE_OF_FIFTHS: { [note: string]: Record<'Major' | 'Minor', FKey> } = _.chain(_.range(-7, 7))
+//   .map(circleKeys)
+//   .groupBy()
+//   .value()

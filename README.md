@@ -987,3 +987,50 @@ whether I played the progression correctly and in time.
 
 I tricked myself into trying out the chord / required notes / format in key stuff again. I don't like what I currently 
 have it feels very overcomplicated to me. Hopefully the Chris Ford talk provides good inspiration.
+
+My piano lesson was pretty interesting today. I told my teacher of my recent work on the project and we revisited what
+our idea of a chord is. I think I keep running into tangles with the problem of "how do we actually write a voicing for
+a given chord" is because my chords didn't have enough information. I think this time around, I'm going to consider a chord
+as requiring a key in order to know what the voicing could be. We will maybe have shells and various kinds of partials
+(like a chord whose only info is a roman numeral, maybe) but in order to actually "render" what the required notes
+of a chord are, I think I'm going to assume a key is available.
+
+## 2/2/2023 
+
+Refactor is continuing to feel good for the most part. I'm running into another bit of trouble and I think the culprit
+is another domain line I'm trying to blur. Here is the code I'm working on:
+
+```typescript
+const circleMajorKeys = (numAccidentals: number): FKey => {
+  let accidentals: Root[];
+  if (numAccidentals !== 0) {
+    accidentals = numAccidentals > 0
+      ? _.range(0, numAccidentals - 1).map(a => stepFrom('F', 4 * a))
+      : _.range(0, numAccidentals + 1, -1).map(a => stepFrom('B', -4 * a))
+  } else accidentals = []
+  
+  const root = stepFrom('C', numAccidentals * 4)
+  const keyCenter = accidentals.includes(root)
+    ? new Note(root, numAccidentals > 0 ? SHARP : FLAT)
+    : new Note(root)
+  
+  const notes = MAJOR_SCALE.intervals.map(i => KEY) // Stuck here
+  
+  return { root: keyCenter,  scale: s,  notes: [keyCenter, ...notes] } as FKey
+}
+```
+
+The conceptual problem I'm trying to solve is how I can know exactly which way to convert a given note on the keyboard
+when building up a key with flats in it. Take F major; if we step through this function with `numAccidentals=-1` and I
+try and standardize the new `keyCenter`, then use the scale intervals to count up the keyboard, I'll hit `A#` eventually.
+`A` will not be in our list of accidentals. What should it do? 
+
+I feel like I'm straddling two different ideas and trying to plug them into each other; The idea of a key being built
+on a root pitch and a series of intervals above that pitch, and the idea of a keyboard having a bunch of named pitches
+already. 
+
+
+Bummer, frustrating end to the day. First I had some WSL issues where my windows-based debugger wouldn't connect to the 
+node interpreter running on WSL, then I started having extremely odd issues running tests in general. Imports would be 
+undefined, console logs not working at all, source maps not lining up for the debugger...perhaps tomorrow all will be 
+well.
