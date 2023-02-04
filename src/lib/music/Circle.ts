@@ -23,12 +23,6 @@ export const FChordQualities: Record<ChordQuality, Third[]> = {
   "Diminished": [3, 3],
 }
 
-export interface PianoKey {
-  /** The index of the key if you were looking straight on at a piano keyboard, with A0 being 0 and C8 being 87*/
-  index: number,
-  note: Note
-}
-
 export interface FKey {
   root: Note
   scale: Scale
@@ -115,29 +109,40 @@ export const circleMajorKeys = (numAccidentals: number): FKey => {
   let accidentals: Root[] = []
   if (numAccidentals !== 0) {
     accidentals = numAccidentals > 0
-      ? _.range(0, numAccidentals - 1).map(a => stepFrom('F', 4 * a))
-      : _.range(0, numAccidentals + 1, -1).map(a => stepFrom('B', -4 * a))
+      ? _.range(0, numAccidentals).map(a => stepFrom('F', 4 * a))
+      : _.range(0, numAccidentals, -1).map(a => stepFrom('B', -4 * a))
   }
 
+  const accidental = numAccidentals > 0 ? SHARP : FLAT
   const root = stepFrom("C" as Root, numAccidentals * 4)
   const keyCenter = accidentals.includes(root)
-    ? new Note(root, numAccidentals > 0 ? SHARP : FLAT)
+    ? new Note(root, accidental)
     : new Note(root)
 
-  const keyIndex = findNoteOnKeyboard(keyCenter)
-  const keyNotes = MAJOR_SCALE.intervalsFromRoot.map(i => KEYBOARD[keyIndex + i])
+  const keyCenterIndex = findNoteOnKeyboard(keyCenter)
+  const keyNotes = MAJOR_SCALE.semitonesFromRoot.map(i => KEYBOARD[keyCenterIndex + i])
     .map(n => new Note(n.root, n.accidental, undefined))
+    .map(n => {
+      if ((accidentals.includes(n.root) && n.accidental !== accidental) // Natural that should be sharp
+        // Natural that should be a flat (E but should be Fb)
+        || (!accidentals.includes(n.root) && n.accidental)) { // Sharp that should be flat
+        console.log(`Problem Note`, n)
+        const noteIndex = findNoteOnKeyboard(n)
+        const newNoteIndex = noteIndex + (accidental.mod * -1)
+        return new Note(KEYBOARD[newNoteIndex].root, accidental)
+      } else return n
+    })
 
-  // TODO how to do flat / error correction?
+  keyNotes.unshift(keyNotes.pop()!!)
 
   return {
     root: keyCenter,
     scale: MAJOR_SCALE,
-    notes: Array.of(keyCenter).concat(keyNotes.slice(0, keyNotes.length - 1)) // Drop the repeated root
+    notes: keyNotes
   }
 }
 
-// const CIRCLE_OF_FIFTHS: { [note: string]: Record<'Major' | 'Minor', FKey> } = _.chain(_.range(-7, 7))
-//   .map(circleKeys)
-//   .groupBy()
+// const CIRCLE_OF_FIFTHS: { [index: string]: FKey }  = _.chain(_.range(-7, 7))
+//   .map(circleMajorKeys)
+//   .groupBy(k => k.root.toString())
 //   .value()

@@ -1,6 +1,6 @@
 import React, {useEffect} from "react"
-import {Formatter, Renderer, RuntimeError, Stave, StaveNote, TextNote, Voice} from "vexflow";
-import {Chord, generateRandomChord, requiredNotesForChord, toSymbol} from "@/lib/music/Chord";
+import {Formatter, Renderer, RuntimeError, Stave, StaveNote, Voice} from "vexflow";
+import {Chord, generateRandomChord, requiredNotesForChord} from "@/lib/music/Chord";
 import {NATURAL, Note, placeOnOctave} from "@/lib/music/Note";
 import {symanticFormat} from "@/lib/music/Keys";
 

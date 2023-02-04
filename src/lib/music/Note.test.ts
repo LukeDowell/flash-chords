@@ -11,7 +11,6 @@ import {
   standardizeNote,
   toNote
 } from "@/lib/music/Note";
-import _ from "lodash";
 
 describe('Musical Notes', () => {
   test.each([
