@@ -9,6 +9,7 @@ import {
   SHARP,
   sortNotes,
   standardizeNote,
+  stepsBetween,
   toNote
 } from "@/lib/music/Note";
 
@@ -137,5 +138,14 @@ describe('Musical Notes', () => {
     expect(Note.of('C#').isEquivalent(Note.of('Gb'))).toBe(false)
     expect(Note.of('C4').isEquivalent(Note.of('C5'))).toBe(false)
     expect(Note.of('Ab').isEquivalent(Note.of('Bb'))).toBe(false)
+  })
+
+  it('should count the steps between notes', () => {
+    expect(stepsBetween(Note.of('C1'), Note.of('D1'))).toBe(2)
+    expect(stepsBetween(Note.of('C1'), Note.of('C2'))).toBe(12)
+    expect(stepsBetween(Note.of('E'), Note.of('G'))).toBe(3)
+    expect(stepsBetween(Note.of('C'), Note.of('E'))).toBe(4)
+    expect(stepsBetween(Note.of('Cb'), Note.of('B'))).toBe(0)
+    expect(stepsBetween(Note.of('E#'), Note.of('F'))).toBe(0)
   })
 })

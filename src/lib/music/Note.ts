@@ -161,7 +161,15 @@ export const KEYBOARD: Note[] = [
 
 export const findNoteOnKeyboard = (note: Note): number => {
   const n = standardizeNote(note)
-  return KEYBOARD.findIndex((k) => note.octave ? n.isEquivalent(k) : n.equalsWithoutOctave(k))
+  const i = KEYBOARD.findIndex((k) => note.octave ? n.isEquivalent(k) : n.equalsWithoutOctave(k))
+  if (i === -1) throw new Error(`Unable to find ${note.toString()} on the keyboard!`)
+  return i
+}
+
+/** Counts the semitones between two notes, starting from n1 and counting up until n2 is reached */
+export const stepsBetween = (n1: Note, n2: Note): number => {
+  return KEYBOARD.slice(findNoteOnKeyboard(n1), KEYBOARD.length)
+    .findIndex((n) => n2.octave ? n2.isEquivalent(n) : n2.equalsWithoutOctave(n))
 }
 
 export const genericInterval = (n1a: Note, n2a: Note): number => {

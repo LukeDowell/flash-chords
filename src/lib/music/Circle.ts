@@ -1,7 +1,7 @@
-import {findNoteOnKeyboard, FLAT, KEYBOARD, Note, Root, SHARP, standardizeNote} from "@/lib/music/Note";
+import {findNoteOnKeyboard, FLAT, KEYBOARD, Note, Root, SHARP, standardizeNote, stepsBetween} from "@/lib/music/Note";
 import {ChordQuality, SeventhQuality} from "@/lib/music/Chord";
 import _ from "lodash";
-import {MAJOR_SCALE, Scale} from "@/lib/music/Scale";
+import {MAJOR_SCALE, Scale, ScaleType} from "@/lib/music/Scale";
 
 
 export type ChordDegree = 0 | 1 | 2 | 3 | 4 | 5
@@ -62,6 +62,18 @@ export class FChord {
     this.extensions = extensions
   }
 
+
+  static fromNotes(notes: Note[], seventh: boolean = false): FChord {
+    const intervals: number[] = _.chain(notes).map(standardizeNote)
+      .flatMap((n, i, array) => i === array.length - 1 ? [] : stepsBetween(n, array[i + 1]))
+      .value()
+
+    const thirds: Third[] = intervals.slice(0, 2).filter((n): n is Third => n >= 3 || n <= 4)
+    const quality = _.invert(FChordQualities)[thirds.toString()] as ChordQuality
+
+    return new FChord(notes[0], quality)
+  }
+
   /**
    * The resultant intervals between each note following the root, as calculated
    * on all the provided properties above
@@ -91,13 +103,15 @@ export class FChord {
 const ROOT_NOTES: Root[] = ["A", "B", "C", "D", "E", "F", "G"]
 
 /** Steps away from a given note. 4 steps up from C is G, for an interval of 5 */
-export const stepFrom = (n: Root, steps: number): Root => {
-  const i = ROOT_NOTES.indexOf(n)
+export const stepFromItemInArray = <T>(n: T, steps: number, array: T[]): T => {
+  const i = array.indexOf(n)
   const j = steps + i
-  if (j > ROOT_NOTES.length - 1) return stepFrom(ROOT_NOTES[0], j % ROOT_NOTES.length)
-  if (j < 0) return stepFrom(ROOT_NOTES[ROOT_NOTES.length - 1], steps + i + 1)
-  return ROOT_NOTES[j]
+  if (j > array.length - 1) return stepFromItemInArray(array[0], j % array.length, array)
+  if (j < 0) return stepFromItemInArray(array[array.length - 1], steps + i + 1, array)
+  return array[j]
 }
+
+export const stepFrom = (r: Root, steps: number): Root => stepFromItemInArray(r, steps, ROOT_NOTES)
 
 /**
  * Creates an array of the keys found on the circle of fifths based
@@ -105,12 +119,12 @@ export const stepFrom = (n: Root, steps: number): Root => {
  * could be considered the index of the circle, with -7 and 7 being
  * Cb and C# respectively
  */
-export const circleMajorKeys = (numAccidentals: number): FKey => {
+export const circleKeys = (numAccidentals: number): FKey => {
   let accidentals: Root[] = []
   if (numAccidentals !== 0) {
     accidentals = numAccidentals > 0
       ? _.range(0, numAccidentals).map(a => stepFrom('F', 4 * a))
-      : _.range(0, numAccidentals, -1).map(a => stepFrom('B', -4 * a))
+      : _.range(0, numAccidentals, -1).map(a => stepFrom('B', 4 * a))
   }
 
   const accidental = numAccidentals > 0 ? SHARP : FLAT
@@ -124,9 +138,7 @@ export const circleMajorKeys = (numAccidentals: number): FKey => {
     .map(n => new Note(n.root, n.accidental, undefined))
     .map(n => {
       if ((accidentals.includes(n.root) && n.accidental !== accidental) // Natural that should be sharp
-        // Natural that should be a flat (E but should be Fb)
         || (!accidentals.includes(n.root) && n.accidental)) { // Sharp that should be flat
-        console.log(`Problem Note`, n)
         const noteIndex = findNoteOnKeyboard(n)
         const newNoteIndex = noteIndex + (accidental.mod * -1)
         return new Note(KEYBOARD[newNoteIndex].root, accidental)
@@ -142,7 +154,24 @@ export const circleMajorKeys = (numAccidentals: number): FKey => {
   }
 }
 
-// const CIRCLE_OF_FIFTHS: { [index: string]: FKey }  = _.chain(_.range(-7, 7))
-//   .map(circleMajorKeys)
-//   .groupBy(k => k.root.toString())
-//   .value()
+export const CIRCLE_OF_FIFTHS = _.chain(_.range(-7, 7))
+  .map(circleKeys)
+  .value()
+
+export const getKey = (root: string, scale: ScaleType = "Major"): FKey | undefined => {
+  return CIRCLE_OF_FIFTHS.find((k) => root === k.root.toString() && k.scale.name === scale)
+}
+
+export const diatonicChords = (key: FKey, seventh: boolean = false): FChord[] => {
+  return key.notes.map((n, index, arr) => {
+    let notes: Note[] = [
+      n,
+      stepFromItemInArray(n, 2, arr),
+      stepFromItemInArray(n, 4, arr),
+    ]
+
+    if (seventh) notes = notes.concat(stepFromItemInArray(n, 6, arr))
+
+    return FChord.fromNotes(notes, seventh)
+  })
+}
