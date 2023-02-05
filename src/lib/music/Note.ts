@@ -4,16 +4,10 @@ export type Root = "A" | "B" | "C" | "D" | "E" | "F" | "G"
 
 export const ALL_ROOTS: Root[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
-export interface NoteInterface {
-  root: Root
-  accidental?: Accidental,
-  octave?: number,
-}
-
-export class Note implements NoteInterface {
-  root: Root;
-  accidental?: Accidental;
-  octave?: number;
+export class Note {
+  readonly root: Root;
+  readonly accidental?: Accidental;
+  readonly octave?: number;
 
   constructor(root: Root, accidental?: Accidental, octave?: number) {
     this.root = root
@@ -39,6 +33,10 @@ export class Note implements NoteInterface {
 
   toString(): string {
     return `${this.root}${this.accidental?.symbol || ""}${this.octave || ""}`
+  }
+
+  withOctave(octave: number): Note {
+    return new Note(this.root, this.accidental, octave)
   }
 }
 
@@ -193,9 +191,9 @@ export const placeOnOctave = (octave: number, notes: Note[]): Note[] => {
   return notes.map((n, i, self) => {
     if (i !== 0) {
       const tempNote = new Note(n.root, n.accidental, currentOctave)
-      if (tempNote.isLowerThan(self [i - 1])) currentOctave++
+      const previousNote = self[i - 1].withOctave(currentOctave)
+      if (tempNote.isLowerThan(previousNote)) currentOctave++
     }
-    n.octave = currentOctave
-    return n
+    return new Note(n.root, n.accidental, currentOctave)
   })
 }
