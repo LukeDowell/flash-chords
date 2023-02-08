@@ -1061,3 +1061,138 @@ to ban any use of `as`. What was confusing about the whole thing was that my imp
 the debugger. The crazy dark magic of transpilation / bundling / minifying code is one of my least favorite parts of
 using typescript. I'm not quite sure why I subjectively feel as though it's flakier and harder to work with than something
 like Java, but I certainly do.
+
+
+## 2/8/2023
+
+I've been heads down for a few days, but I have enough progress to share now. Check it:
+
+![staff progression](./doc/staff-progression.png)
+
+I basically rewrote the entirety of the musical core besides the code in my `Note` module. I think the code is a bit more
+readable + more aligned to the domain this time around. In my first iteration, I think I muddied concepts and mixed 
+separate ideas together because I was not as fluent in the domain as I am now. Here is an example, looking at my first
+iteration's idea of a Chord:
+
+```typescript
+export interface Chord {
+  root: Root
+  quality: ChordQuality
+  accidental?: Accidental
+  seventh?: SeventhQuality
+  bassNote?: Note
+}
+```
+
+The chord here has two properties that I do not think belong in here anymore. The accidental does not belong to the chord
+but rather to the children notes in a given chord. The bass note doesn't make sense here either, I'd just merge that 
+concept with the `root`. 
+
+Here is another problem area, in my opinion:
+
+```typescript
+export const requiredNotesForChord = (c: Chord): Note[] => {
+  const semitones: number[] = []
+  switch (c.quality) {
+    case "Diminished":
+      semitones.push(3, 3)
+      break;
+    case "Minor":
+      semitones.push(3, 4)
+      break;
+...
+```
+
+To determine what notes are required for a given chord, I 'work backwards' using the chord qualities and by assembling
+an array of semisteps. This time around I did it the opposite way, by treating the set of intervals as fundamental to
+the identity of a chord, and then figuring out the 'higher level abstraction' of quality based on the intervals. 
+
+Another thing I have massively improved on is my concepts of `Key` vs `Scale`. Here is a snippet of some old Key code:
+
+```typescript
+export const MAJOR_KEYS: Record<string, Key> = {
+  'Cb': new Key(['Cb', 'Db', 'Eb', 'Fb', 'Gb', 'Ab', 'Bb'].map(toNote), "Major"),
+  'Gb': new Key(['Gb', 'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'F'].map(toNote), "Major"),
+  'Db': new Key(['Db', 'Eb', 'F', 'Gb', 'Ab', 'Bb', 'C'].map(toNote), "Major"),
+...
+```
+
+```typescript
+const DIATONIC_QUALITIES: Record<KeyQuality, string[]> = {
+  'Major': ['maj7', 'm7', 'm7', 'maj7', '7', 'm7', 'm7b5'],
+  'Natural Minor': ['m7', 'm7b5', 'maj7', 'm7', 'm7', 'maj7', '7'],
+...
+```
+
+On the face of this, it's not necessarily inaccurate. It's simply inflexible. I had no concept of scale before and likely
+could not have told you a textbook definition of the difference. Now I understand that a key is a union of a scale and a
+note to start that scale from. On top of that, hardcoding the chord qualities for the diatonic scales is working at 
+too high of an abstraction layer. Even writing this code at the time bugged me, I just couldn't think of how to do it better.
+
+Now my Key and Scale code looks like this:
+
+```typescript
+export const WHOLE_TONE_SCALE = new Scale("Whole Tone", [2, 2, 2, 2, 2, 2])
+export const MAJOR_SCALE = new Scale("Major", [2, 2, 1, 2, 2, 2, 1])
+export const NATURAL_MINOR_SCALE = new Scale("Natural Minor", [2, 1, 2, 2, 1, 2, 2])
+...
+```
+
+```typescript
+export const CIRCLE_OF_FIFTHS = _.chain(_.range(-7, 7))
+  .map(circleKeys)
+  .value()
+
+export const circleKeys = (numAccidentals: number): FKey => {
+  let accidentals: Root[] = []
+  if (numAccidentals !== 0) {
+    accidentals = numAccidentals > 0
+      ? _.range(0, numAccidentals).map(a => stepFrom('F', 4 * a))
+      : _.range(0, numAccidentals, -1).map(a => stepFrom('B', 4 * a))
+  }
+
+  const accidental = numAccidentals > 0 ? SHARP : FLAT
+  const root = stepFrom("C", numAccidentals * 4)
+  const keyCenter = accidentals.includes(root)
+    ? new Note(root, accidental)
+    : new Note(root)
+
+  const keyCenterIndex = findNoteOnKeyboard(keyCenter)
+  const keyNotes = MAJOR_SCALE.semitonesFromRoot.map(i => KEYBOARD[keyCenterIndex + i])
+    .map(n => new Note(n.root, n.accidental, undefined))
+    .map(n => {
+      if ((accidentals.includes(n.root) && n.accidental !== accidental) // Natural that should be sharp
+        || (!accidentals.includes(n.root) && n.accidental)) { // Sharp that should be flat
+        const noteIndex = findNoteOnKeyboard(n)
+        const newNoteIndex = noteIndex + (accidental.mod * -1)
+        return new Note(KEYBOARD[newNoteIndex].root, accidental)
+      } else return n
+    })
+
+  keyNotes.unshift(keyNotes.pop()!!)
+
+  return {
+    root: keyCenter,
+    scale: MAJOR_SCALE,
+    notes: keyNotes
+  }
+}
+```
+
+I decided to orient my first pass around the circle of fifths, since this app is most likely to be used by newer
+piano students, and they will primarily stick to diatonic keys and chords. I think that I might be overcomplicating 
+the assemblage of a key but that feeling is honestly just due to the literal size of the code. Here, I suspect that 
+I am still blurring domain boundaries by associating this code with the concept of the `KEYBOARD`, but that could just
+be a naming thing since the Keyboard is our most direct relation to the idea of pitch. 
+
+Since that is all done, I've moved on to working more with Vexflow and figuring out what I want the interface to actually
+look like while a user is going through a chord progression. I know that I want to track their progress through the staff
+and show them when they are "right/wrong", but I am not very fast at working with Vexflow yet.
+
+Some ideas:
+    - A timer that moves on a certain BPM and expects you to play the progression on-beat
+    - A way to render a 'ghost' version of the root chord, but render the actual voicing the user plays 
+    - Text entry areas to allow the user to design their own chord progression practice
+    - Switching the chord symbols to roman numerals and vice versa
+
+Tonight is piano lesson night so we will see if I can make enough progress to share by then.

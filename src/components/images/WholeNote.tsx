@@ -1,5 +1,4 @@
-import * as React from "react";
-import {SVGProps} from "react";
+import React, {SVGProps} from "react";
 
 const SvgWholeNote = (props: SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.5 11.003" {...props}>

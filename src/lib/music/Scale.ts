@@ -14,7 +14,8 @@ export class Scale {
     this.semitonesFromRoot = intervals.map((interval, index, arr) => interval + _.sum(arr.slice(0, index)))
     this.isDiatonic = intervals.length === 7
       && intervals.filter((n) => n === 2).length === 5
-      && intervals.filter((n) => n === 1).length === 2 // TODO the two half steps need to be separated by at -least- two whole steps
+      && intervals.filter((n) => n === 1).length === 2
+      && true // TODO the two half steps need to be separated by at -least- two whole steps
   }
 }
 

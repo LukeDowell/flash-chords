@@ -62,7 +62,6 @@ export class FChord {
     this.extensions = extensions
   }
 
-
   static fromNotes(notes: Note[], seventh: boolean = false): FChord {
     const intervals: number[] = _.chain(notes).map(standardizeNote)
       .flatMap((n, i, array) => i === array.length - 1 ? [] : stepsBetween(n, array[i + 1]))
@@ -98,11 +97,23 @@ export class FChord {
     return [KEYBOARD[index]].concat(semitonesFromRoot.map(s => KEYBOARD[index + s]))
       .map(n => new Note(n.root, n.accidental, this.root.octave ? n.octave : undefined))
   }
+
+  /**
+   * Tries to format the required notes for this chord based on a key. Doesn't handle naturals yet, beware
+   * of non-diatonic format attempts
+   */
+  notesInKey(key: FKey): Note[] {
+    const standardNotes = this.notes()
+    return standardNotes.map(sn => key.notes.find(kn => sn.isEquivalent(kn)) || sn)
+  }
 }
 
 const ROOT_NOTES: Root[] = ["A", "B", "C", "D", "E", "F", "G"]
 
-/** Steps away from a given note. 4 steps up from C is G, for an interval of 5 */
+/**
+ * Steps away from a given note. 4 steps up from C is G, for an interval of 5
+ * Wraps around the array when reaching the end or when reaching the beginning if stepping downward
+ */
 export const stepFromItemInArray = <T>(n: T, steps: number, array: T[]): T => {
   const i = array.indexOf(n)
   const j = steps + i
@@ -128,7 +139,7 @@ export const circleKeys = (numAccidentals: number): FKey => {
   }
 
   const accidental = numAccidentals > 0 ? SHARP : FLAT
-  const root = stepFrom("C" as Root, numAccidentals * 4)
+  const root = stepFrom("C", numAccidentals * 4)
   const keyCenter = accidentals.includes(root)
     ? new Note(root, accidental)
     : new Note(root)
@@ -158,8 +169,10 @@ export const CIRCLE_OF_FIFTHS = _.chain(_.range(-7, 7))
   .map(circleKeys)
   .value()
 
-export const getKey = (root: string, scale: ScaleType = "Major"): FKey | undefined => {
-  return CIRCLE_OF_FIFTHS.find((k) => root === k.root.toString() && k.scale.name === scale)
+export const getKey = (root: string, scale: ScaleType = "Major"): FKey => {
+  const key = CIRCLE_OF_FIFTHS.find((k) => root === k.root.toString() && k.scale.name === scale);
+  if (!key) throw Error(`Unable to find key: ${root.concat(scale)}`)
+  return key
 }
 
 export const diatonicChords = (key: FKey, seventh: boolean = false): FChord[] => {

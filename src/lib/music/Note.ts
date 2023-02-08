@@ -35,7 +35,7 @@ export class Note {
     return `${this.root}${this.accidental?.symbol || ""}${this.octave || ""}`
   }
 
-  withOctave(octave: number): Note {
+  withOctave(octave: number | undefined): Note {
     return new Note(this.root, this.accidental, octave)
   }
 }
