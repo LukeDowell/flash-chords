@@ -22,6 +22,10 @@ export function InteractiveStaff(props: Props) {
     ]
   } = props
 
+
+  useEffect(() => {
+  }, [midiPiano])
+
   useEffect(() => {
     // Grab div and wipe it
     const renderDiv: HTMLDivElement = document.getElementById('vexflow-output') as HTMLDivElement
@@ -30,8 +34,7 @@ export function InteractiveStaff(props: Props) {
     // Set up renderer and drawing context
     const renderer = new Renderer(renderDiv, Renderer.Backends.SVG)
     const context = renderer.getContext()
-    context.resize(1000, 250)
-    context.scale(1.5, 1.5)
+    context.resize(900, 300)
 
     // Build a stave
     const stave = new Stave(10, 10, 500)
@@ -43,7 +46,7 @@ export function InteractiveStaff(props: Props) {
       const notes = chord.notesInKey(musicKey)
       const symbol = new ChordSymbol().setFontSize(14).addGlyphOrText(notes[0].withOctave(undefined).toString())
       const formattedNotes = placeOnOctave(4, notes).map(n => `${n.root.concat(n.accidental?.symbol || "")}/${n.octave}`)
-      const staveNote = new StaveNote({keys: formattedNotes, duration: 'q'});
+      const staveNote = new StaveNote({keys: formattedNotes, duration: 'q', auto_stem: true});
       staveNote.addModifier(symbol)
       return staveNote
     })
@@ -56,5 +59,5 @@ export function InteractiveStaff(props: Props) {
     voice.draw(context, stave)
   }, [musicKey, chords])
 
-  return <div id={'vexflow-output'} />
+  return <div id={'vexflow-output'}/>
 }

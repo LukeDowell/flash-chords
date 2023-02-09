@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {styled} from "@mui/material/styles";
 import {InteractiveStaff} from "@/components/interactivestaff/InteractiveStaff";
 import MIDIPiano from "@/lib/music/MIDIPiano";
@@ -14,6 +14,10 @@ const StyledRoot = styled('div')({
 
 const StaffContainer = styled('div')({
   width: '90vw',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  border: '1px solid red'
 })
 
 const ErrorMessage = styled('div')({
@@ -65,12 +69,12 @@ export default function ProgressionPage({}) {
 
   return <StyledRoot>
     <h1>Progression Page</h1>
-    { errorMessage &&
+    {errorMessage &&
       <ErrorMessage>{errorMessage}</ErrorMessage>
     }
-    { !errorMessage &&
+    {!errorMessage &&
       <StaffContainer>
-        { midiPiano && <InteractiveStaff midiPiano={midiPiano} musicKey={getKey('Gb', 'Major')}/> }
+        {midiPiano && <InteractiveStaff midiPiano={midiPiano} musicKey={getKey('Gb', 'Major')}/>}
       </StaffContainer>
     }
   </StyledRoot>

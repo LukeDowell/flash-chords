@@ -1196,3 +1196,6 @@ Some ideas:
     - Switching the chord symbols to roman numerals and vice versa
 
 Tonight is piano lesson night so we will see if I can make enough progress to share by then.
+
+Some stuff is coming to mind, not sure if I have thought or written about this before. If we have a BPM, what does it mean
+to play a "successful" voicing? Maybe a time window around the "perfect" time that someone should play a note? 

@@ -10,7 +10,7 @@ const customJestConfig = {
   collectCoverage: process.env.NODE_ENV === "production",
   resetMocks: true,
   roots: ["<rootDir>/src"],
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  setupFilesAfterEnv: ['<rootDir>/src/jest.setup.tsx'],
   testEnvironment: 'jest-environment-jsdom',
   testMatch: ['**/*.test.[jt]s?(x)'],
   moduleNameMapper: { // Matching paths listed in tsconfig.json

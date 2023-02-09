@@ -1,5 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import MIDIPiano from "@/lib/music/MIDIPiano";
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import CheckIcon from '@mui/icons-material/Check'
 import useInterval from "@/lib/utility";
 import {Close as CloseIcon, Settings as SettingsIcon} from "@mui/icons-material";
@@ -12,9 +11,10 @@ import _ from "lodash";
 import {VoicingHistory, VoicingResult} from "./VoicingHistory";
 import {styled} from "@mui/material/styles";
 import {Staff} from "@/components/staff/Staff";
+import {LinearProgress} from "@mui/material";
+import {MIDIPianoContext} from "@/pages/_app.page";
 
 export interface Props {
-  piano: MIDIPiano,
   initialChord?: Chord,
   initialSettings?: Partial<Settings>
 }
@@ -94,10 +94,10 @@ const ChordSymbolPrompt = styled('div')({
 })
 
 export default function PracticePage({
-                                       piano,
                                        initialChord = generateRandomChord(),
                                        initialSettings = DEFAULT_PRACTICE_SETTINGS
                                      }: Props) {
+  const piano = useContext(MIDIPianoContext)
   const [currentChord, setCurrentChord] = useState<Chord>(initialChord)
   const [timeOfLastSuccess, setTimeOfLastSuccess] = useState(Date.now())
   const [shouldDisplaySuccess, setShouldDisplaySuccess] = useState(false)
@@ -161,9 +161,7 @@ export default function PracticePage({
       {shouldDisplaySuccess && <CheckIcon style={{color: "green"}}/>}
     </ChordSymbolPrompt>
     <Staff chord={currentChord}/>
-    {settings?.timerEnabled && <></>
-      // <LinearProgress className="timer" variant="determinate" value={timerProgress}/>
-    }
+    {settings?.timerEnabled && <LinearProgress className="timer" variant="determinate" value={timerProgress}/>}
     <VoicingHistory voicingResults={voicingResults}/>
   </StyledRoot>
 }
