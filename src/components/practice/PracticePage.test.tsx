@@ -33,7 +33,7 @@ describe("the practice page", () => {
       midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"].map(toNote)))
     })
 
-    await waitFor(() => expect(screen.queryByTestId('CheckIcon')).not.toBeInTheDocument(), {timeout: 2000})
+    await waitFor(() => expect(screen.queryByTestId('CheckIcon')).not.toBeInTheDocument())
   })
 
   it('should show the settings window after clicking the settings button', async () => {

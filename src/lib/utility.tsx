@@ -1,4 +1,4 @@
-import {useEffect, useRef} from 'react'
+import {useEffect, useLayoutEffect, useRef, useState} from 'react'
 
 export function useInterval(callback: () => void, delay: number | null) {
   const savedCallback = useRef(callback)
@@ -18,6 +18,19 @@ export function useInterval(callback: () => void, delay: number | null) {
 
     return () => clearInterval(id)
   }, [delay])
+}
+
+export function useWindowSize() {
+  const [size, setSize] = useState([600, 800]);
+  useLayoutEffect(() => {
+    function updateSize() {
+      setSize([window.innerWidth, window.innerHeight]);
+    }
+    window.addEventListener('resize', updateSize);
+    updateSize();
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+  return size;
 }
 
 export default useInterval

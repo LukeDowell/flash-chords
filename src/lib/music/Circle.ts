@@ -52,11 +52,11 @@ export class FChord {
    */
   readonly extensions: Array<[ChordDegree, Third]>
 
-  constructor(root: Note,
+  constructor(rootNote: string,
               quality: ChordQuality = "Major",
               seventhQuality: SeventhQuality | null = null,
               extensions: Array<[ChordDegree, Third]> = []) {
-    this.root = root
+    this.root = Note.of(rootNote)
     this.quality = quality
     this.seventhQuality = seventhQuality
     this.extensions = extensions
@@ -70,7 +70,7 @@ export class FChord {
     const thirds: Third[] = intervals.slice(0, 2).filter((n): n is Third => n >= 3 || n <= 4)
     const quality = _.invert(FChordQualities)[thirds.toString()] as ChordQuality
 
-    return new FChord(notes[0], quality)
+    return new FChord(notes[0].withOctave(0).toString(), quality)
   }
 
   /**

@@ -1199,3 +1199,13 @@ Tonight is piano lesson night so we will see if I can make enough progress to sh
 
 Some stuff is coming to mind, not sure if I have thought or written about this before. If we have a BPM, what does it mean
 to play a "successful" voicing? Maybe a time window around the "perfect" time that someone should play a note? 
+
+## 02/09/2023
+
+I have hit a bit of a block recently with `InteractiveStaff`, I haven't been sure how I want to go about it. I think 
+I am going to try having it be a component that gets created, "plays out", and returns a final result via a callback. I
+am hoping that style lends itself well for code reusability across the different kinds of practice sessions I want to create.
+
+Not totally sure how it'll feel in terms of interacting with the UI while sitting at a piano, I should keep in mind that
+having to turn and use a mouse or keyboard or whatever might be a little annoying. Maybe some UI prompts that indicate
+to the user they can pause / play / restart with certain key combinations? 

@@ -4,23 +4,23 @@ import {MAJOR_SCALE} from "@/lib/music/Scale";
 
 describe('a chord', () => {
   it('should calculate its intervals', () => {
-    expect(new FChord(Note.of('C'), "Major").intervals()).toStrictEqual([4, 3])
-    expect(new FChord(Note.of('C'), "Minor").intervals()).toStrictEqual([3, 4])
-    expect(new FChord(Note.of('C'), "Diminished").intervals()).toStrictEqual([3, 3])
-    expect(new FChord(Note.of('C'), "Augmented").intervals()).toStrictEqual([4, 4])
+    expect(new FChord('C', "Major").intervals()).toStrictEqual([4, 3])
+    expect(new FChord('C', "Minor").intervals()).toStrictEqual([3, 4])
+    expect(new FChord('C', "Diminished").intervals()).toStrictEqual([3, 3])
+    expect(new FChord('C', "Augmented").intervals()).toStrictEqual([4, 4])
   })
 
   it('should be parsed from a set of notes', () => {
-    expect(FChord.fromNotes(['C', 'E', 'G'].map(Note.of))).toStrictEqual(new FChord(Note.of('C'), 'Major'))
-    expect(FChord.fromNotes(['F', 'A', 'C'].map(Note.of))).toStrictEqual(new FChord(Note.of('F'), 'Major'))
-    expect(FChord.fromNotes(['G', 'Bb', 'D'].map(Note.of))).toStrictEqual(new FChord(Note.of('G'), 'Minor'))
-    expect(FChord.fromNotes(['Db', 'F', 'Ab'].map(Note.of))).toStrictEqual(new FChord(Note.of('Db'), 'Major'))
-    expect(FChord.fromNotes(['B#', 'D#', 'F#'].map(Note.of))).toStrictEqual(new FChord(Note.of('B#'), 'Diminished'))
+    expect(FChord.fromNotes(['C', 'E', 'G'].map(Note.of))).toStrictEqual(new FChord('C', 'Major'))
+    expect(FChord.fromNotes(['F', 'A', 'C'].map(Note.of))).toStrictEqual(new FChord('F', 'Major'))
+    expect(FChord.fromNotes(['G', 'Bb', 'D'].map(Note.of))).toStrictEqual(new FChord('G', 'Minor'))
+    expect(FChord.fromNotes(['Db', 'F', 'Ab'].map(Note.of))).toStrictEqual(new FChord('Db', 'Major'))
+    expect(FChord.fromNotes(['B#', 'D#', 'F#'].map(Note.of))).toStrictEqual(new FChord('B#', 'Diminished'))
   })
 
   it('should know the notes that are required for a voicing, provided a key', () => {
-    expect(new FChord(Note.of('Db'), 'Major').notesInKey(getKey('Db', 'Major'))).toStrictEqual(['Db', 'F', 'Ab'].map(Note.of))
-    expect(new FChord(Note.of('F#'), 'Diminished').notesInKey(getKey('G', 'Major'))).toStrictEqual(['F#', 'A', 'C'].map(Note.of))
+    expect(new FChord('Db', 'Major').notesInKey(getKey('Db', 'Major'))).toStrictEqual(['Db', 'F', 'Ab'].map(Note.of))
+    expect(new FChord('F#', 'Diminished').notesInKey(getKey('G', 'Major'))).toStrictEqual(['F#', 'A', 'C'].map(Note.of))
   })
 })
 
@@ -93,22 +93,22 @@ describe('the circle of fifths', () => {
 describe('diatonic chords', () => {
   it('should get the diatonic chords for C major', () => {
     const chords = diatonicChords(getKey('C', 'Major'))
-    expect(chords).toContainEqual(new FChord(Note.of('C'), 'Major'))
-    expect(chords).toContainEqual(new FChord(Note.of('B'), 'Diminished'))
-    expect(chords).toContainEqual(new FChord(Note.of('E'), 'Minor'))
-    expect(chords).toContainEqual(new FChord(Note.of('F'), 'Major'))
+    expect(chords).toContainEqual(new FChord('C', 'Major'))
+    expect(chords).toContainEqual(new FChord('B', 'Diminished'))
+    expect(chords).toContainEqual(new FChord('E', 'Minor'))
+    expect(chords).toContainEqual(new FChord('F', 'Major'))
   })
 
   it('should get the diatonic chords for F major', () => {
     const chords = diatonicChords(getKey('F', 'Major'))
-    expect(chords).toContainEqual(new FChord(Note.of('F'), 'Major'))
-    expect(chords).toContainEqual(new FChord(Note.of('Bb'), 'Major'))
-    expect(chords).toContainEqual(new FChord(Note.of('A'), 'Minor'))
-    expect(chords).toContainEqual(new FChord(Note.of('C'), 'Major'))
+    expect(chords).toContainEqual(new FChord('F', 'Major'))
+    expect(chords).toContainEqual(new FChord('Bb', 'Major'))
+    expect(chords).toContainEqual(new FChord('A', 'Minor'))
+    expect(chords).toContainEqual(new FChord('C', 'Major'))
   })
 
   it('should get the diatonic chords for Cb major', () => {
     const chords = diatonicChords(getKey('Cb', 'Major'))
-    expect(chords).toContainEqual(new FChord(Note.of('Cb'), 'Major'))
+    expect(chords).toContainEqual(new FChord('Cb', 'Major'))
   })
 })

@@ -1,30 +1,47 @@
-import React, {useEffect} from "react"
-import MIDIPiano from "@/lib/music/MIDIPiano";
+import React, {useContext, useEffect} from "react"
 import {FChord, FKey, getKey} from "@/lib/music/Circle";
 import {ChordSymbol, Formatter, Renderer, Stave, StaveNote, Voice} from "vexflow";
 import {Note, placeOnOctave} from "@/lib/music/Note";
+import {MIDIPianoContext} from "@/pages/_app.page";
+import _ from "lodash";
+import {chordToSymbol} from "@/lib/music/ChordSymbol";
+import {useWindowSize} from "@/lib/utility";
+import {styled} from "@mui/material/styles";
 
-interface Props {
-  midiPiano: MIDIPiano,
-  musicKey?: FKey,
-  chords?: FChord[]
+
+type Result = {
+
+  /** Instant that the game started */
+  gameStartTime: number,
+
+  /** Array of Note + instant-note-was-played tuples */
+  notesPlayed: Array<[Note, number]>,
+
+
 }
 
-export function InteractiveStaff(props: Props) {
-  const {
-    midiPiano,
-    musicKey = getKey('C', 'Major'),
-    chords = [
-      new FChord(Note.of('Db'), 'Major'),
-      new FChord(Note.of('Eb'), 'Minor'),
-      new FChord(Note.of('Ab'), 'Major'),
-      new FChord(Note.of('Db'), 'Major'),
-    ]
-  } = props
+interface Props {
+  musicKey?: FKey,
+  chords?: FChord[],
+  callback?: (r: Result) => any,
+}
 
+export function InteractiveStaff({
+                                   musicKey = getKey('C', 'Major'),
+                                   chords = []
+                                 }: Props) {
+  const piano = useContext(MIDIPianoContext)
+  const [windowWidth, windowHeight] = useWindowSize()
 
   useEffect(() => {
-  }, [midiPiano])
+    const callback = (activeNotes: Note[]) => {
+
+    }
+
+    const id = _.uniqueId('practice-page-')
+    piano.setListener(id, callback)
+    return () => piano.removeListener(id)
+  }, [piano])
 
   useEffect(() => {
     // Grab div and wipe it
@@ -34,30 +51,41 @@ export function InteractiveStaff(props: Props) {
     // Set up renderer and drawing context
     const renderer = new Renderer(renderDiv, Renderer.Backends.SVG)
     const context = renderer.getContext()
-    context.resize(900, 300)
+    context.resize(windowWidth - (windowWidth / 18), windowWidth / 4)
+    context.scale(1.5, 1.5)
 
     // Build a stave
-    const stave = new Stave(10, 10, 500)
-    stave.addClef('treble').addTimeSignature('4/4')
+    const keySignatureStaveSize = windowWidth / 8
+    const keySignatureStave = new Stave(0, 0, keySignatureStaveSize)
+    keySignatureStave.addClef('treble').addTimeSignature('4/4')
       .addKeySignature(musicKey.root.withOctave(undefined).toString())
+    keySignatureStave.setContext(context).draw()
 
-    // Build notes
-    const staveNotes = chords.map(chord => {
-      const notes = chord.notesInKey(musicKey)
-      const symbol = new ChordSymbol().setFontSize(14).addGlyphOrText(notes[0].withOctave(undefined).toString())
+    // Additional stave per chord
+    chords?.forEach((c, i) => {
+      const staveWidth = keySignatureStaveSize * (i + 1)
+      const chordStave = new Stave(staveWidth, 0, windowWidth / 8)
+      chordStave.setContext(context).draw()
+
+      const notes = c.notesInKey(musicKey)
+      const symbol = new ChordSymbol().setFontSize(14).addGlyphOrText(chordToSymbol(c))
       const formattedNotes = placeOnOctave(4, notes).map(n => `${n.root.concat(n.accidental?.symbol || "")}/${n.octave}`)
-      const staveNote = new StaveNote({keys: formattedNotes, duration: 'q', auto_stem: true});
+      const staveNote = new StaveNote({keys: formattedNotes, duration: 'w', auto_stem: true});
       staveNote.addModifier(symbol)
-      return staveNote
+
+      const voice = new Voice({num_beats: 4, beat_value: 4})
+      voice.addTickables([staveNote])
+
+      new Formatter().joinVoices([voice]).format([voice], staveWidth)
+      voice.draw(context, chordStave)
     })
 
-    const voice = new Voice({num_beats: 4, beat_value: 4})
-    voice.addTickables(staveNotes)
 
-    new Formatter().joinVoices([voice]).format([voice], 400)
-    stave.setContext(context).draw()
-    voice.draw(context, stave)
-  }, [musicKey, chords])
+  }, [musicKey, chords, windowHeight, windowWidth])
 
-  return <div id={'vexflow-output'}/>
+  return <VexflowOutput id={'vexflow-output'} />
 }
+
+const VexflowOutput = styled('div')({
+  border: '1px solid black'
+})

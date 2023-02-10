@@ -123,8 +123,9 @@ export default function PracticePage({
         generateNewChord()
       }
     };
-    piano.setListener("PracticePage", callback)
-    return () => piano.removeListener("PracticePage")
+    const id = _.uniqueId('practice-page-')
+    piano.setListener(id, callback)
+    return () => piano.removeListener(id)
   }, [currentChord, piano, generateNewChord, voicingResults])
 
   useInterval(() => {
