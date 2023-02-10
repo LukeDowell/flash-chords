@@ -1,5 +1,4 @@
 import {FChord} from "@/lib/music/Circle";
-import {Note} from "@/lib/music/Note";
 
 export const chordToSymbol = (chord: FChord): string => {
   const root = `${chord.root.root}${chord.root.accidental?.symbol || ""}`
@@ -14,5 +13,5 @@ export const chordToSymbol = (chord: FChord): string => {
 }
 
 export const symbolToChord = (symbol: string): FChord => {
-  return new FChord(Note.of('C'), 'Major')
+  return new FChord('C', 'Major')
 }
