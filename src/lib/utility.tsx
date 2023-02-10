@@ -1,4 +1,4 @@
-import {useEffect, useLayoutEffect, useRef, useState} from 'react'
+import {useEffect, useRef, useState} from 'react'
 
 export function useInterval(callback: () => void, delay: number | null) {
   const savedCallback = useRef(callback)
@@ -22,7 +22,7 @@ export function useInterval(callback: () => void, delay: number | null) {
 
 export function useWindowSize() {
   const [size, setSize] = useState([600, 800]);
-  useLayoutEffect(() => {
+  useEffect(() => {
     function updateSize() {
       setSize([window.innerWidth, window.innerHeight]);
     }

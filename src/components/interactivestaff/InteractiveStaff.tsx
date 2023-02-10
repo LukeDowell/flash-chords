@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from "react"
+import React, {useContext, useEffect, useState} from "react"
 import {FChord, FKey, getKey} from "@/lib/music/Circle";
 import {ChordSymbol, Formatter, Renderer, Stave, StaveNote, Voice} from "vexflow";
 import {Note, placeOnOctave} from "@/lib/music/Note";
@@ -16,22 +16,31 @@ type Result = {
 
   /** Array of Note + instant-note-was-played tuples */
   notesPlayed: Array<[Note, number]>,
+}
 
-
+type Config = {
+  beatsPerMinute?: number
 }
 
 interface Props {
   musicKey?: FKey,
   chords?: FChord[],
   callback?: (r: Result) => any,
+  config?: Config
 }
 
-export function InteractiveStaff({
-                                   musicKey = getKey('C', 'Major'),
-                                   chords = []
-                                 }: Props) {
+export function InteractiveStaff(props: Props) {
+  const {
+    musicKey = getKey('C', 'Major'),
+    chords = [],
+    config = {
+      beatsPerMinute: props?.config?.beatsPerMinute || 60,
+    }
+  } = props
+
   const piano = useContext(MIDIPianoContext)
   const [windowWidth, windowHeight] = useWindowSize()
+  const [gameStartTime, setGameStartTime] = useState<number | undefined>(undefined)
 
   useEffect(() => {
     const callback = (activeNotes: Note[]) => {
@@ -52,7 +61,7 @@ export function InteractiveStaff({
     const renderer = new Renderer(renderDiv, Renderer.Backends.SVG)
     const context = renderer.getContext()
     context.resize(windowWidth - (windowWidth / 18), windowWidth / 4)
-    context.scale(1.5, 1.5)
+    context.scale(1.25, 1.25)
 
     // Build a stave
     const keySignatureStaveSize = windowWidth / 8
@@ -68,7 +77,7 @@ export function InteractiveStaff({
       chordStave.setContext(context).draw()
 
       const notes = c.notesInKey(musicKey)
-      const symbol = new ChordSymbol().setFontSize(14).addGlyphOrText(chordToSymbol(c))
+      const symbol = new ChordSymbol().setFontSize(16).addGlyphOrText(chordToSymbol(c))
       const formattedNotes = placeOnOctave(4, notes).map(n => `${n.root.concat(n.accidental?.symbol || "")}/${n.octave}`)
       const staveNote = new StaveNote({keys: formattedNotes, duration: 'w', auto_stem: true});
       staveNote.addModifier(symbol)
@@ -79,8 +88,6 @@ export function InteractiveStaff({
       new Formatter().joinVoices([voice]).format([voice], staveWidth)
       voice.draw(context, chordStave)
     })
-
-
   }, [musicKey, chords, windowHeight, windowWidth])
 
   return <VexflowOutput id={'vexflow-output'} />
