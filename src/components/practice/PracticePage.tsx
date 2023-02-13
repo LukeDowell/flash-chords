@@ -155,7 +155,7 @@ export default function PracticePage({
       }
     </div>
     {isSettingsOpen &&
-      <PracticeSettings settings={settings} onSettingsUpdate={setSettings}/>
+        <PracticeSettings settings={settings} onSettingsUpdate={setSettings}/>
     }
     <ChordSymbolPrompt>
       <h2 className="current-chord-symbol">{toSymbol(currentChord)}</h2>

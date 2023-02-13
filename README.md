@@ -1208,4 +1208,4 @@ am hoping that style lends itself well for code reusability across the different
 
 Not totally sure how it'll feel in terms of interacting with the UI while sitting at a piano, I should keep in mind that
 having to turn and use a mouse or keyboard or whatever might be a little annoying. Maybe some UI prompts that indicate
-to the user they can pause / play / restart with certain key combinations? 
+to the user they can pause / play / restart with certain key combinations?

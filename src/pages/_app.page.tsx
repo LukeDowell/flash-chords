@@ -59,7 +59,7 @@ export default function App({
     <CacheProvider value={emotionCache}>
       <CssBaseline/>
       {errorMessage.length > 0 &&
-        <h3>{errorMessage}</h3>
+          <h3>{errorMessage}</h3>
       }
       <MIDIPianoContext.Provider value={midiPiano}>
         <Component {...pageProps} />

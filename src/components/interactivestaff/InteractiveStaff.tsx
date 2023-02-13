@@ -90,7 +90,7 @@ export function InteractiveStaff(props: Props) {
     })
   }, [musicKey, chords, windowHeight, windowWidth])
 
-  return <VexflowOutput id={'vexflow-output'} />
+  return <VexflowOutput id={'vexflow-output'}/>
 }
 
 const VexflowOutput = styled('div')({

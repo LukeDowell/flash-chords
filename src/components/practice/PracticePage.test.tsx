@@ -88,6 +88,7 @@ describe("the practice page", () => {
         data: Uint8Array.of(MIDI.KEY_DOWN, n + MIDI_KEYBOARD_OFFSET, 100)
       }
     })
+
     const initialChord: Chord = {
       accidental: FLAT,
       quality: "Minor",
@@ -95,7 +96,7 @@ describe("the practice page", () => {
       seventh: "Minor"
     }
 
-    const [p, pianoEmitter] = midiRender(<PracticePage initialChord={initialChord}/>)
+    const [_, pianoEmitter] = midiRender(<PracticePage initialChord={initialChord}/>)
 
     await act(() => events.forEach((e) => pianoEmitter.call(e, e as WebMidi.MIDIMessageEvent)))
     await waitFor(() => expect(screen.getByTestId('CheckIcon')).toBeInTheDocument())

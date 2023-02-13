@@ -5,7 +5,7 @@ import {FChord} from "@/lib/music/Circle";
 
 describe('an interactive staff', () => {
   it('should render', () => {
-    render(<InteractiveStaff />)
+    render(<InteractiveStaff/>)
   })
 
   it('should render chord symbols', async () => {
