@@ -9,6 +9,7 @@ import MIDIPiano from "@/lib/music/MIDIPiano";
 
 const clientSideEmotionCache = createEmotionCache()
 export const MIDIPianoContext = createContext(new MIDIPiano())
+export const MidiContext = createContext<WebMidi.MIDIInput | undefined>(undefined)
 
 export default function App({
                               Component,
@@ -18,6 +19,7 @@ export default function App({
 
   const [hasLoadedMidi, setHasLoadedMidi] = useState(false)
   const [midiPiano, setMidiPiano] = useState<MIDIPiano>(new MIDIPiano())
+  const [midiContext, setMidiContext] = useState<WebMidi.MIDIInput | undefined>(undefined)
   const [midiAccess, setMidiAccess] = useState<WebMidi.MIDIAccess | undefined>(undefined)
   const [isCompatibleBrowser, setIsCompatibleBrowser] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string>("")
@@ -34,6 +36,7 @@ export default function App({
         const firstInput = m.inputs.get(firstInputKey)
         if (firstInput) {
           const piano = new MIDIPiano(firstInput)
+          setMidiContext(firstInput)
           setMidiPiano(piano)
           setHasLoadedMidi(true)
           setErrorMessage("")
@@ -48,6 +51,8 @@ export default function App({
   }, [hasLoadedMidi, midiPiano])
 
   useEffect(() => {
+    console.log(`Midi Piano`, midiPiano)
+    console.log(`Midi Context`, midiContext)
     if (!midiAccess && !isCompatibleBrowser) {
       setErrorMessage("Your browser does not provide MIDI access, please use Chrome, Safari or Edge on a desktop or android device")
     } else if (!midiPiano && midiAccess && isCompatibleBrowser) {
@@ -59,10 +64,12 @@ export default function App({
     <CacheProvider value={emotionCache}>
       <CssBaseline/>
       {errorMessage.length > 0 &&
-          <h3>{errorMessage}</h3>
+        <h3>{errorMessage}</h3>
       }
       <MIDIPianoContext.Provider value={midiPiano}>
-        <Component {...pageProps} />
+        <MidiContext.Provider value={midiContext}>
+          <Component {...pageProps} />
+        </MidiContext.Provider>
       </MIDIPianoContext.Provider>
     </CacheProvider>
   </>

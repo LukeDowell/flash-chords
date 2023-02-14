@@ -3,9 +3,9 @@ import {act, screen, waitFor} from "@testing-library/react";
 import PracticePage from "@/components/practice/PracticePage";
 import {MIDI, MIDI_KEYBOARD_OFFSET} from "@/lib/music/MIDIPiano";
 import userEvent from "@testing-library/user-event";
-import {Chord, toChord, toSymbol} from "@/lib/music/Chord";
-import {FLAT, toNote} from "@/lib/music/Note";
+import {findNoteOnKeyboard, toNote} from "@/lib/music/Note";
 import {midiRender} from "../../jest.setup";
+import {FChord, getKey} from "@/lib/music/Circle";
 
 
 describe("the practice page", () => {
@@ -14,8 +14,8 @@ describe("the practice page", () => {
   })
 
   it('should display feedback when the user correctly voices a chord', async () => {
-    const initialChord: Chord = {root: "C", quality: "Major"}
-    const [midiPiano] = midiRender(<PracticePage initialChord={initialChord}/>)
+    const [midiPiano, _, screen] = midiRender(<PracticePage initialChord={new FChord('C', 'Major')}
+                                                            initialKey={getKey('C', 'Major')}/>)
 
     await act(() => {
       midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"].map(toNote)))
@@ -25,8 +25,7 @@ describe("the practice page", () => {
   })
 
   it('should not accept the same chord symbol twice in a row', async () => {
-    const initialChord: Chord = {root: "C", quality: "Major"}
-    const [midiPiano] = midiRender(<PracticePage initialChord={initialChord}/>)
+    const [midiPiano, _, screen] = midiRender(<PracticePage initialChord={new FChord('C', 'Major')}/>)
 
     await act(async () => {
       midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"].map(toNote)))
@@ -57,16 +56,16 @@ describe("the practice page", () => {
   })
 
   it('should show the correct notes for a chord if the user fails to enter a valid voicing in time', async () => {
-    const initialChord: Chord = {root: "C", quality: "Major"}
+    const initialChord = new FChord('C', 'Major')
     const settings = {
       timerEnabled: true,
-      timerMilliseconds: 1
+      timerMilliseconds: 100
     }
-    midiRender(<PracticePage initialChord={initialChord} initialSettings={settings}/>)
+    const [p, i, screen] = midiRender(<PracticePage initialChord={initialChord} initialKey={getKey('C', 'Major')}
+                                                    initialSettings={settings}/>)
 
     await waitFor(() => {
-      expect(screen.getByText(toSymbol(initialChord))).toBeInTheDocument()
-      expect(screen.getByText(/C, E, G/)).toBeInTheDocument()
+      expect(screen.getByText("C, E, G")).toBeInTheDocument()
     })
   })
 
@@ -76,27 +75,20 @@ describe("the practice page", () => {
       timerMilliseconds: 1
     }
 
-    const initialChord = toChord("B#dim")
-    midiRender(<PracticePage initialChord={initialChord} initialSettings={settings}/>)
+    midiRender(<PracticePage initialChord={new FChord('B#', 'Diminished')} initialSettings={settings}/>)
 
     await waitFor(() => expect(screen.getByTestId("B#dim-invalid-voicing")).toBeInTheDocument())
   })
 
   it('should be able to successfully play a chord via a midi piano', async () => {
-    const events = [13, 16, 20, 23].map((n): Partial<WebMidi.MIDIMessageEvent> => {
+    const events = ['B', 'D', 'F'].map(toNote).map(findNoteOnKeyboard).map((n): Partial<WebMidi.MIDIMessageEvent> => {
       return {
         data: Uint8Array.of(MIDI.KEY_DOWN, n + MIDI_KEYBOARD_OFFSET, 100)
       }
     })
 
-    const initialChord: Chord = {
-      accidental: FLAT,
-      quality: "Minor",
-      root: "B",
-      seventh: "Minor"
-    }
-
-    const [_, pianoEmitter] = midiRender(<PracticePage initialChord={initialChord}/>)
+    const [_, pianoEmitter, screen] = midiRender(<PracticePage initialChord={new FChord('B', 'Diminished')}
+                                                               initialKey={getKey('C', 'Major')}/>)
 
     await act(() => events.forEach((e) => pianoEmitter.call(e, e as WebMidi.MIDIMessageEvent)))
     await waitFor(() => expect(screen.getByTestId('CheckIcon')).toBeInTheDocument())

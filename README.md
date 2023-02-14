@@ -1209,3 +1209,17 @@ am hoping that style lends itself well for code reusability across the different
 Not totally sure how it'll feel in terms of interacting with the UI while sitting at a piano, I should keep in mind that
 having to turn and use a mouse or keyboard or whatever might be a little annoying. Maybe some UI prompts that indicate
 to the user they can pause / play / restart with certain key combinations?
+
+## 02/13/2023
+
+I realized that I had no reason to be passing around a single instance of a MIDI piano. Instead, I am just going to pass
+around the input itself in the global context provider. That'll allow me to stop doing the weird ceremony of setting a
+callback with a specific id, and making sure that I clean up the ID later. Instead each instance of a component will
+have it's own history / piano object to work with.
+
+I wonder if the reason I initially did it that way was for testing. If I remove the global MIDI Piano, I'll be able
+to get rid of the weird id-based listener registration in each component, but then I'll have to use the `WebMidi.MIDIInput`
+object for my testing. Maybe that is okay, it shouldn't be too hard to make a test harness that still allows me to 
+operate at the `Note` level. I'm still going to move ahead with the change since the id stuff is bugging me, I don't think
+it's the kind of thing I'd want to have as a pattern if I was running a team. I feel like the cleanup step is too easy
+to forget, and you get weird behavior if you don't know what is wrong, as documented earlier in this journal.

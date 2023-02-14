@@ -5,50 +5,25 @@ import {Close as CloseIcon, Settings as SettingsIcon} from "@mui/icons-material"
 import {PracticeSettings} from "@/components/settings/PracticeSettings";
 import LogoSvg from '@/components/images/Icon'
 import {DEFAULT_PRACTICE_SETTINGS, Settings} from "@/components/settings/Settings";
-import {Chord, ChordQuality, generateRandomChord, isValidVoicing, SeventhQuality, toSymbol} from "@/lib/music/Chord";
-import {Accidental, FLAT, Note, Root, SHARP} from "@/lib/music/Note";
+import {Note} from "@/lib/music/Note";
 import _ from "lodash";
 import {VoicingHistory, VoicingResult} from "./VoicingHistory";
 import {styled} from "@mui/material/styles";
-import {Staff} from "@/components/staff/Staff";
 import {LinearProgress} from "@mui/material";
 import {MIDIPianoContext} from "@/pages/_app.page";
+import {CIRCLE_OF_FIFTHS, diatonicChords, FChord, FKey, getKey, isValidVoicingForChord} from "@/lib/music/Circle";
+import {chordToSymbol} from "@/lib/music/ChordSymbol";
+import {InteractiveStaff} from "@/components/interactivestaff/InteractiveStaff";
 
 export interface Props {
-  initialChord?: Chord,
+  initialChord?: FChord,
+  initialKey?: FKey,
   initialSettings?: Partial<Settings>
 }
 
-export const generateChordFromSettings = (settings: Settings) => {
-  if (settings.activeKey) {
-    const chords = settings.activeKey.diatonicChords
-    return chords[Math.floor(Math.random() * chords.length)]
-  }
-
-  const roots = ["A", "B", "C", "D", "E", "F", "G"] as Root[]
-  const qualities: Array<ChordQuality> = []
-  const accidentals: Array<Accidental> = []
-  const addedThirds: Array<SeventhQuality> = []
-
-  if (!settings.majorEnabled && !settings.minorEnabled) {
-    qualities.push("Major")
-  } else {
-    if (settings.minorEnabled) qualities.push("Minor")
-    if (settings.majorEnabled) qualities.push("Major")
-  }
-
-  if (settings.flatRootsEnabled) accidentals.push(FLAT)
-  if (settings.sharpRootsEnabled) accidentals.push(SHARP)
-
-  if (settings.seventhsEnabled) {
-    if (settings.minorEnabled) addedThirds.push("Minor")
-    if (settings.majorEnabled) addedThirds.push("Major")
-  }
-
-  if (settings.augmentedEnabled) qualities.push("Augmented")
-  if (settings.diminishedEnabled) qualities.push("Diminished")
-
-  return generateRandomChord(roots, qualities, accidentals, addedThirds)
+export const generateChordFromSettings = (settings: Settings): [FChord, FKey] => {
+  const key = _.sample(CIRCLE_OF_FIFTHS)!!
+  return [_.sample(diatonicChords(key, _.random(1, 2) % 2 === 0))!!, key]
 }
 
 const StyledRoot = styled('div')({
@@ -94,11 +69,13 @@ const ChordSymbolPrompt = styled('div')({
 })
 
 export default function PracticePage({
-                                       initialChord = generateRandomChord(),
+                                       initialChord = new FChord('Db', 'Major'),
+                                       initialKey = getKey('Db', 'Major'),
                                        initialSettings = DEFAULT_PRACTICE_SETTINGS
                                      }: Props) {
   const piano = useContext(MIDIPianoContext)
-  const [currentChord, setCurrentChord] = useState<Chord>(initialChord)
+  const [currentChord, setCurrentChord] = useState<FChord>(initialChord)
+  const [currentKey, setCurrentKey] = useState<FKey>(initialKey)
   const [timeOfLastSuccess, setTimeOfLastSuccess] = useState(Date.now())
   const [shouldDisplaySuccess, setShouldDisplaySuccess] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
@@ -107,19 +84,22 @@ export default function PracticePage({
   const [voicingResults, setVoicingResults] = useState<VoicingResult[]>([])
 
   const generateNewChord = useCallback(() => {
-    let newChord = generateChordFromSettings(settings)
+    let [newChord, newKey] = generateChordFromSettings(settings)
     while (_.isEqual(currentChord, newChord)) {
-      newChord = generateChordFromSettings(settings)
+      [newChord, newKey] = generateChordFromSettings(settings)
     }
     setCurrentChord(newChord)
-  }, [currentChord, settings])
+    setCurrentKey(newKey)
+  }, [currentChord, currentKey, settings])
 
   useEffect(() => {
     const callback = (activeNotes: Note[]) => {
-      if (isValidVoicing(currentChord, activeNotes)) {
+      console.log(activeNotes)
+      if (isValidVoicingForChord(activeNotes, currentChord)) {
+        console.log('yes')
         setShouldDisplaySuccess(true)
         setTimeOfLastSuccess(Date.now())
-        setVoicingResults([...voicingResults, {chord: currentChord, validNotes: activeNotes}])
+        setVoicingResults([...voicingResults, {chord: currentChord, key: currentKey, validNotes: activeNotes}])
         generateNewChord()
       }
     };
@@ -133,17 +113,17 @@ export default function PracticePage({
     if (!inTimeWindow && shouldDisplaySuccess) {
       setShouldDisplaySuccess(false)
     }
-  }, 100)
+  }, 25)
 
   useInterval(() => {
     if (!settings?.timerEnabled) return
     const timeLeft = (timeOfLastSuccess + (settings.timerMilliseconds)) - Date.now()
     if (timeLeft <= 0) {
-      setVoicingResults([...voicingResults, {chord: currentChord, validNotes: []}])
+      setVoicingResults([...voicingResults, {chord: currentChord, key: currentKey, validNotes: []}])
       setTimeOfLastSuccess(Date.now())
       generateNewChord()
     } else setTimerProgress(Math.floor((timeLeft / (settings.timerMilliseconds)) * 100))
-  }, 100)
+  }, 25)
 
   return <StyledRoot>
     <div className="prompt-header">
@@ -155,13 +135,13 @@ export default function PracticePage({
       }
     </div>
     {isSettingsOpen &&
-        <PracticeSettings settings={settings} onSettingsUpdate={setSettings}/>
+      <PracticeSettings settings={settings} onSettingsUpdate={setSettings}/>
     }
     <ChordSymbolPrompt>
-      <h2 className="current-chord-symbol">{toSymbol(currentChord)}</h2>
+      <h2 className="current-chord-symbol">{chordToSymbol(currentChord)}</h2>
       {shouldDisplaySuccess && <CheckIcon style={{color: "green"}}/>}
     </ChordSymbolPrompt>
-    <Staff chord={currentChord}/>
+    <InteractiveStaff musicKey={currentKey} chords={[currentChord]}/>
     {settings?.timerEnabled && <LinearProgress className="timer" variant="determinate" value={timerProgress}/>}
     <VoicingHistory voicingResults={voicingResults}/>
   </StyledRoot>

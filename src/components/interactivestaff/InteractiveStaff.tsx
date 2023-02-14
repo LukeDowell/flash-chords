@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react"
-import {FChord, FKey, getKey} from "@/lib/music/Circle";
+import {FChord, FKey, getKey, notesInKey} from "@/lib/music/Circle";
 import {ChordSymbol, Formatter, Renderer, Stave, StaveNote, Voice} from "vexflow";
 import {Note, placeOnOctave} from "@/lib/music/Note";
 import {MIDIPianoContext} from "@/pages/_app.page";
@@ -76,7 +76,7 @@ export function InteractiveStaff(props: Props) {
       const chordStave = new Stave(staveWidth, 0, windowWidth / 8)
       chordStave.setContext(context).draw()
 
-      const notes = c.notesInKey(musicKey)
+      const notes = notesInKey(c.notes(), musicKey)
       const symbol = new ChordSymbol().setFontSize(16).addGlyphOrText(chordToSymbol(c))
       const formattedNotes = placeOnOctave(4, notes).map(n => `${n.root.concat(n.accidental?.symbol || "")}/${n.octave}`)
       const staveNote = new StaveNote({keys: formattedNotes, duration: 'w', auto_stem: true});

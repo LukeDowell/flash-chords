@@ -2,8 +2,11 @@ import {Accidental, FLAT, getAccidental, KEYBOARD, Note, Root, SHARP, standardiz
 import _ from "lodash";
 
 export type ChordQuality = "Major" | "Minor" | "Augmented" | "Diminished"
-export type SeventhQuality = "Major" | "Minor" | "Half-Diminished"
+export type SeventhQuality = "Major" | "Minor" | "Half-Diminished" | "Fully-Diminished"
 
+/**
+ * @deprecated
+ */
 export interface Chord {
   root: Root
   quality: ChordQuality

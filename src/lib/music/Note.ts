@@ -24,7 +24,7 @@ export class Note {
   }
 
   equalsWithoutOctave(other: Note): boolean {
-    return _.isEqual({...other, octave: undefined}, {...this, octave: undefined})
+    return _.isEqual(other.withOctave(undefined), this.withOctave(undefined))
   }
 
   isEquivalent(other: Note): boolean {

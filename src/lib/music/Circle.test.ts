@@ -1,4 +1,4 @@
-import {circleKeys, diatonicChords, FChord, getKey, stepFrom} from "@/lib/music/Circle";
+import {circleKeys, diatonicChords, FChord, getKey, notesInKey, stepFrom} from "@/lib/music/Circle";
 import {Note} from "@/lib/music/Note";
 import {MAJOR_SCALE} from "@/lib/music/Scale";
 
@@ -19,8 +19,8 @@ describe('a chord', () => {
   })
 
   it('should know the notes that are required for a voicing, provided a key', () => {
-    expect(new FChord('Db', 'Major').notesInKey(getKey('Db', 'Major'))).toStrictEqual(['Db', 'F', 'Ab'].map(Note.of))
-    expect(new FChord('F#', 'Diminished').notesInKey(getKey('G', 'Major'))).toStrictEqual(['F#', 'A', 'C'].map(Note.of))
+    expect(notesInKey(new FChord('Db', 'Major').notes(), getKey('Db', 'Major'))).toStrictEqual(['Db', 'F', 'Ab'].map(Note.of))
+    expect(notesInKey(new FChord('F#', 'Diminished').notes(), getKey('G', 'Major'))).toStrictEqual(['F#', 'A', 'C'].map(Note.of))
   })
 })
 

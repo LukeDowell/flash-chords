@@ -32,10 +32,10 @@ export default class MidiPianoV2 {
   }
 
   private _processMIDIEvent(note: Note, velocity: number, flag: number) {
-    if (flag === MIDI.HEARTBEAT) return
-
-    if (flag === MIDI.KEY_DOWN && velocity !== 0) this._currentActiveNotes.push(note)
-    else if (flag === MIDI.KEY_UP || (flag === MIDI.KEY_DOWN && velocity === 0))
-    else throw new Error(`Unknown MIDI flag ${flag}`)
+    // if (flag === MIDI.HEARTBEAT) return
+    //
+    // if (flag === MIDI.KEY_DOWN && velocity !== 0) this._currentActiveNotes.push(note)
+    // else if (flag === MIDI.KEY_UP || (flag === MIDI.KEY_DOWN && velocity === 0))
+    // else throw new Error(`Unknown MIDI flag ${flag}`)
   }
 }

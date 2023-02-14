@@ -3,8 +3,7 @@ import '@/styles/index.module.css'
 import {styled} from "@mui/material/styles";
 import React from "react";
 import PracticePage from "@/components/practice/PracticePage";
-import {Chord, toChord} from "@/lib/music/Chord";
-import {GetStaticProps} from "next";
+import {FChord, FKey, getKey} from "@/lib/music/Circle";
 
 
 const StyledRoot = styled('div')({
@@ -16,15 +15,15 @@ const StyledRoot = styled('div')({
   height: '1000px',
 })
 
-export const getStaticProps: GetStaticProps = () => {
-  return {
-    props: {
-      initialChord: toChord("Dbmaj7")
-    }
-  }
+interface Props {
+  initialChord?: FChord,
+  initialKey?: FKey
 }
 
-export default function HomePage({initialChord = toChord("Dbmaj7")}: { initialChord?: Chord }) {
+export default function HomePage({
+                                   initialChord = new FChord("Db", 'Major'),
+                                   initialKey = getKey('Db', 'Major')
+                                 }: Props) {
   return (
     <>
       <Head>
@@ -33,7 +32,7 @@ export default function HomePage({initialChord = toChord("Dbmaj7")}: { initialCh
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
       </Head>
       <StyledRoot>
-        <PracticePage initialChord={initialChord}/>
+        <PracticePage initialChord={initialChord} initialKey={initialKey}/>
       </StyledRoot>
     </>
   )

@@ -23,6 +23,13 @@ export const FChordQualities: Record<ChordQuality, Third[]> = {
   "Diminished": [3, 3],
 }
 
+export const FChordSeventhQualities: Record<SeventhQuality, Third> = {
+  "Major": 4,
+  "Minor": 3,
+  "Half-Diminished": 4,
+  "Fully-Diminished": 3
+}
+
 export interface FKey {
   root: Note
   scale: Scale
@@ -62,7 +69,7 @@ export class FChord {
     this.extensions = extensions
   }
 
-  static fromNotes(notes: Note[], seventh: boolean = false): FChord {
+  static fromNotes(notes: Note[]): FChord {
     const intervals: number[] = _.chain(notes).map(standardizeNote)
       .flatMap((n, i, array) => i === array.length - 1 ? [] : stepsBetween(n, array[i + 1]))
       .value()
@@ -78,10 +85,13 @@ export class FChord {
    * on all the provided properties above
    */
   intervals(): number[] {
-    const size = _.max(this.extensions.map(([d, _]) => d)) || FIFTH
+    let size
+    if (this.extensions.length > 0) size = _.max(this.extensions.map(([d, _]) => d))
+    else size = FIFTH + (this.seventhQuality ? 1 : 0)
     const intervals = Array(size).fill(0)
     intervals[THIRD] = FChordQualities[this.quality][THIRD]
     intervals[FIFTH] = FChordQualities[this.quality][FIFTH]
+    if (this.seventhQuality) intervals[SEVENTH] = FChordSeventhQualities[this.seventhQuality]
     this.extensions.forEach(([d, s]) => intervals[d] = s)
     return intervals
   }
@@ -96,15 +106,6 @@ export class FChord {
 
     return [KEYBOARD[index]].concat(semitonesFromRoot.map(s => KEYBOARD[index + s]))
       .map(n => new Note(n.root, n.accidental, this.root.octave ? n.octave : undefined))
-  }
-
-  /**
-   * Tries to format the required notes for this chord based on a key. Doesn't handle naturals yet, beware
-   * of non-diatonic format attempts
-   */
-  notesInKey(key: FKey): Note[] {
-    const standardNotes = this.notes()
-    return standardNotes.map(sn => key.notes.find(kn => sn.isEquivalent(kn)) || sn)
   }
 }
 
@@ -185,6 +186,20 @@ export const diatonicChords = (key: FKey, seventh: boolean = false): FChord[] =>
 
     if (seventh) notes = notes.concat(stepFromItemInArray(n, 6, arr))
 
-    return FChord.fromNotes(notes, seventh)
+    return FChord.fromNotes(notes)
   })
+}
+
+/**
+ * Tries to format the notes based on a key. Doesn't handle naturals yet, beware
+ * of non-diatonic format attempts
+ */
+export function notesInKey(notes: Note[], key: FKey): Note[] {
+  return notes.map(standardizeNote).map(sn => key.notes.find(kn => sn.isEquivalent(kn)) || sn)
+}
+
+export function isValidVoicingForChord(voicing: Note[], chord: FChord): boolean {
+  return chord.notes().every(cn => voicing.some((vn) => {
+    return vn.equalsWithoutOctave(cn)
+  }))
 }
