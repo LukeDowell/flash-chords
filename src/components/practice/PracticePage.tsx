@@ -11,7 +11,7 @@ import {VoicingHistory, VoicingResult} from "./VoicingHistory";
 import {styled} from "@mui/material/styles";
 import {LinearProgress} from "@mui/material";
 import {MIDIPianoContext} from "@/pages/_app.page";
-import {CIRCLE_OF_FIFTHS, diatonicChords, Chord, MusicKey, getKey, isValidVoicingForChord} from "@/lib/music/Circle";
+import {Chord, CIRCLE_OF_FIFTHS, diatonicChords, getKey, isValidVoicingForChord, MusicKey} from "@/lib/music/Circle";
 import {chordToSymbol} from "@/lib/music/ChordSymbol";
 import {InteractiveStaff} from "@/components/interactivestaff/InteractiveStaff";
 

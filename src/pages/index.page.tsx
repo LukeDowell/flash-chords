@@ -3,7 +3,7 @@ import '@/styles/index.module.css'
 import {styled} from "@mui/material/styles";
 import React from "react";
 import PracticePage from "@/components/practice/PracticePage";
-import {Chord, MusicKey, getKey} from "@/lib/music/Circle";
+import {Chord, getKey, MusicKey} from "@/lib/music/Circle";
 
 
 const StyledRoot = styled('div')({

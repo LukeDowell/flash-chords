@@ -1,6 +1,6 @@
 import React from 'react'
 import {styled} from "@mui/material/styles";
-import {KEYBOARD, Note, noteToSymbol, SHARP} from "@/lib/music/Note";
+import {KEYBOARD, Note, SHARP} from "@/lib/music/Note";
 
 interface Props {
   activeNotes: Note[],
@@ -49,10 +49,10 @@ export const Keyboard = ({activeNotes}: Props) => {
     } : {}
 
     return note.accidental?.symbol === SHARP.symbol ?
-      <SpookyNoWidthFloat key={noteToSymbol(note)}>
-        <BlackKey style={activeStyle}>{noteToSymbol(note)}</BlackKey>
+      <SpookyNoWidthFloat key={note.toString()}>
+        <BlackKey style={activeStyle}>{note.toString()}</BlackKey>
       </SpookyNoWidthFloat>
-      : <Key key={noteToSymbol(note)} style={activeStyle}>{noteToSymbol(note)}</Key>
+      : <Key key={note.toString()} style={activeStyle}>{note.toString()}</Key>
   })
 
   return <StyledKeyboard>{keys}</StyledKeyboard>

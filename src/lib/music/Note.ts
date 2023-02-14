@@ -81,8 +81,6 @@ export const getAccidental = (s: string): Accidental | undefined => {
   else return accidentals.pop()
 }
 
-export const noteToSymbol = (n: Note) => `${n.root}${n?.accidental?.symbol || ""}${n.octave || ""}`
-
 export const toNote = (s: string): Note => {
   if (!/^[A-G][#b\u266E]?[#b]?[0-9]?$/g.test(s)) throw new Error(`invalid note format ${s}`)
 
@@ -97,7 +95,10 @@ export const toNote = (s: string): Note => {
   return new Note(root, accidental, octave)
 }
 
-export const notesFromLowestToHighest: Root[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
+/**
+ * TODO revist this, probably not doing what I'd expect anymore
+ */
+const notesFromLowestToHighest: Root[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
 
 const lowerNote = (a: Note, b: Note) => {
   if (a.octave === undefined || b.octave === undefined) throw new Error("cannot compare notes without octaves")

@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react"
-import {Chord, MusicKey, getKey, notesInKey} from "@/lib/music/Circle";
+import {Chord, getKey, MusicKey, notesInKey} from "@/lib/music/Circle";
 import {ChordSymbol, Formatter, Renderer, Stave, StaveNote, Voice} from "vexflow";
 import {Note, placeOnOctave} from "@/lib/music/Note";
 import {MIDIPianoContext} from "@/pages/_app.page";
