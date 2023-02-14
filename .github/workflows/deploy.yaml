@@ -31,7 +31,6 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
 
       - name: Install NPM Dependencies
-        if: steps.build-cache.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: NPM Tests
