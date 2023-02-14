@@ -1,5 +1,3 @@
-import {Key} from "@/lib/music/Keys";
-
 export interface Settings {
   /** Whether or not the chord voicing is timed */
   timerEnabled: boolean,
@@ -18,9 +16,6 @@ export interface Settings {
   diminishedEnabled: boolean,
   halfDiminishedEnabled: boolean,
   dominantEnabled: boolean,
-
-  /** Key specific settings */
-  activeKey: Key | undefined
 }
 
 export const DEFAULT_PRACTICE_SETTINGS = {
@@ -36,5 +31,4 @@ export const DEFAULT_PRACTICE_SETTINGS = {
   diminishedEnabled: true,
   halfDiminishedEnabled: true,
   dominantEnabled: true,
-  activeKey: undefined
 }
