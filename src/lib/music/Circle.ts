@@ -1,5 +1,4 @@
 import {findNoteOnKeyboard, FLAT, KEYBOARD, Note, Root, SHARP, standardizeNote, stepsBetween} from "@/lib/music/Note";
-import {ChordQuality, SeventhQuality} from "@/lib/music/Chord";
 import _ from "lodash";
 import {MAJOR_SCALE, Scale, ScaleType} from "@/lib/music/Scale";
 
@@ -16,12 +15,16 @@ export type Third = 4 | 3
 export const MAJOR_THIRD: Third = 4
 export const MINOR_THIRD: Third = 3
 
+export type ChordQuality = "Major" | "Minor" | "Augmented" | "Diminished"
+
 export const FChordQualities: Record<ChordQuality, Third[]> = {
   "Major": [4, 3],
   "Minor": [3, 4],
   "Augmented": [4, 4],
   "Diminished": [3, 3],
 }
+
+export type SeventhQuality = "Major" | "Minor" | "Half-Diminished" | "Fully-Diminished"
 
 export const FChordSeventhQualities: Record<SeventhQuality, Third> = {
   "Major": 4,

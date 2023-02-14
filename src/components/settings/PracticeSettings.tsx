@@ -1,16 +1,5 @@
-import {
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormLabel,
-  MenuItem,
-  Select,
-  styled,
-  TextField
-} from "@mui/material";
+import {Checkbox, FormControlLabel, FormGroup, FormLabel, styled, TextField} from "@mui/material";
 import {DEFAULT_PRACTICE_SETTINGS, Settings} from "./Settings";
-import {keyOf, KeyQuality, KEYS} from "@/lib/music/Keys";
 
 
 export interface Props {
@@ -109,25 +98,6 @@ export function PracticeSettings({
         <Checkbox checked={settings?.dominantEnabled}
                   onClick={() => onSettingsUpdate({...settings, dominantEnabled: !settings?.dominantEnabled})}/>
       } label="Dominant"/>
-    </FormGroup>
-    <FormGroup>
-      <FormLabel>Key Settings</FormLabel>
-      <FormControl variant="standard">
-        <Select
-          id="key-selection"
-          value={settings?.activeKey?.name || ""}
-          label="Key"
-          onChange={(v) => {
-            const split = v.target.value.split(' ');
-            const keyName = split[0]
-            const keyQuality = split.slice(1, split.length).join(' ') as KeyQuality
-            console.log(`Updating key to be ${keyName} ${keyQuality}`)
-            onSettingsUpdate({...settings, activeKey: keyOf(keyName, keyQuality)})
-          }}
-        >
-          {KEYS.map(k => <MenuItem key={k.name} value={k.name}>{k.name}</MenuItem>)}
-        </Select>
-      </FormControl>
     </FormGroup>
   </StyledRoot>
 }

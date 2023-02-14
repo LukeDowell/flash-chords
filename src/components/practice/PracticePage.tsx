@@ -94,9 +94,7 @@ export default function PracticePage({
 
   useEffect(() => {
     const callback = (activeNotes: Note[]) => {
-      console.log(activeNotes)
       if (isValidVoicingForChord(activeNotes, currentChord)) {
-        console.log('yes')
         setShouldDisplaySuccess(true)
         setTimeOfLastSuccess(Date.now())
         setVoicingResults([...voicingResults, {chord: currentChord, key: currentKey, validNotes: activeNotes}])

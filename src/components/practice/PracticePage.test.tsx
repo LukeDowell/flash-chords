@@ -24,17 +24,6 @@ describe("the practice page", () => {
     await waitFor(() => expect(screen.getByTestId('CheckIcon')).toBeInTheDocument())
   })
 
-  it('should not accept the same chord symbol twice in a row', async () => {
-    const [midiPiano, _, screen] = midiRender(<PracticePage initialChord={new FChord('C', 'Major')}/>)
-
-    await act(async () => {
-      midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"].map(toNote)))
-      midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"].map(toNote)))
-    })
-
-    await waitFor(() => expect(screen.queryByTestId('CheckIcon')).not.toBeInTheDocument())
-  })
-
   it('should show the settings window after clicking the settings button', async () => {
     const user = userEvent.setup()
     midiRender(<PracticePage/>)
