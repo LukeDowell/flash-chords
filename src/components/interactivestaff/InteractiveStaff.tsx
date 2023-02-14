@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react"
-import {FChord, FKey, getKey, notesInKey} from "@/lib/music/Circle";
+import {Chord, MusicKey, getKey, notesInKey} from "@/lib/music/Circle";
 import {ChordSymbol, Formatter, Renderer, Stave, StaveNote, Voice} from "vexflow";
 import {Note, placeOnOctave} from "@/lib/music/Note";
 import {MIDIPianoContext} from "@/pages/_app.page";
@@ -23,8 +23,8 @@ type Config = {
 }
 
 interface Props {
-  musicKey?: FKey,
-  chords?: FChord[],
+  musicKey?: MusicKey,
+  chords?: Chord[],
   callback?: (r: Result) => any,
   config?: Config
 }

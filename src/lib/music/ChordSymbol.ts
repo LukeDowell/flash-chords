@@ -1,6 +1,6 @@
-import {FChord} from "@/lib/music/Circle";
+import {Chord} from "@/lib/music/Circle";
 
-export const chordToSymbol = (chord: FChord): string => {
+export const chordToSymbol = (chord: Chord): string => {
   const root = `${chord.root.root}${chord.root.accidental?.symbol || ""}`
   const triadQuality = {
     "Major": "",
@@ -12,6 +12,6 @@ export const chordToSymbol = (chord: FChord): string => {
   return `${root}${triadQuality}`
 }
 
-export const symbolToChord = (symbol: string): FChord => {
-  return new FChord('C', 'Major')
+export const symbolToChord = (symbol: string): Chord => {
+  return new Chord('C', 'Major')
 }

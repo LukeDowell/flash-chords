@@ -5,7 +5,7 @@ import {MIDI, MIDI_KEYBOARD_OFFSET} from "@/lib/music/MIDIPiano";
 import userEvent from "@testing-library/user-event";
 import {findNoteOnKeyboard, toNote} from "@/lib/music/Note";
 import {midiRender} from "../../jest.setup";
-import {FChord, getKey} from "@/lib/music/Circle";
+import {Chord, getKey} from "@/lib/music/Circle";
 
 
 describe("the practice page", () => {
@@ -14,7 +14,7 @@ describe("the practice page", () => {
   })
 
   it('should display feedback when the user correctly voices a chord', async () => {
-    const [midiPiano, _, screen] = midiRender(<PracticePage initialChord={new FChord('C', 'Major')}
+    const [midiPiano, _, screen] = midiRender(<PracticePage initialChord={new Chord('C', 'Major')}
                                                             initialKey={getKey('C', 'Major')}/>)
 
     await act(() => {
@@ -45,7 +45,7 @@ describe("the practice page", () => {
   })
 
   it('should show the correct notes for a chord if the user fails to enter a valid voicing in time', async () => {
-    const initialChord = new FChord('C', 'Major')
+    const initialChord = new Chord('C', 'Major')
     const settings = {
       timerEnabled: true,
       timerMilliseconds: 100
@@ -64,7 +64,7 @@ describe("the practice page", () => {
       timerMilliseconds: 1
     }
 
-    midiRender(<PracticePage initialChord={new FChord('B#', 'Diminished')} initialSettings={settings}/>)
+    midiRender(<PracticePage initialChord={new Chord('B#', 'Diminished')} initialSettings={settings}/>)
 
     await waitFor(() => expect(screen.getByTestId("B#dim-invalid-voicing")).toBeInTheDocument())
   })
@@ -76,7 +76,7 @@ describe("the practice page", () => {
       }
     })
 
-    const [_, pianoEmitter, screen] = midiRender(<PracticePage initialChord={new FChord('B', 'Diminished')}
+    const [_, pianoEmitter, screen] = midiRender(<PracticePage initialChord={new Chord('B', 'Diminished')}
                                                                initialKey={getKey('C', 'Major')}/>)
 
     await act(() => events.forEach((e) => pianoEmitter.call(e, e as WebMidi.MIDIMessageEvent)))

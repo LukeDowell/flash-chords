@@ -33,13 +33,13 @@ export const FChordSeventhQualities: Record<SeventhQuality, Third> = {
   "Fully-Diminished": 3
 }
 
-export interface FKey {
+export interface MusicKey {
   root: Note
   scale: Scale
   notes: Note[]
 }
 
-export class FChord {
+export class Chord {
   /**
    * The root of a given chord, eg. C or Db or
    */
@@ -72,7 +72,7 @@ export class FChord {
     this.extensions = extensions
   }
 
-  static fromNotes(notes: Note[]): FChord {
+  static fromNotes(notes: Note[]): Chord {
     const intervals: number[] = _.chain(notes).map(standardizeNote)
       .flatMap((n, i, array) => i === array.length - 1 ? [] : stepsBetween(n, array[i + 1]))
       .value()
@@ -80,7 +80,7 @@ export class FChord {
     const thirds: Third[] = intervals.slice(0, 2).filter((n): n is Third => n >= 3 || n <= 4)
     const quality = _.invert(FChordQualities)[thirds.toString()] as ChordQuality
 
-    return new FChord(notes[0].withOctave(0).toString(), quality)
+    return new Chord(notes[0].withOctave(0).toString(), quality)
   }
 
   /**
@@ -134,7 +134,7 @@ export const stepFrom = (r: Root, steps: number): Root => stepFromItemInArray(r,
  * could be considered the index of the circle, with -7 and 7 being
  * Cb and C# respectively
  */
-export const circleKeys = (numAccidentals: number): FKey => {
+export const circleKeys = (numAccidentals: number): MusicKey => {
   let accidentals: Root[] = []
   if (numAccidentals !== 0) {
     accidentals = numAccidentals > 0
@@ -173,13 +173,13 @@ export const CIRCLE_OF_FIFTHS = _.chain(_.range(-7, 7))
   .map(circleKeys)
   .value()
 
-export const getKey = (root: string, scale: ScaleType = "Major"): FKey => {
+export const getKey = (root: string, scale: ScaleType = "Major"): MusicKey => {
   const key = CIRCLE_OF_FIFTHS.find((k) => root === k.root.toString() && k.scale.name === scale);
   if (!key) throw Error(`Unable to find key: ${root.concat(scale)}`)
   return key
 }
 
-export const diatonicChords = (key: FKey, seventh: boolean = false): FChord[] => {
+export const diatonicChords = (key: MusicKey, seventh: boolean = false): Chord[] => {
   return key.notes.map((n, index, arr) => {
     let notes: Note[] = [
       n,
@@ -189,7 +189,7 @@ export const diatonicChords = (key: FKey, seventh: boolean = false): FChord[] =>
 
     if (seventh) notes = notes.concat(stepFromItemInArray(n, 6, arr))
 
-    return FChord.fromNotes(notes)
+    return Chord.fromNotes(notes)
   })
 }
 
@@ -197,11 +197,11 @@ export const diatonicChords = (key: FKey, seventh: boolean = false): FChord[] =>
  * Tries to format the notes based on a key. Doesn't handle naturals yet, beware
  * of non-diatonic format attempts
  */
-export function notesInKey(notes: Note[], key: FKey): Note[] {
+export function notesInKey(notes: Note[], key: MusicKey): Note[] {
   return notes.map(standardizeNote).map(sn => key.notes.find(kn => sn.isEquivalent(kn)) || sn)
 }
 
-export function isValidVoicingForChord(voicing: Note[], chord: FChord): boolean {
+export function isValidVoicingForChord(voicing: Note[], chord: Chord): boolean {
   return chord.notes().every(cn => voicing.some((vn) => {
     return vn.equalsWithoutOctave(cn)
   }))

@@ -2,8 +2,6 @@ import _ from "lodash";
 
 export type Root = "A" | "B" | "C" | "D" | "E" | "F" | "G"
 
-export const ALL_ROOTS: Root[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
-
 export class Note {
   readonly root: Root;
   readonly accidental?: Accidental;
@@ -99,7 +97,6 @@ export const toNote = (s: string): Note => {
   return new Note(root, accidental, octave)
 }
 
-// TODO below is probably wrong
 export const notesFromLowestToHighest: Root[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
 
 const lowerNote = (a: Note, b: Note) => {

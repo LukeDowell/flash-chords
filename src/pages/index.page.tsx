@@ -3,7 +3,7 @@ import '@/styles/index.module.css'
 import {styled} from "@mui/material/styles";
 import React from "react";
 import PracticePage from "@/components/practice/PracticePage";
-import {FChord, FKey, getKey} from "@/lib/music/Circle";
+import {Chord, MusicKey, getKey} from "@/lib/music/Circle";
 
 
 const StyledRoot = styled('div')({
@@ -16,12 +16,12 @@ const StyledRoot = styled('div')({
 })
 
 interface Props {
-  initialChord?: FChord,
-  initialKey?: FKey
+  initialChord?: Chord,
+  initialKey?: MusicKey
 }
 
 export default function HomePage({
-                                   initialChord = new FChord("Db", 'Major'),
+                                   initialChord = new Chord("Db", 'Major'),
                                    initialKey = getKey('Db', 'Major')
                                  }: Props) {
   return (

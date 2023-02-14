@@ -1,7 +1,7 @@
 import React from 'react'
 import {InteractiveStaff} from "@/components/interactivestaff/InteractiveStaff";
 import {render, screen, waitFor} from "@testing-library/react";
-import {FChord} from "@/lib/music/Circle";
+import {Chord} from "@/lib/music/Circle";
 
 describe('an interactive staff', () => {
   it('should render', () => {
@@ -10,10 +10,10 @@ describe('an interactive staff', () => {
 
   it('should render chord symbols', async () => {
     const chords = [
-      new FChord('C', 'Major'),
-      new FChord('D', 'Minor'),
-      new FChord('G', 'Major'),
-      new FChord('C', 'Major'),
+      new Chord('C', 'Major'),
+      new Chord('D', 'Minor'),
+      new Chord('G', 'Major'),
+      new Chord('C', 'Major'),
     ]
 
     render(<InteractiveStaff chords={chords}/>)

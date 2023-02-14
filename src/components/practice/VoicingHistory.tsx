@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {styled} from "@mui/material/styles"
 import {NATURAL, Note} from "@/lib/music/Note";
-import {FChord, FKey, notesInKey} from "@/lib/music/Circle";
+import {Chord, MusicKey, notesInKey} from "@/lib/music/Circle";
 import {chordToSymbol} from "@/lib/music/ChordSymbol";
 
 const StyledRoot = styled('div')({
@@ -54,8 +54,8 @@ const StyledVoicingRoot = styled('div')({
 })
 
 export interface VoicingResult {
-  chord: FChord,
-  key: FKey,
+  chord: Chord,
+  key: MusicKey,
   validNotes: Note[]
 }
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import {styled} from "@mui/material/styles";
 import {InteractiveStaff} from "@/components/interactivestaff/InteractiveStaff";
-import {FChord, getKey} from "@/lib/music/Circle";
+import {Chord, getKey} from "@/lib/music/Circle";
 
 const StyledRoot = styled('div')({
   display: 'flex',
@@ -24,10 +24,10 @@ export default function ProgressionPage({}) {
     <StaffContainer>
       <InteractiveStaff musicKey={getKey('Gb', 'Major')}
                         chords={[
-                          new FChord('Gb', 'Major'),
-                          new FChord('Ab', 'Major'),
-                          new FChord('Bb', 'Minor'),
-                          new FChord('Bb', 'Minor'),
+                          new Chord('Gb', 'Major'),
+                          new Chord('Ab', 'Major'),
+                          new Chord('Bb', 'Minor'),
+                          new Chord('Bb', 'Minor'),
                         ]}
       />
     </StaffContainer>

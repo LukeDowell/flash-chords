@@ -11,17 +11,17 @@ import {VoicingHistory, VoicingResult} from "./VoicingHistory";
 import {styled} from "@mui/material/styles";
 import {LinearProgress} from "@mui/material";
 import {MIDIPianoContext} from "@/pages/_app.page";
-import {CIRCLE_OF_FIFTHS, diatonicChords, FChord, FKey, getKey, isValidVoicingForChord} from "@/lib/music/Circle";
+import {CIRCLE_OF_FIFTHS, diatonicChords, Chord, MusicKey, getKey, isValidVoicingForChord} from "@/lib/music/Circle";
 import {chordToSymbol} from "@/lib/music/ChordSymbol";
 import {InteractiveStaff} from "@/components/interactivestaff/InteractiveStaff";
 
 export interface Props {
-  initialChord?: FChord,
-  initialKey?: FKey,
+  initialChord?: Chord,
+  initialKey?: MusicKey,
   initialSettings?: Partial<Settings>
 }
 
-export const generateChordFromSettings = (settings: Settings): [FChord, FKey] => {
+export const generateChordFromSettings = (settings: Settings): [Chord, MusicKey] => {
   const key = _.sample(CIRCLE_OF_FIFTHS)!!
   return [_.sample(diatonicChords(key, _.random(1, 2) % 2 === 0))!!, key]
 }
@@ -69,13 +69,13 @@ const ChordSymbolPrompt = styled('div')({
 })
 
 export default function PracticePage({
-                                       initialChord = new FChord('Db', 'Major'),
+                                       initialChord = new Chord('Db', 'Major'),
                                        initialKey = getKey('Db', 'Major'),
                                        initialSettings = DEFAULT_PRACTICE_SETTINGS
                                      }: Props) {
   const piano = useContext(MIDIPianoContext)
-  const [currentChord, setCurrentChord] = useState<FChord>(initialChord)
-  const [currentKey, setCurrentKey] = useState<FKey>(initialKey)
+  const [currentChord, setCurrentChord] = useState<Chord>(initialChord)
+  const [currentKey, setCurrentKey] = useState<MusicKey>(initialKey)
   const [timeOfLastSuccess, setTimeOfLastSuccess] = useState(Date.now())
   const [shouldDisplaySuccess, setShouldDisplaySuccess] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
