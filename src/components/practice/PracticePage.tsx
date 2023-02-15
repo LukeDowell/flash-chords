@@ -11,9 +11,9 @@ import {VoicingHistory, VoicingResult} from "./VoicingHistory";
 import {styled} from "@mui/material/styles";
 import {LinearProgress} from "@mui/material";
 import {MIDIPianoContext} from "@/pages/_app.page";
-import {Chord, CIRCLE_OF_FIFTHS, diatonicChords, getKey, isValidVoicingForChord, MusicKey} from "@/lib/music/Circle";
-import {chordToSymbol} from "@/lib/music/ChordSymbol";
+import {CIRCLE_OF_FIFTHS, diatonicChords, getKey, isValidVoicingForChord, MusicKey} from "@/lib/music/Circle";
 import {InteractiveStaff} from "@/components/interactivestaff/InteractiveStaff";
+import {Chord} from "@/lib/music/Chord";
 
 export interface Props {
   initialChord?: Chord,
@@ -136,7 +136,7 @@ export default function PracticePage({
       <PracticeSettings settings={settings} onSettingsUpdate={setSettings}/>
     }
     <ChordSymbolPrompt>
-      <h2 className="current-chord-symbol">{chordToSymbol(currentChord)}</h2>
+      <h2 className="current-chord-symbol">{currentChord.toString()}</h2>
       {shouldDisplaySuccess && <CheckIcon style={{color: "green"}}/>}
     </ChordSymbolPrompt>
     <InteractiveStaff musicKey={currentKey} chords={[currentChord]}/>

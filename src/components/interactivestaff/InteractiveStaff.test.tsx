@@ -1,7 +1,7 @@
 import React from 'react'
 import {InteractiveStaff} from "@/components/interactivestaff/InteractiveStaff";
 import {render, screen, waitFor} from "@testing-library/react";
-import {Chord} from "@/lib/music/Circle";
+import {Chord} from "@/lib/music/Chord";
 
 describe('an interactive staff', () => {
   it('should render', () => {

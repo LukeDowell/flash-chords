@@ -5,7 +5,8 @@ import {MIDI, MIDI_KEYBOARD_OFFSET} from "@/lib/music/MIDIPiano";
 import userEvent from "@testing-library/user-event";
 import {findNoteOnKeyboard, toNote} from "@/lib/music/Note";
 import {midiRender} from "../../jest.setup";
-import {Chord, getKey} from "@/lib/music/Circle";
+import {getKey} from "@/lib/music/Circle";
+import {Chord} from "@/lib/music/Chord";
 
 
 describe("the practice page", () => {

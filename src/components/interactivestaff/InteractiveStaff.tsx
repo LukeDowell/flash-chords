@@ -1,12 +1,12 @@
 import React, {useContext, useEffect, useState} from "react"
-import {Chord, getKey, MusicKey, notesInKey} from "@/lib/music/Circle";
+import {getKey, MusicKey, notesInKey} from "@/lib/music/Circle";
 import {ChordSymbol, Formatter, Renderer, Stave, StaveNote, Voice} from "vexflow";
 import {Note, placeOnOctave} from "@/lib/music/Note";
 import {MIDIPianoContext} from "@/pages/_app.page";
 import _ from "lodash";
-import {chordToSymbol} from "@/lib/music/ChordSymbol";
 import {useWindowSize} from "@/lib/utility";
 import {styled} from "@mui/material/styles";
+import {Chord} from "@/lib/music/Chord";
 
 
 type Result = {
@@ -77,7 +77,7 @@ export function InteractiveStaff(props: Props) {
       chordStave.setContext(context).draw()
 
       const notes = notesInKey(c.notes(), musicKey)
-      const symbol = new ChordSymbol().setFontSize(16).addGlyphOrText(chordToSymbol(c))
+      const symbol = new ChordSymbol().setFontSize(16).addGlyphOrText(c.toString())
       const formattedNotes = placeOnOctave(4, notes).map(n => `${n.root.concat(n.accidental?.symbol || "")}/${n.octave}`)
       const staveNote = new StaveNote({keys: formattedNotes, duration: 'w', auto_stem: true});
       staveNote.addModifier(symbol)

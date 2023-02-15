@@ -1,7 +1,8 @@
 import React from 'react'
 import {styled} from "@mui/material/styles";
 import {InteractiveStaff} from "@/components/interactivestaff/InteractiveStaff";
-import {Chord, getKey} from "@/lib/music/Circle";
+import {getKey} from "@/lib/music/Circle";
+import {Chord} from '@/lib/music/Chord';
 
 const StyledRoot = styled('div')({
   display: 'flex',

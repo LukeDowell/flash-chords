@@ -2,7 +2,8 @@ import * as React from 'react'
 import {VoicingHistory, VoicingResult} from "@/components/practice/VoicingHistory";
 import {render, screen} from "@testing-library/react";
 import {toNote} from "@/lib/music/Note";
-import {Chord, getKey} from "@/lib/music/Circle";
+import {getKey} from "@/lib/music/Circle";
+import {Chord} from "@/lib/music/Chord";
 
 describe('the voicing history component', () => {
   it('should render a voicing', async () => {

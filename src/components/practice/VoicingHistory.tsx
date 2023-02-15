@@ -1,8 +1,8 @@
 import * as React from 'react'
 import {styled} from "@mui/material/styles"
 import {NATURAL, Note} from "@/lib/music/Note";
-import {Chord, MusicKey, notesInKey} from "@/lib/music/Circle";
-import {chordToSymbol} from "@/lib/music/ChordSymbol";
+import {MusicKey, notesInKey} from "@/lib/music/Circle";
+import {Chord} from "@/lib/music/Chord";
 
 const StyledRoot = styled('div')({
   display: "flex",
@@ -69,7 +69,7 @@ const toVoicingComponent = (v: VoicingResult, i: number) => {
     .map(n => n.toString().replace(NATURAL.symbol, ''))
     .join(', ')
   const isSuccess = v.validNotes.length > 0
-  const chordSymbol = chordToSymbol(v.chord)
+  const chordSymbol = v.chord.toString()
 
   const Styled = styled(StyledVoicingRoot)({
     backgroundColor: isSuccess ? "rgba(0, 255, 0, 0.2)" : "rgba(255, 0, 0, 0.2)"
