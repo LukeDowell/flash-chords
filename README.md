@@ -1,8 +1,8 @@
 Chord Notation Practice
 =====================
-[![Test & Build](https://github.com/LukeDowell/flash-chords/actions/workflows/build-main.yaml/badge.svg)](https://github.com/LukeDowell/flash-chords/actions/workflows/build-main.yaml)
+[![Test & Build](https://github.com/LukeDowell/flash-chords/actions/workflows/test-and-build.yaml/badge.svg)](https://github.com/LukeDowell/flash-chords/actions/workflows/test-and-build.yaml)
 
-https://flashchords.app/
+**Live Site - https://flashchords.app/**
 
 ![feature demonstration](./doc/piano-mvp.gif)
 
