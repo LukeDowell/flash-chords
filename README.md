@@ -1,7 +1,6 @@
 Chord Notation Practice
 =====================
 [![Test & Build](https://github.com/LukeDowell/flash-chords/actions/workflows/test-and-build.yaml/badge.svg)](https://github.com/LukeDowell/flash-chords/actions/workflows/test-and-build.yaml)
-[![Deploy to Web](https://github.com/LukeDowell/flash-chords/actions/workflows/deploy.yaml/badge.svg)](https://github.com/LukeDowell/flash-chords/actions/workflows/deploy.yaml)
 
 **Live Site - https://flashchords.app/**
 
@@ -1233,3 +1232,7 @@ I have made some good progress on getting the interactive scroll going:
 
 I think I am going to start tinkering with getting a beat going, with some kind of
 indication on the staff where the beat is at.
+
+
+Got rid of my deploy step, decided to just fully lean into DigitalOcean's app platform and have it integrate with the
+repository.
