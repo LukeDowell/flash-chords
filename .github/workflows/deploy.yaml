@@ -56,7 +56,7 @@ jobs:
         run: |
           doctl registry login --expiry-seconds 600
           docker push registry.digitalocean.com/dowell/flashchords:latest
-          doctl registry garbage-collection start
+          doctl registry garbage-collection start --force
 
       - name: Create Deployment
         run: doctl apps create-deployment $APP_ID
