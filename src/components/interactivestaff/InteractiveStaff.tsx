@@ -51,10 +51,11 @@ export function InteractiveStaff(props: Props) {
     const renderer = new Renderer(renderDiv, Renderer.Backends.SVG)
     const context = renderer.getContext()
     context.resize(windowWidth - (windowWidth / 18), windowWidth / 4)
+    context.scale(1.3, 1.3)
 
     // Build a stave
     const keySignatureStaveSize = windowWidth / 8
-    const staveMarginTop = 50
+    const staveMarginTop = 75
     const keySignatureStave = new Stave(0, staveMarginTop, keySignatureStaveSize)
     keySignatureStave.addClef('treble').addTimeSignature('4/4')
       .addKeySignature(musicKey.root.withOctave(undefined).toString())
@@ -83,5 +84,4 @@ export function InteractiveStaff(props: Props) {
   return <VexflowOutput id={'vexflow-output'}/>
 }
 
-const VexflowOutput = styled('div')({
-})
+const VexflowOutput = styled('div')({})

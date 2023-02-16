@@ -75,6 +75,7 @@ describe('Musical Notes', () => {
     ["Db", "C#"],
     ["C##", "D"],
     ["Fbb", "D#"],
+    ["G#3", "G#3"],
   ])(
     `%s should be standardized to %s`,
     (unstandard, standard) => expect(standardizeNote(toNote(unstandard))).toEqual(toNote(standard))
@@ -131,7 +132,7 @@ describe('Musical Notes', () => {
     expect(Note.of('Gb').isEquivalent(Note.of('F#'))).toBe(true)
     expect(Note.of('C').isEquivalent(Note.of('C'))).toBe(true)
     expect(Note.of('C4').isEquivalent(Note.of('C4'))).toBe(true)
-    expect(Note.of('G#4').isEquivalent(Note.of('Ab5'))).toBe(true)
+    expect(Note.of('G#4').isEquivalent(Note.of('Ab4'))).toBe(true)
   })
 
   it('should not be equivalent', () => {

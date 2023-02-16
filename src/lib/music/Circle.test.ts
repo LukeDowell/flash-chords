@@ -94,8 +94,8 @@ describe('diatonic chords', () => {
 
 describe('notes in key', () => {
   it('should format notes in key', () => {
-    const key = getKey('Db', 'Major')
-    expect(notesInKey(['C#', 'F', 'G#'].map(toNote), key)).toStrictEqual(['Db', 'F', 'Ab'].map(toNote))
-    expect(notesInKey(['C#4', 'F4', 'G#4'].map(toNote), key)).toStrictEqual(['Db4', 'F4', 'Ab4'].map(toNote))
+    expect(notesInKey(['C#', 'F', 'G#'].map(toNote), getKey('Db', 'Major'))).toStrictEqual(['Db', 'F', 'Ab'].map(toNote))
+    expect(notesInKey(['C#4', 'F4', 'G#4'].map(toNote), getKey('Db', 'Major'))).toStrictEqual(['Db4', 'F4', 'Ab4'].map(toNote))
+    expect(notesInKey(['E3', 'G#3', 'B3'].map(toNote), getKey('Cb', 'Major'))).toStrictEqual(['Fb3', 'Ab3', 'Cb4'].map(toNote))
   })
 })

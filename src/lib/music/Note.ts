@@ -133,7 +133,7 @@ export const sortNotes = (notes: Note[]): Note[] => notes.sort((a, b) => {
  */
 export const standardizeNote = (n: Note): Note => {
   if (n.accidental) {
-    const tempNote = new Note(n.root, undefined, 4)
+    const tempNote = new Note(n.root, undefined, n.octave || 4)
     const tempIndex = KEYBOARD.findIndex(kn => _.isEqual(kn, tempNote))
     const newNote = KEYBOARD[tempIndex + n.accidental.mod]
     return new Note(newNote.root, newNote.accidental, n.octave ? newNote.octave : undefined)
