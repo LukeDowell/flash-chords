@@ -1,12 +1,11 @@
-import React, {useContext, useEffect, useState} from "react"
+import React, {useEffect, useState} from "react"
 import {getKey, MusicKey, notesInKey} from "@/lib/music/Circle";
-import {ChordSymbol, Formatter, Renderer, Stave, StaveNote, Voice} from "vexflow";
+import {Formatter, Renderer, Stave, Voice} from "vexflow";
 import {Note, placeOnOctave} from "@/lib/music/Note";
-import {MIDIPianoContext} from "@/pages/_app.page";
-import _ from "lodash";
 import {useWindowSize} from "@/lib/utility";
 import {styled} from "@mui/material/styles";
 import {Chord} from "@/lib/music/Chord";
+import {notesToStaveNote} from "@/lib/musicToVex";
 
 
 type Result = {
@@ -25,6 +24,7 @@ type Config = {
 interface Props {
   musicKey?: MusicKey,
   chords?: Chord[],
+  chordVoicings?: Array<Note[]>
   callback?: (r: Result) => any,
   config?: Config
 }
@@ -33,24 +33,14 @@ export function InteractiveStaff(props: Props) {
   const {
     musicKey = getKey('C', 'Major'),
     chords = [],
+    chordVoicings = [],
     config = {
       beatsPerMinute: props?.config?.beatsPerMinute || 60,
     }
   } = props
 
-  const piano = useContext(MIDIPianoContext)
   const [windowWidth, windowHeight] = useWindowSize()
   const [gameStartTime, setGameStartTime] = useState<number | undefined>(undefined)
-
-  useEffect(() => {
-    const callback = (activeNotes: Note[]) => {
-
-    }
-
-    const id = _.uniqueId('practice-page-')
-    piano.setListener(id, callback)
-    return () => piano.removeListener(id)
-  }, [piano])
 
   useEffect(() => {
     // Grab div and wipe it
@@ -61,34 +51,34 @@ export function InteractiveStaff(props: Props) {
     const renderer = new Renderer(renderDiv, Renderer.Backends.SVG)
     const context = renderer.getContext()
     context.resize(windowWidth - (windowWidth / 18), windowWidth / 4)
-    context.scale(1.25, 1.25)
 
     // Build a stave
     const keySignatureStaveSize = windowWidth / 8
-    const keySignatureStave = new Stave(0, 0, keySignatureStaveSize)
+    const staveMarginTop = 50
+    const keySignatureStave = new Stave(0, staveMarginTop, keySignatureStaveSize)
     keySignatureStave.addClef('treble').addTimeSignature('4/4')
       .addKeySignature(musicKey.root.withOctave(undefined).toString())
     keySignatureStave.setContext(context).draw()
 
     // Additional stave per chord
-    chords?.forEach((c, i) => {
+    chords?.forEach((c: Chord, i) => {
       const staveWidth = keySignatureStaveSize * (i + 1)
-      const chordStave = new Stave(staveWidth, 0, windowWidth / 8)
+      const chordStave = new Stave(staveWidth, staveMarginTop, windowWidth / 8)
       chordStave.setContext(context).draw()
 
-      const notes = notesInKey(c.notes(), musicKey)
-      const symbol = new ChordSymbol().setFontSize(16).addGlyphOrText(c.toString())
-      const formattedNotes = placeOnOctave(4, notes).map(n => `${n.root.concat(n.accidental?.symbol || "")}/${n.octave}`)
-      const staveNote = new StaveNote({keys: formattedNotes, duration: 'w', auto_stem: true});
-      staveNote.addModifier(symbol)
+      const chordVoicing = chordVoicings[i - 1]
+      const staveNotes = (chordVoicing && chordVoicing.length > 0)
+        ? notesToStaveNote(chordVoicing, {fillStyle: 'green', chordSymbolText: c.toString()})
+        : notesToStaveNote(placeOnOctave(4, notesInKey(c.notes(), musicKey)), {chordSymbolText: c.toString()})
 
       const voice = new Voice({num_beats: 4, beat_value: 4})
-      voice.addTickables([staveNote])
+      voice.addTickables([staveNotes])
 
       new Formatter().joinVoices([voice]).format([voice], staveWidth)
+
       voice.draw(context, chordStave)
     })
-  }, [musicKey, chords, windowHeight, windowWidth])
+  }, [musicKey, chords, windowWidth, windowHeight])
 
   return <VexflowOutput id={'vexflow-output'}/>
 }

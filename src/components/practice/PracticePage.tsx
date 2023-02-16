@@ -11,7 +11,14 @@ import {VoicingHistory, VoicingResult} from "./VoicingHistory";
 import {styled} from "@mui/material/styles";
 import {LinearProgress} from "@mui/material";
 import {MIDIPianoContext} from "@/pages/_app.page";
-import {CIRCLE_OF_FIFTHS, diatonicChords, getKey, isValidVoicingForChord, MusicKey} from "@/lib/music/Circle";
+import {
+  CIRCLE_OF_FIFTHS,
+  diatonicChords,
+  getKey,
+  isValidVoicingForChord,
+  MusicKey,
+  notesInKey
+} from "@/lib/music/Circle";
 import {InteractiveStaff} from "@/components/interactivestaff/InteractiveStaff";
 import {Chord} from "@/lib/music/Chord";
 
@@ -97,10 +104,15 @@ export default function PracticePage({
       if (isValidVoicingForChord(activeNotes, currentChord)) {
         setShouldDisplaySuccess(true)
         setTimeOfLastSuccess(Date.now())
-        setVoicingResults([...voicingResults, {chord: currentChord, key: currentKey, validNotes: activeNotes}])
+        setVoicingResults([...voicingResults, {
+          chord: currentChord,
+          key: currentKey,
+          validNotes: notesInKey(activeNotes, currentKey)
+        }])
         generateNewChord()
       }
     };
+
     const id = _.uniqueId('practice-page-')
     piano.setListener(id, callback)
     return () => piano.removeListener(id)
@@ -111,7 +123,7 @@ export default function PracticePage({
     if (!inTimeWindow && shouldDisplaySuccess) {
       setShouldDisplaySuccess(false)
     }
-  }, 25)
+  }, 100)
 
   useInterval(() => {
     if (!settings?.timerEnabled) return
@@ -121,7 +133,7 @@ export default function PracticePage({
       setTimeOfLastSuccess(Date.now())
       generateNewChord()
     } else setTimerProgress(Math.floor((timeLeft / (settings.timerMilliseconds)) * 100))
-  }, 25)
+  }, 100)
 
   return <StyledRoot>
     <div className="prompt-header">
@@ -139,7 +151,10 @@ export default function PracticePage({
       <h2 className="current-chord-symbol">{currentChord.toString()}</h2>
       {shouldDisplaySuccess && <CheckIcon style={{color: "green"}}/>}
     </ChordSymbolPrompt>
-    <InteractiveStaff musicKey={currentKey} chords={[currentChord]}/>
+    <InteractiveStaff musicKey={currentKey}
+                      chords={[currentChord].concat(_.reverse(voicingResults.slice()).map(v => v.chord))}
+                      chordVoicings={_.reverse(voicingResults.slice()).map(v => v.validNotes)}
+    />
     {settings?.timerEnabled && <LinearProgress className="timer" variant="determinate" value={timerProgress}/>}
     <VoicingHistory voicingResults={voicingResults}/>
   </StyledRoot>

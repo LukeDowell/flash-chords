@@ -64,7 +64,7 @@ interface Props {
 }
 
 const toVoicingComponent = (v: VoicingResult, i: number) => {
-  const notes = v.validNotes.length === 0 ? notesInKey(v.chord.notes(), v.key) : v.validNotes
+  const notes = notesInKey(v.chord.notes(), v.key)
   const prettyNotes = notes.map(n => new Note(n.root, n.accidental))
     .map(n => n.toString().replace(NATURAL.symbol, ''))
     .join(', ')

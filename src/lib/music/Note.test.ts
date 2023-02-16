@@ -131,6 +131,7 @@ describe('Musical Notes', () => {
     expect(Note.of('Gb').isEquivalent(Note.of('F#'))).toBe(true)
     expect(Note.of('C').isEquivalent(Note.of('C'))).toBe(true)
     expect(Note.of('C4').isEquivalent(Note.of('C4'))).toBe(true)
+    expect(Note.of('G#4').isEquivalent(Note.of('Ab5'))).toBe(true)
   })
 
   it('should not be equivalent', () => {

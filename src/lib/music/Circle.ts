@@ -97,7 +97,13 @@ export const diatonicChords = (key: MusicKey, seventh: boolean = false): Chord[]
  * of non-diatonic format attempts
  */
 export function notesInKey(notes: Note[], key: MusicKey): Note[] {
-  return notes.map(standardizeNote).map(sn => key.notes.find(kn => sn.isEquivalent(kn)) || sn)
+  return notes.map(standardizeNote)
+    .map(sn => {
+      const match = key.notes.find(kn => sn.withOctave(undefined).isEquivalent(kn)) || sn
+      let newOctave = sn.octave
+      if (newOctave && sn.root === "B" && match.root === "C") newOctave++
+      return match.withOctave(newOctave)
+    })
 }
 
 export function isValidVoicingForChord(voicing: Note[], chord: Chord): boolean {

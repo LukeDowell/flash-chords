@@ -1223,3 +1223,12 @@ object for my testing. Maybe that is okay, it shouldn't be too hard to make a te
 operate at the `Note` level. I'm still going to move ahead with the change since the id stuff is bugging me, I don't think
 it's the kind of thing I'd want to have as a pattern if I was running a team. I feel like the cleanup step is too easy
 to forget, and you get weird behavior if you don't know what is wrong, as documented earlier in this journal.
+
+## 02/15/2023
+
+I have made some good progress on getting the interactive scroll going:
+
+![interactive staff](./doc/interactive-staff.png)
+
+I think I am going to start tinkering with getting a beat going, with some kind of
+indication on the staff where the beat is at.

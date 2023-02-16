@@ -1,5 +1,5 @@
-import {circleKeys, diatonicChords, getKey, stepFrom} from "@/lib/music/Circle";
-import {Note} from "@/lib/music/Note";
+import {circleKeys, diatonicChords, getKey, notesInKey, stepFrom} from "@/lib/music/Circle";
+import {Note, toNote} from "@/lib/music/Note";
 import {MAJOR_SCALE} from "@/lib/music/Scale";
 import {Chord} from "@/lib/music/Chord";
 
@@ -89,5 +89,13 @@ describe('diatonic chords', () => {
   it('should get the diatonic chords for Cb major', () => {
     const chords = diatonicChords(getKey('Cb', 'Major'))
     expect(chords).toContainEqual(new Chord('Cb', 'Major'))
+  })
+})
+
+describe('notes in key', () => {
+  it('should format notes in key', () => {
+    const key = getKey('Db', 'Major')
+    expect(notesInKey(['C#', 'F', 'G#'].map(toNote), key)).toStrictEqual(['Db', 'F', 'Ab'].map(toNote))
+    expect(notesInKey(['C#4', 'F4', 'G#4'].map(toNote), key)).toStrictEqual(['Db4', 'F4', 'Ab4'].map(toNote))
   })
 })
