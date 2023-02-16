@@ -15,7 +15,7 @@ COPY ./package-lock.json .
 
 USER nextjs
 
-EXPOSE 3000
+EXPOSE 8080
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
