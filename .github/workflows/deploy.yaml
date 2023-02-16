@@ -39,11 +39,6 @@ jobs:
       - name: NPM Build
         run: npm run build
 
-      - name: Logs in to Digital Ocean
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_REGISTRY_KEY }}
-
       - name: Build Image
         run: |
           docker build -t dev.dowell/flashchords .
@@ -51,6 +46,11 @@ jobs:
       - name: Tag Image
         run: |
           docker tag dev.dowell/flashchords registry.digitalocean.com/dowell/flashchords:latest
+
+      - name: Logs in to Digital Ocean
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_REGISTRY_KEY }}
 
       - name: Push to Registry
         run: |
