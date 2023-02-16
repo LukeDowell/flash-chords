@@ -84,5 +84,4 @@ export function InteractiveStaff(props: Props) {
 }
 
 const VexflowOutput = styled('div')({
-  border: '1px solid black'
 })
