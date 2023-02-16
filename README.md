@@ -1,6 +1,7 @@
 Chord Notation Practice
 =====================
 [![Test & Build](https://github.com/LukeDowell/flash-chords/actions/workflows/test-and-build.yaml/badge.svg)](https://github.com/LukeDowell/flash-chords/actions/workflows/test-and-build.yaml)
+[![Deploy to Web](https://github.com/LukeDowell/flash-chords/actions/workflows/deploy.yaml/badge.svg)](https://github.com/LukeDowell/flash-chords/actions/workflows/deploy.yaml)
 
 **Live Site - https://flashchords.app/**
 
