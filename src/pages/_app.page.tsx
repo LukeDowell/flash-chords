@@ -43,22 +43,18 @@ export default function App({
         } else throw new Error(`${firstInputKey} not a valid MIDI input id!`)
       })
     } catch (e: any) {
-      if (e instanceof TypeError) {
-        setIsCompatibleBrowser(false)
-      } else if (e?.message.includes(" not a valid MIDI input id!"))
-        console.debug(e)
+      if (e instanceof TypeError) setIsCompatibleBrowser(false)
     }
-  }, [hasLoadedMidi, midiPiano])
+  }, [hasLoadedMidi])
 
   useEffect(() => {
-    console.log(`Midi Piano`, midiPiano)
-    console.log(`Midi Context`, midiContext)
     if (!midiAccess && !isCompatibleBrowser) {
       setErrorMessage("Your browser does not provide MIDI access, please use Chrome, Safari or Edge on a desktop or android device")
-    } else if (!midiPiano && midiAccess && isCompatibleBrowser) {
-      setErrorMessage("Your browser supports MIDI access, but a MIDI device could not be found")
     }
-  }, [isCompatibleBrowser, midiPiano, midiAccess])
+    // else if (!midiPiano && midiAccess && isCompatibleBrowser) {
+    //   setErrorMessage("Your browser supports MIDI access, but a MIDI device could not be found")
+    // }
+  }, [isCompatibleBrowser, midiAccess])
 
   return <>
     <CacheProvider value={emotionCache}>

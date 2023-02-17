@@ -50,7 +50,7 @@ export function InteractiveStaff(props: Props) {
     // Set up renderer and drawing context
     const renderer = new Renderer(renderDiv, Renderer.Backends.SVG)
     const context = renderer.getContext()
-    context.resize(windowWidth - (windowWidth / 18), windowWidth / 4)
+    context.resize(windowWidth - (windowWidth / 18), windowHeight / 4)
     context.scale(1.3, 1.3)
 
     // Build a stave

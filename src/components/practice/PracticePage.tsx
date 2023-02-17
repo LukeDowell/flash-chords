@@ -1,6 +1,6 @@
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import CheckIcon from '@mui/icons-material/Check'
-import useInterval from "@/lib/utility";
+import {useInterval} from "@/lib/utility";
 import {Close as CloseIcon, Settings as SettingsIcon} from "@mui/icons-material";
 import {PracticeSettings} from "@/components/settings/PracticeSettings";
 import LogoSvg from '@/components/images/Icon'

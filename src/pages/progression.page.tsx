@@ -1,8 +1,7 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {styled} from "@mui/material/styles";
-import {InteractiveStaff} from "@/components/interactivestaff/InteractiveStaff";
+import KeyExercise from "@/components/exercises/KeyExercise";
 import {getKey} from "@/lib/music/Circle";
-import {Chord} from '@/lib/music/Chord';
 
 const StyledRoot = styled('div')({
   display: 'flex',
@@ -12,25 +11,12 @@ const StyledRoot = styled('div')({
   height: '100vh',
 })
 
-const StaffContainer = styled('div')({
-  width: '100vw',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-})
-
 export default function ProgressionPage({}) {
+  const [timesPlayed, setTimesPlayed] = useState(0)
+
   return <StyledRoot>
     <h1>Progression Page</h1>
-    <StaffContainer>
-      <InteractiveStaff musicKey={getKey('Gb', 'Major')}
-                        chords={[
-                          new Chord('Gb', 'Major'),
-                          new Chord('Ab', 'Major'),
-                          new Chord('Bb', 'Minor'),
-                          new Chord('Bb', 'Minor'),
-                        ]}
-      />
-    </StaffContainer>
+    <p>Times Played: {timesPlayed}</p>
+    <KeyExercise musicKey={getKey('Db', 'Major')} onEnd={(_) => setTimesPlayed(timesPlayed + 1)}/>
   </StyledRoot>
 }

@@ -4,7 +4,7 @@ Chord Notation Practice
 
 **Live Site - https://flashchords.app/**
 
-![feature demonstration](./doc/piano-mvp.gif)
+![feature demonstration](./doc/site-demo.gif)
 
 ## Features
 
@@ -1236,3 +1236,40 @@ indication on the staff where the beat is at.
 
 Got rid of my deploy step, decided to just fully lean into DigitalOcean's app platform and have it integrate with the
 repository.
+
+
+## 02/16/2023
+
+I am pleased with the current app as an MVP; I can render music, interact with the circle of fifths in a nice programmatic
+way, and have a pretty good grasp of what is next. For this app to be useful to me, I'd like to be able to create
+exercises for all the different training exercises I do each day. I then want to have some kind of calendar few, similar
+to Github where it gives a rough indication of work over a long period of time.
+
+Each exercise will have some element of "progression", mostly likely for things like upping the tempo and accuracy. 
+
+Some exercise ideas:
+* Diatonic chords for each key
+* Inversions, rootless voicings, chord shells, other more restrictive kinds of chord voicings
+* Running up and down scales
+* Melodic cells
+
+My next immediate task is to use the findings from `InteractiveStaff` to create some kind of scrolling staff. I'm not 
+100% sure what this is going to look like yet because I need it to scale according to screen size, animate in several
+ ways based on a given BPM, and accept various kinds of notes per measure. I'll also likely need a way to preload measures
+before they enter the screen, and remove measures that have gone past.
+
+## 02/17/2023
+
+I've hit a bit of a stump. It's tricky to think about how the animation will work while being associated with a variable
+BPM. I have an iOS app that I like to use called `Flowkey` and their staff is pretty interesting; they display a scrolling
+staff directly underneath a visualization of a person playing the notes. The staff very slightly speeds up / slows down
+to make sure it stays in sync with the video of the person playing a piece.
+
+I think I'm spinning my wheels trying to think of the easiest way to implement when I should really just start tinkering.
+The Vexflow documentation example of animation uses CSS transitions and I feel averse to trying that but maybe that is 
+the wrong instinct. 
+
+I think, for step one, I'm just going to render the diatonic chords of a given key and just move the staff left somehow.
+
+Also, open question, I cannot figure out how to get these staves to render with a given height scale. Is that common among
+canvas rendering libraries? Do I just reach the height I want by using `scale`? Seems odd
