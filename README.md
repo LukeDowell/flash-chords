@@ -6,22 +6,9 @@ Chord Notation Practice
 
 ![feature demonstration](./doc/site-demo.gif)
 
-## Features
-
-* Display chord notation, give feedback on whether or not it was input correctly
-* Virtual keyboard
-* MIDI input support
-* Stats. Correct / Incorrect ratio, time taken to enter chord, keys that the user is most successful in, etc etc
-* Chord display configuration: normie triads, inversions, 7ths + 9ths, key selection
-
-## Notes
-
-Web MIDI API spec - https://www.w3.org/TR/webmidi/
-Firefox Implementation Tracker - https://bugzilla.mozilla.org/show_bug.cgi?id=836897
-
 ## Dev Journal
 
-**1/8/2022**
+## 01/8/2022
 
 I spent some time reading the MIDI spec and the MIDI api reference. Upon finding that firefox
 does not yet support the MIDI api but that there are in-flight tickets to test compatibility as of
@@ -39,7 +26,7 @@ Thank you Mr. Tobias Erichsen!
 I fired up both pieces of software, configured VMPK to point to the port created by loopMIDI and voila, I could see a 
 registered input in my console log of the MIDIAccess object returned by the MIDI api. 
 
-**N+1**
+## 01/09/2022
 
 My aim today is to explore the MIDI api now that my emulator is hooked up; what do notes / chords look like coming out 
 of the piano. What would mapping a set of notes to a chord look like? I've also been thinking a little bit about the 
@@ -53,14 +40,14 @@ events. I also learned that React renders at least twice by default in strict mo
 am going to spend some time properly setting up all the hooks / update dependencies so that no longer happens since it's
 causing the event listeners to the MIDI port to be added twice.
 
-**1/10/2022**
+## 01/10/2022
 
 I experimented with different styles of detecting what chords and notes are being played. I'm going
 to try and have a "virtual" keyboard held in memory that updates based on the MIDI inputs, and any
 components that care can just query that keyboard to see what is currently pressed. I think this will
 make testing pretty convenient but there are lots of questions still to answer
 
-**1/11/2022**
+## 01/11/2022
 
 I presented the app idea to my teacher today. We ran through a bunch of examples of various chord
 symbols and how they might be composed into small problems for a computer to solve. Given a chord
@@ -90,7 +77,7 @@ We have a match! This voicing is a valid representation of the Cmaj chord symbol
 of edge cases to consider with more complicated versions of a chord symbol, for example something like 
 "F -5/7 on C" (F major 7th flat five over C) but I'm gonna have future me figure that out.
 
-**1/12/2022**
+## 01/12/2022
 
 Reeee we have a bug! Sometimes the transposition of the active notes does not match the derived required
 notes from the root. As an example, for F major:
@@ -105,7 +92,7 @@ For now, I am going to remove octave information all together and just compare t
 wont last since in the future I would like a mode to enforce that the only way you cannot voice a chord symbol
 is with the "standard" no-inversions or additions of a chord to hopefully influence the player to experiment.
 
-**N+1**
+## 01/13/2022
 
 During some reading about chord symbols, I found a wikipedia article that has a pretty interesting suggestion
 for how to build out the Chord data structure. It suggests a chord is made of:
@@ -120,7 +107,7 @@ for how to build out the Chord data structure. It suggests a chord is made of:
 I have been wondering about how to deal with suspended chords or sevenths, but this seems like a fine framework
 to go off of since it matches the domain anyway. DDD for the win!
 
-**1/14/2022**
+## 01/14/2022
 
 I got major and minor triads working just now. I was intending to continue on to getting 7ths to work
 as well, but I think I'm going to pivot and get a rudimentary UI working. I want a bass
@@ -129,7 +116,7 @@ display the keys that the user is currently pressing, and there will be some sor
 once the user inputs the correct chord symbol. The staff should be a fun component to build, I'm looking
 forward to that. 
 
-**1/15/2022**
+## 01/15/2022
 
 Today I bought a domain name and deployed the app to the web. My pipeline is:
 
@@ -152,7 +139,7 @@ Additionally, WedMIDI support on WebKit is labelled as "not considering". This i
 research first, although I'm glad I have gotten this far anyway. I'm going to continue development since android mobile
 and desktops are still supported, I just need to get an android tablet.
 
-**N+1**
+## 01/15/2022
 
 So I just sat down at the piano and plugged a laptop into it. I found out there are some oddities between a real
 piano and my MIDI emulator version, which is to be expected. For example, my piano doesn't leverage the "NOTE_OFF"
@@ -164,7 +151,7 @@ and I will add several more as well. Just kidding I clearly need this app to be 
 were in E major. The work is validated!
 
 
-**1/16/2022**
+## 01/16/2022
 
 Whew super long day / late night, took a lot longer than I would have liked to get the pipeline working
 and pushing to DO. The buildpack for native spring boot app is 25 minutes which seems insane, I posted in
@@ -174,7 +161,7 @@ I brought in MUI and am going to start putting together the practice page MVP wi
 staff. Maybe after that we finally hop over to Spring and start putting together some statistic / user
 features.
 
-**N+1**
+## 01/17/2022
 
 Cruising along on MUI. Moved some stuff out of PracticePage into App, I figure there should be some
 global context holder for something like physical hardware so that is what I'll do. I may even check out
@@ -190,7 +177,7 @@ add a notification if the user is running an unsupported browser, then hop over 
 
 Also, crap, "chord notation" is not the commonly used term. It's "chord symbol". x_x
 
-**1/17/2022**
+## 01/17/2022
 
 I read a little bit about the utility classes that come with TypeScript today. In particular, I am partial to Partial.
 It let me do this:
@@ -215,7 +202,7 @@ settled on using the styled engine that material comes with. It seems to be base
 library so leaving MUI shouldn't be too tough. I have the keyboard all laid out, I just need to find
 some pleasing way to get the black keys positioned correctly.
 
-**1/18/2022**
+## 1/18/2022
 
 I'm having a weird problem. Only the first chord on the Practice page is being checked; after that,
 no matter what chord displays, the only correct one will be the initial chord. At first I thought
@@ -288,7 +275,7 @@ I decided I am adding seventh support before moving to the backend, I want to ac
 sevenths are gonna be required. I will also try and add some options to influence the generation of 
 chords.
 
-**1/20/2022**
+## 1/20/2022
 
 I have been sloshing the chord data structure around in my head. The fact that a chord can be
 a triad OR a seventh makes things hard, at least it seems to if I try and think of it that way.
@@ -346,7 +333,7 @@ is but what about the "C1"? should that be a B# instead?
 
 How does my type system handle someone trying to create an augmented 7th?
 
-**1/25/2022**
+## 1/25/2022
 
 Took a bit of a break. Usually when I hit my initial MVP is when I place whatever project into the graveyard
 of all my other abandoned projects, but I think this one is worth working on a bit more. I have some logos
@@ -368,7 +355,7 @@ be what I work towards for now.
 I have no doubt that the settings design is a UX sin of the highest order, I'm gonna see how it 
 feels first though.
 
-**1/26/2022**
+## 1/26/2022
 
 I need to wrap up the mvp mockup settings, but after that things will be looking pretty useful. I don't
 think I am going to move to user based stuff quite yet, I am realizing I need to figure out what those
@@ -385,7 +372,7 @@ First though I'm going to add more settings around chord qualities, have the set
 browser, and better statistics views. Maybe we start going a little crazy with widgets as the browser
 window scales up, we can put the keyboard back in!
 
-**1/27/2022**
+## 1/27/2022
 
 I finished up the settings and iterated on the mockups.
 
@@ -411,7 +398,7 @@ For feedback, I'd like to be able to show the user other visual information abou
 the roman numeral, the symbol, and what the closed position chord looks like on a cleff. Maybe there can
 be something where we "flip" the card, check the answer? Sounds kind of corny even writing it out.
 
-**1/29/2022**
+## 1/29/2022
 
 I was able to massively simplify the voicing validator today by basically just moving some code around and 
 realizing I could delete a bunch. The transposition of the active notes into an ordered list was unnecessary.
@@ -437,7 +424,7 @@ fails when coming up with the required notes for a chord that has failed validat
 
 I may just copy paste that validation code for now and noodle on how to solve this best. 
 
-**1/30/2022**
+## 1/30/2022
 
 Ah jeez something about the chord required notes code is borked. I get super weird results seemingly
 randomly. I'm going to start adding a ton of diverse, manually validated chords as test cases all over.
@@ -454,7 +441,7 @@ different failing test or generated on the homepage, I'm manually checking it's 
 the test suite. The failures are wracking up but it has gotten pretty easy to add them with the 
 dynamic tests.
 
-**1/31/2022**
+## 1/31/2022
 
 I'm running into some oddities around comparisons of objects with optional fields, particularly if that
 optional field can be a number. I have a few tests failing with the output including stuff like this:
@@ -484,18 +471,18 @@ undefined, which is not a valid chord at all. How to guard against that? Writing
 is kind of whack imo, at least doing something like 'generate 1,000 chords and make sure they are all ok'
 feels weird.
 
-**2/9/2022**
+## 2/9/2022
 
 UX feedback from interview candidate; list of failed chords is not clear in purpose, she thought that 
 they might have been chords the user has to to play before the timer runs out.
 
-**4/1/2022**
+## 4/1/2022
 
 Woo took a huge break, I started but didn't complete a different project in the meantime. I worked on this 
 app for fun with a coworker and was inspired to try another feature: I'd like to have a scrolling staff 
 to practice sight-reading with. 
 
-**5/8/2022**
+## 5/8/2022
 
 Break wasn't over! I fixed some chord related bugs and am moving on to adding some Keys. In my practice sessions we have
 moved on to actually getting into jazz and diatonic chords have come to the forefront of my mind. Things that are swirling
@@ -524,7 +511,7 @@ so that the edges of a note just meet.
 For rendering notes off staff, I don't think that will be too hard either. I'm wondering if the dash through a floating
 note could just be some inline css...
 
-**5/09/2022**
+## 5/09/2022
 
 I've started adding key information, started with C major and started working my way around the circle and ran
 into Fm7b5. I have just realized I haven't finished my chord implementation, and that my current structure doesn't 
@@ -544,7 +531,7 @@ to whenever I come across a bug. That strategy has worked alright, but I think m
 I'd like to be able to assert across all diatonic sevenths for all keys, and perhaps all modes of those keys as well.
 
 
-**5/16/2022**
+## 5/16/2022
 
 I already handle half diminished chords *facepalm*
 
@@ -560,7 +547,7 @@ I had to disable TWO inspections, surely I won't regret this later.
 },
 ```
 
-**5/19/2022**
+## 5/19/2022
 
 Lots of progress being made on the Measure component:
 
@@ -614,7 +601,7 @@ The only remaining problem is the '42.5%'; I need to appropriately scale that va
 of the measure at all it doesn't line up quite right anymore.
 
 
-**5/21/2022**
+## 5/21/2022
 
 First pass at accidentals complete;
 
@@ -625,7 +612,7 @@ on the x-axis but the end is in sight. Once the measures render, I'll probably s
 of new game off the ground, like cycling through a key or something like that. I will also have to add it to the 
 homepage I think, like an option to display the chord as you move through the main game.
 
-**5/22/2022**
+## 5/22/2022
 
 I was able to decomplect Measure's horizontal positioning by a good amount. The new code looks like this:
 
@@ -642,7 +629,7 @@ checks to see if the note immediately above it needs to be shifted. This gives t
 of never shifting the root of any cluster. This change also uncovered some bugs with the note sorting
 code!
 
-**5/23/2022**
+## 5/23/2022
 
 I went to test out my measures and generate a series of chords for a given key. 
 
@@ -661,12 +648,12 @@ The second is that none of the notes really match the key, there should be flats
 Time to begin on being able to transpose notes to a given key. I'm hoping there aren't too many weird 
 bugs with this one...
 
-**5/26/2022**
+## 5/26/2022
 
 Ahh another bug, this time with the code that calculates which note is lowest. I based it off character code
 which doesn't work, since a C is the lowest note in an octave and B is the highest. Shoot.
 
-**5/27/2022**
+## 5/27/2022
 
 Ok fixed that bug, notes from lowest->highest now sort correctly. Now I am actually on to key transposition. I feel like
 this is gonna be sort of tricky to do in a satisfying way. Thus far I have "standardized" on the layout that the
@@ -681,7 +668,7 @@ causes them to overlap and the C to 'disappear'.
 I'm wondering if there are going to be issues with B, C, E and F since you can "shift" physical keys depending on the 
 accidental. 
 
-**06/07/2022**
+## 06/07/2022
 
 Absolutely TMI for a dev journal, but today I started using Vyvanse, I've read that the best way to see if it is working
 is to write down how you're feeling and when you started it. Well, this will be that marker I suppose. Perhaps I'll be
@@ -699,7 +686,7 @@ Fun to think about, although I'd prefer to get started on users, logins and dash
 somehow, I absolutely need to have a useful and fun free tier. Right now I think my monetization strategy would come in 
 the form of teacher-centric tools, like seeing student progress and giving them assignments. 
 
-**06/15/2022**
+## 06/15/2022
 
 While pairing on this project today I came across a very odd issue; I have multiple paramterized tests in several describe blocks
 in the music theory package. Occasionally tests will "leak" across when I am trying to run a specific test suite, and I 
@@ -725,7 +712,7 @@ and
 In other news, formatting on a key is working! "Laying out" the notes on top of the root of a chord isn't working quite
 perfectly, For Dbmaj7 the C ends up on the bottom, but the notes themselves are correct which is exciting stuff.
 
-**06/16/2022**
+## 06/16/2022
 
 Alright I'm sick of it, ♭ is gonna be 'b'
 
