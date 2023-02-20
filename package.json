@@ -18,7 +18,7 @@
     "@emotion/styled": "^11.10.5",
     "@mui/icons-material": "^5.11.9",
     "@mui/material": "^5.11.6",
-    "@next/font": "13.0.7",
+    "@next/font": "13.1.6",
     "lodash": "^4.17.21",
     "next": "13.1.6",
     "react": "18.2.0",
