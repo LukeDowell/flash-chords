@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react'
+import {useEffect, useLayoutEffect, useRef, useState} from 'react'
 import {RenderContext, Renderer} from "vexflow";
 
 export function useInterval(callback: () => void, delay: number | null) {
@@ -14,16 +14,18 @@ export function useInterval(callback: () => void, delay: number | null) {
     if (!delay && delay !== 0) {
       return
     }
-
     const id = setInterval(() => savedCallback.current(), delay)
-
     return () => clearInterval(id)
   }, [delay])
 }
 
+// https://gist.github.com/gaearon/e7d97cdf38a2907924ea12e4ebdf3c85?permalink_comment_id=3570933#gistcomment-3570933
+export const useSSRLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : () => {
+}
+
 export function useWindowSize() {
   const [size, setSize] = useState([600, 800]);
-  useEffect(() => {
+  useSSRLayoutEffect(() => {
     function updateSize() {
       setSize([window.innerWidth, window.innerHeight]);
     }
@@ -35,22 +37,29 @@ export function useWindowSize() {
   return size;
 }
 
-export function useVexflowContext(outputId: string, width?: number, height?: number) {
+export function useVexflowContext(outputId: string, width?: number, height?: number): [RenderContext | undefined, [number, number]] {
   const [context, setContext] = useState<RenderContext | undefined>(undefined)
+  const [size, setSize] = useState<[number, number]>([0, 0])
   const [windowWidth, windowHeight] = useWindowSize()
 
   useEffect(() => {
     const outputDiv = document.getElementById(outputId) as HTMLDivElement
     if (outputDiv === null) throw new Error(`Unable to find context output element with id=${outputId}`)
-    if (outputDiv.innerHTML !== "" && context !== undefined) return
-    const renderer = new Renderer(outputDiv, Renderer.Backends.SVG)
-    const defaultHeight = windowHeight / 10 > 300 ? windowHeight / 10 : 300;
-    renderer.resize(
-      width ? width : windowWidth,
-      height ? height : defaultHeight
-    )
-    setContext(renderer.getContext())
-  })
+    outputDiv.innerHTML = ''
 
-  return context
+    const renderer = new Renderer(outputDiv, Renderer.Backends.SVG)
+    // const defaultHeight = windowHeight / 10 > 300 ? windowHeight / 10 : 300
+    // const contextHeight = height ? height : defaultHeight
+    const contextWidth = width ? width : windowWidth
+    const contextHeight = 400
+
+    renderer.resize(contextWidth, contextHeight)
+    const ctx = renderer.getContext()
+    ctx.rect(0, 0, contextWidth, contextHeight)
+
+    setContext(ctx)
+    setSize([contextWidth, contextHeight])
+  }, [windowWidth, windowHeight])
+
+  return [context, size]
 }

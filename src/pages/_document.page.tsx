@@ -8,7 +8,7 @@ export default class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
-          <link rel="shortcut icon" href="/favicon.ico"/>
+          <link rel="shortcut icon" href="/favicon.png"/>
           <meta name="emotion-insertion-point" content=""/>
           {(this.props as any).emotionStyleTags}
         </Head>

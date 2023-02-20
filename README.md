@@ -1,4 +1,4 @@
-Chord Notation Practice
+Flash Chords
 =====================
 [![Test & Build](https://github.com/LukeDowell/flash-chords/actions/workflows/test-and-build.yaml/badge.svg)](https://github.com/LukeDowell/flash-chords/actions/workflows/test-and-build.yaml)
 
@@ -1260,3 +1260,64 @@ I think, for step one, I'm just going to render the diatonic chords of a given k
 
 Also, open question, I cannot figure out how to get these staves to render with a given height scale. Is that common among
 canvas rendering libraries? Do I just reach the height I want by using `scale`? Seems odd
+
+## 02/20/2023
+
+Having spent some time looking at animation options and tinkering around with the VexFlow SVGContext API, I think I am
+comfortable with my first plan of attack. I have set the staff up so that it looks like this:
+
+![pre animation staff](./pre-animation-progression.png)
+
+I want to try and create some kind of interface where I can 'slide' the staff to any beat on any measure. I'm thinking
+that I'll be able to do this just by slicing up the width of each staff by the number of beats on it, which will give
+me a range of pixels that a particular 'beat' is active. 
+
+This approach relies on me having consistent spacing for the note formatting w/ Vexflow, but I think I'll be able to
+do that pretty effectively.
+
+I'm going to try and roll my own animation stuff for now, but I found some neat libraries that may be worth checking
+out later if things get too hairy. In particular, [react-spring](https://www.react-spring.dev/docs) looks cool.
+
+Last thought, this dev journal with all it's pictures is perhaps getting too large for the root README. My editor in
+IntelliJ struggles to render it now. :(
+
+--- 
+
+Something I have to start reaching for earlier is creation of custom react hooks. To create my rendering context for
+Vexflow, my initial instinct was to create a React component that had a div with an id, set up the context in a `useEffect`
+block, and then executed some sort of prop-based callback to hand back the context. That idea may still have some merit,
+but I am a much bigger fan of doing it in a hook:
+
+```typescript
+export function useVexflowContext(outputId: string, width?: number, height?: number): [RenderContext | undefined, [number, number]] {
+  const [context, setContext] = useState<RenderContext | undefined>(undefined)
+  const [size, setSize] = useState<[number, number]>([0, 0])
+  const [windowWidth, windowHeight] = useWindowSize()
+
+  useEffect(() => {
+    const outputDiv = document.getElementById(outputId) as HTMLDivElement
+    if (outputDiv === null) throw new Error(`Unable to find context output element with id=${outputId}`)
+    outputDiv.innerHTML = ''
+
+    const renderer = new Renderer(outputDiv, Renderer.Backends.SVG)
+    // const defaultHeight = windowHeight / 10 > 300 ? windowHeight / 10 : 300
+    // const contextHeight = height ? height : defaultHeight
+    const contextWidth = width ? width : windowWidth
+    const contextHeight = 400
+
+    renderer.resize(contextWidth, contextHeight)
+    const ctx = renderer.getContext()
+    ctx.rect(0, 0, contextWidth, contextHeight)
+
+    setContext(ctx)
+    setSize([contextWidth, contextHeight])
+  }, [windowWidth, windowHeight])
+
+  return [context, size]
+}
+```
+
+I was inspired by seeing the `useWindowSize` hook somewhere. It feels simpler. I do have to figure out a way to keep a 
+closer eye on the amount of times these components render and call their useEffect blocks. Several times now it has actually
+been firing wayyyy more often than I would have expected; in the hook I created above, I had accidentally depended on
+`context` alongside `windowWidth, windowHeight`, which caused it to fire infinitely.  
