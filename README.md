@@ -1266,7 +1266,7 @@ canvas rendering libraries? Do I just reach the height I want by using `scale`? 
 Having spent some time looking at animation options and tinkering around with the VexFlow SVGContext API, I think I am
 comfortable with my first plan of attack. I have set the staff up so that it looks like this:
 
-![pre animation staff](./pre-animation-progression.png)
+![pre animation staff](./doc/pre-animation-progression.png)
 
 I want to try and create some kind of interface where I can 'slide' the staff to any beat on any measure. I'm thinking
 that I'll be able to do this just by slicing up the width of each staff by the number of beats on it, which will give

@@ -8,7 +8,7 @@
     "export": "npm run build && next export -o _static",
     "start": "next start -H 0.0.0.0 -p ${PORT:-8080}",
     "lint": "next lint",
-    "test": "jest",
+    "test": "jest --watch",
     "test:ci": "jest --ci"
   },
   "dependencies": {
