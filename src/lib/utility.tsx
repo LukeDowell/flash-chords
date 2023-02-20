@@ -48,10 +48,8 @@ export function useVexflowContext(outputId: string, width?: number, height?: num
     outputDiv.innerHTML = ''
 
     const renderer = new Renderer(outputDiv, Renderer.Backends.SVG)
-    // const defaultHeight = windowHeight / 10 > 300 ? windowHeight / 10 : 300
-    // const contextHeight = height ? height : defaultHeight
     const contextWidth = width ? width : windowWidth
-    const contextHeight = 400
+    const contextHeight = height ? height : 400
 
     renderer.resize(contextWidth, contextHeight)
     const ctx = renderer.getContext()
@@ -59,7 +57,7 @@ export function useVexflowContext(outputId: string, width?: number, height?: num
 
     setContext(ctx)
     setSize([contextWidth, contextHeight])
-  }, [windowWidth, windowHeight])
+  }, [windowWidth, windowHeight, outputId, width, height])
 
   return [context, size]
 }

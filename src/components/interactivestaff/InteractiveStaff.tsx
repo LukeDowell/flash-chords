@@ -79,7 +79,7 @@ export function InteractiveStaff(props: Props) {
 
       voice.draw(context, chordStave)
     })
-  }, [musicKey, chords, windowWidth, windowHeight])
+  }, [musicKey, chords, windowWidth, windowHeight, chordVoicings])
 
   return <VexflowOutput id={'vexflow-output'}/>
 }

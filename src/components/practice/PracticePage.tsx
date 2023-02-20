@@ -97,7 +97,7 @@ export default function PracticePage({
     }
     setCurrentChord(newChord)
     setCurrentKey(newKey)
-  }, [currentChord, currentKey, settings])
+  }, [currentChord, settings])
 
   useEffect(() => {
     const callback = (activeNotes: Note[]) => {
@@ -116,7 +116,7 @@ export default function PracticePage({
     const id = _.uniqueId('practice-page-')
     piano.setListener(id, callback)
     return () => piano.removeListener(id)
-  }, [currentChord, piano, generateNewChord, voicingResults])
+  }, [currentChord, piano, generateNewChord, voicingResults, currentKey])
 
   useInterval(() => {
     const inTimeWindow = Date.now() - timeOfLastSuccess <= 1000

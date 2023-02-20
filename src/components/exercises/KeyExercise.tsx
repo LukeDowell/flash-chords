@@ -59,7 +59,7 @@ export default function KeyExercise({musicKey, onEnd, options}: Props) {
     context.setFillStyle('rgba(100, 100, 100, 0.5)')
     context.fillRect(width / 2, 0, 20, height)
     context.restore()
-  }, [context])
+  }, [context, height, musicKey, width])
 
   return <VexflowOutput>
     <div id={'key-exercise-vexflow-output'}/>
