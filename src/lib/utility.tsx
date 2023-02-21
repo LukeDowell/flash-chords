@@ -1,5 +1,5 @@
 import {useEffect, useLayoutEffect, useRef, useState} from 'react'
-import {RenderContext, Renderer} from "vexflow";
+import {Renderer, SVGContext} from "vexflow";
 
 export function useInterval(callback: () => void, delay: number | null) {
   const savedCallback = useRef(callback)
@@ -37,8 +37,8 @@ export function useWindowSize() {
   return size;
 }
 
-export function useVexflowContext(outputId: string, width?: number, height?: number): [RenderContext | undefined, [number, number]] {
-  const [context, setContext] = useState<RenderContext | undefined>(undefined)
+export function useVexflowContext(outputId: string, width?: number, height?: number): [SVGContext | undefined, [number, number]] {
+  const [context, setContext] = useState<SVGContext | undefined>(undefined)
   const [size, setSize] = useState<[number, number]>([0, 0])
   const [windowWidth, windowHeight] = useWindowSize()
 
@@ -55,7 +55,8 @@ export function useVexflowContext(outputId: string, width?: number, height?: num
     const ctx = renderer.getContext()
     ctx.rect(0, 0, contextWidth, contextHeight)
 
-    setContext(ctx)
+    console.log('Vexflow Context Changing', ctx)
+    setContext(ctx as SVGContext)
     setSize([contextWidth, contextHeight])
   }, [windowWidth, windowHeight, outputId, width, height])
 

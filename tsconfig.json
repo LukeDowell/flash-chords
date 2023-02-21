@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "es2015",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -19,16 +23,26 @@
     "sourceMap": true,
     "sourceRoot": "/home/luke/workspace/flashchords/src",
     "paths": {
-      "@/components/*": ["src/components/*"],
-      "@/pages/*": ["src/pages/*"],
-      "@/styles/*": ["src/styles/*"],
-      "@/lib/*": ["src/lib/*"],
-      "@/public/*": ["public/*"],
+      "@/components/*": [
+        "src/components/*"
+      ],
+      "@/pages/*": [
+        "src/pages/*"
+      ],
+      "@/styles/*": [
+        "src/styles/*"
+      ],
+      "@/lib/*": [
+        "src/lib/*"
+      ],
+      "@/public/*": [
+        "public/*"
+      ]
     },
     "plugins": [
       {
         "name": "typescript-plugin-css-modules"
-      },
+      }
     ]
   },
   "include": [
@@ -36,7 +50,9 @@
     "types.d.ts",
     "jest.setup.js",
     "**/*.ts",
-    "**/*.tsx",
+    "**/*.tsx"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

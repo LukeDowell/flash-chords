@@ -13,26 +13,28 @@ Flash Chords
 I spent some time reading the MIDI spec and the MIDI api reference. Upon finding that firefox
 does not yet support the MIDI api but that there are in-flight tickets to test compatibility as of
 three (!!!) days ago, I almost distracted myself by seeing if I could pick Rust back up and contribute.
-Instead, I switched to using chrome for local development. 
+Instead, I switched to using chrome for local development.
 
 I got my repo all set up and set about getting a "hello world" for the MIDI api going. My first
 hurdle was that my piano is about 20 feet away from my home computer, and I didn't want to run a giant
 cable or work off my laptop and test with my physical piano. I needed to find a way to test locally
 on my machine and emulate a piano connection. Something I had not considered was that this would be non-trivial;
-a quote from the VPMK site: "To connect hardware MIDI devices you need physical MIDI cables. To connect MIDI software you need virtual cables." 
-I tried a few different solutions but settled on using VMPK (Virtual Midi Piano Keyboard - https://vmpk.sourceforge.io/) and loopMIDI (https://www.tobias-erichsen.de/software/loopmidi.html).
+a quote from the VPMK site: "To connect hardware MIDI devices you need physical MIDI cables. To connect MIDI software
+you need virtual cables."
+I tried a few different solutions but settled on using VMPK (Virtual Midi Piano Keyboard - https://vmpk.sourceforge.io/)
+and loopMIDI (https://www.tobias-erichsen.de/software/loopmidi.html).
 Thank you Mr. Tobias Erichsen!
 
-I fired up both pieces of software, configured VMPK to point to the port created by loopMIDI and voila, I could see a 
-registered input in my console log of the MIDIAccess object returned by the MIDI api. 
+I fired up both pieces of software, configured VMPK to point to the port created by loopMIDI and voila, I could see a
+registered input in my console log of the MIDIAccess object returned by the MIDI api.
 
 ## 01/09/2022
 
-My aim today is to explore the MIDI api now that my emulator is hooked up; what do notes / chords look like coming out 
-of the piano. What would mapping a set of notes to a chord look like? I've also been thinking a little bit about the 
-actual design of the "game" system itself; I think I am going to shoot for a pub / sub type of deal where components 
+My aim today is to explore the MIDI api now that my emulator is hooked up; what do notes / chords look like coming out
+of the piano. What would mapping a set of notes to a chord look like? I've also been thinking a little bit about the
+actual design of the "game" system itself; I think I am going to shoot for a pub / sub type of deal where components
 that care can register and receive notifications any time a music event is received. I hope this will let me write tests
-without the emulator at all, and instead let me do things like "C2, E2, G2" received and map that to a C+ chord. It's 
+without the emulator at all, and instead let me do things like "C2, E2, G2" received and map that to a C+ chord. It's
 tempting to look for some sort of package that can handle this mapping but I think I will learn more if I do it myself.
 
 Alright after playing with the midi api type definitions, looks like it's all byte / int buffers coming out of the MIDI
@@ -57,7 +59,7 @@ Example:
 Chord: C major
 Keys: E2, G2, C3, E3
 
-1. Remove duplicate notes 
+1. Remove duplicate notes
 
         Keys: E2, G2, C3
 
@@ -74,7 +76,7 @@ followed by 3 steps.
        Required Keys: **C3** - C#3 - D3 - D#3 - **E3** - F3 - F#3 - **G3**
 
 We have a match! This voicing is a valid representation of the Cmaj chord symbol. There are a lot
-of edge cases to consider with more complicated versions of a chord symbol, for example something like 
+of edge cases to consider with more complicated versions of a chord symbol, for example something like
 "F -5/7 on C" (F major 7th flat five over C) but I'm gonna have future me figure that out.
 
 ## 01/12/2022
@@ -114,22 +116,23 @@ as well, but I think I'm going to pivot and get a rudimentary UI working. I want
 and treble cleff centered on the screen, and for the chord symbol to appear above it. The staff will
 display the keys that the user is currently pressing, and there will be some sort of success indicator
 once the user inputs the correct chord symbol. The staff should be a fun component to build, I'm looking
-forward to that. 
+forward to that.
 
 ## 01/15/2022
 
 Today I bought a domain name and deployed the app to the web. My pipeline is:
 
 Github actions builds the front and back end, places the built frontend code into the resources/static directory of
-the backend Spring app, then creates a container image using buildpacks. This image is pushed to the digitalocean container
+the backend Spring app, then creates a container image using buildpacks. This image is pushed to the digitalocean
+container
 registry, which is then deployed on their app platform. SSL is automatically configured apparently which is super tight,
 I thought I was going to have to run an nginx + let's encrypt node.
 
 Next I have to create some form of notification if the user is running an unsupported browser since the application
 basically does nothing without a MIDI connection. After that I'm going to plop in material UI and start building the UI
 that I outlined above. I also just realized typing this that I can actually test this app for real, holy crap.
-Aaaand R.I.P, it doesn't work. It has to be something with the requestMIDIAccess() call, but I thought it was 
-supported in chrome and safari by default. I'm going to figure out how to access the console logs on an ipad 
+Aaaand R.I.P, it doesn't work. It has to be something with the requestMIDIAccess() call, but I thought it was
+supported in chrome and safari by default. I'm going to figure out how to access the console logs on an ipad
 and fix it.
 
 Okay bad news, neither chrome nor safari on iOS support navigator.requestMIDIAccess. I read up on it a little
@@ -144,12 +147,11 @@ and desktops are still supported, I just need to get an android tablet.
 So I just sat down at the piano and plugged a laptop into it. I found out there are some oddities between a real
 piano and my MIDI emulator version, which is to be expected. For example, my piano doesn't leverage the "NOTE_OFF"
 flag in MIDI. Instead it just says the note is still playing at an intensity of 0, which if you ask me is a little
-smart alec-y. 
+smart alec-y.
 
 I also found out that my voicing validator is bad and that some combos don't work, like E major. Added a test case,
 and I will add several more as well. Just kidding I clearly need this app to be done, I was just wrong on what notes
 were in E major. The work is validated!
-
 
 ## 01/16/2022
 
@@ -167,13 +169,13 @@ Cruising along on MUI. Moved some stuff out of PracticePage into App, I figure t
 global context holder for something like physical hardware so that is what I'll do. I may even check out
 the Context API react provides but I'm guessing I won't use it.
 
-I ran into a question that I have had before, and that is "If I am using MUI already, do I commit and 
-use their Grid system as well?" and I think the answer to that is heck no. I'm going to just use flex 
-directly with the `styled` engine. The benefits that are listed in the documentation do not outweigh 
+I ran into a question that I have had before, and that is "If I am using MUI already, do I commit and
+use their Grid system as well?" and I think the answer to that is heck no. I'm going to just use flex
+directly with the `styled` engine. The benefits that are listed in the documentation do not outweigh
 having my layout tied to a bunch of MUI components. It also makes the JSX super messy imo.
 
 The plan right now is to center the chord notation, provide some basic stats on your "session" thus far,
-add a notification if the user is running an unsupported browser, then hop over to Spring. 
+add a notification if the user is running an unsupported browser, then hop over to Spring.
 
 Also, crap, "chord notation" is not the commonly used term. It's "chord symbol". x_x
 
@@ -190,14 +192,14 @@ mockRequestMIDIAccess.mockImplementation((): Promise<Partial<WebMidi.MIDIAccess>
     })
 ```
 
-If the Partial type wrapper is omitted, typescript gets upset because you haven't implemented all the 
+If the Partial type wrapper is omitted, typescript gets upset because you haven't implemented all the
 required members of WebMidi.MIDIAccess (which in this case is pretty messy and would be displeasing to do)
 
 The warnings for unsupported browsers / no midi devices are done. I should have some kind of retry for the
 missing input devices since someone could just plug one in, but I'll do that later. For now I'm going to
 throw some Cleff component together and call it a day.
 
-Instead of a cleff I decided to go with a visual representation of the virtual keyboard. Along the way I 
+Instead of a cleff I decided to go with a visual representation of the virtual keyboard. Along the way I
 settled on using the styled engine that material comes with. It seems to be based on the `styled-components`
 library so leaving MUI shouldn't be too tough. I have the keyboard all laid out, I just need to find
 some pleasing way to get the black keys positioned correctly.
@@ -208,7 +210,7 @@ I'm having a weird problem. Only the first chord on the Practice page is being c
 no matter what chord displays, the only correct one will be the initial chord. At first I thought
 it was some mistake of me closing over a variable or something but now I am not so sure. I added
 some logs and I see that, after the first chord, it performs the voicing check twice. Once for
-the original chord, and once for the new one. 
+the original chord, and once for the new one.
 
 ```
 Checking voicing of D
@@ -242,18 +244,18 @@ setListener(key: string, callback: (activeNotes: Note[]) => any) {
 }
 ```
 
-My issue was not resolved, I still like that change though since it allows me to avoid wiping out 
+My issue was not resolved, I still like that change though since it allows me to avoid wiping out
 other listeners on accident. Now I'm wondering if maybe the entire component is rendering twice
 from App or something, since my test case to cover this scenario is passing.
 
 It does seem like there are two versions of the app, and one of them always holds on to the initial
-chord / isn't updated. My suspicions now turn to the `useInterval` utility I found, I'm going to 
+chord / isn't updated. My suspicions now turn to the `useInterval` utility I found, I'm going to
 remove it and see if the issue persists.
 
 That didn't change anything. What a pickle. I can set a breakpoint at the voicing check in PracticePage,
 and see that `currentChord` evaluates to whatever the very first chord was, yet I can go inspect the
-react component using dev tools and see that currentChord is some new, expected value. I must have 
-some wild misconception about how closures / functions in TS work, I have been assuming that the 
+react component using dev tools and see that currentChord is some new, expected value. I must have
+some wild misconception about how closures / functions in TS work, I have been assuming that the
 `currentChord` value in the voicing check function will be reevaluated each time.
 
 I have been rescued by a coworker (Thank you Michael!). The issue was that I was never cleaning up
@@ -272,7 +274,7 @@ value and never updated. The piano setup useEffect now looks like this:
 ```
 
 I decided I am adding seventh support before moving to the backend, I want to actually use this app and
-sevenths are gonna be required. I will also try and add some options to influence the generation of 
+sevenths are gonna be required. I will also try and add some options to influence the generation of
 chords.
 
 ## 1/20/2022
@@ -280,14 +282,14 @@ chords.
 I have been sloshing the chord data structure around in my head. The fact that a chord can be
 a triad OR a seventh makes things hard, at least it seems to if I try and think of it that way.
 The description of a chord from the wiki that I wrote about earlier is nice in an academic sense
-but it is kind of grating against the code I already have. I came across a music theory video 
-where they organized their description of sevenths by "added thirds", which would be layered on 
-top of a diminished, minor, or major triad. I like thinking of it this way because it neatly fits 
-into the array of semitones I currently base the validation code on. I can even handle the weird 
-case of something trying to create an "augmented" seventh by adding a guard clause and just ignoring 
-the 'extra' added third. 
+but it is kind of grating against the code I already have. I came across a music theory video
+where they organized their description of sevenths by "added thirds", which would be layered on
+top of a diminished, minor, or major triad. I like thinking of it this way because it neatly fits
+into the array of semitones I currently base the validation code on. I can even handle the weird
+case of something trying to create an "augmented" seventh by adding a guard clause and just ignoring
+the 'extra' added third.
 
-I'm also just realizing that there is no reason a user shouldn't be able to use a flat note as a 
+I'm also just realizing that there is no reason a user shouldn't be able to use a flat note as a
 chord root, and I haven't accounted for that at all. Since it's a weird unicode symbol I think I
 will have to make sure I add some button for it in any future "chord builder" components.
 
@@ -297,11 +299,11 @@ a chord with a root note of A-G and any accidental. I'll leave the keyboard as i
 
 Another thing to start noodling about is the fact that there will be a preferred way of naming the
 notes of a chord, even if that results in not using the "standard" piano key layout. For example,
-a C dominant 7th is C, E, G, and B♭. It makes sense to call it a B♭ instead of an A# because the 
-seventh is a half step down, rather than being a half step up. I'll have to figure out some way of 
+a C dominant 7th is C, E, G, and B♭. It makes sense to call it a B♭ instead of an A# because the
+seventh is a half step down, rather than being a half step up. I'll have to figure out some way of
 intelligently separating between the two. Perhaps by key is the simplest way.
 
-Just found yet another uncovered case. The G#maj7 chord is composed of G#, B#, D# and F##. The F## is 
+Just found yet another uncovered case. The G#maj7 chord is composed of G#, B#, D# and F##. The F## is
 because it's actually a "normal" G, but it's a crime to have a sharp and natural version of a note on
 the same cleff. I wonder if I can deal with this by writing my own note equality function, maybe any
 note is equal as long it ends up on the same physical key. For example,
@@ -337,14 +339,14 @@ How does my type system handle someone trying to create an augmented 7th?
 
 Took a bit of a break. Usually when I hit my initial MVP is when I place whatever project into the graveyard
 of all my other abandoned projects, but I think this one is worth working on a bit more. I have some logos
-and favicon options to use thanks to my girlfriend, honestly a little silly I waited this long to ask for 
+and favicon options to use thanks to my girlfriend, honestly a little silly I waited this long to ask for
 them since everyone knows that is step 1 of starting any project.
 
-I am gonna stick around the frontend a bit more. I am not sure why I felt the rush to get into that, 
+I am gonna stick around the frontend a bit more. I am not sure why I felt the rush to get into that,
 perhaps just to validate the existence of the spring app and the fact I am paying to host a spring app
 where I could just serve the static site for free, but oh well. I have almost no experience doing actual
 mobile-first development so I'm going to try getting started on that. I'll be targeting android phones
-and tablets since iOS unfortunately doesn't support Web MIDI. 
+and tablets since iOS unfortunately doesn't support Web MIDI.
 
 I'm curious what organizing this will be like. I know the idea is your base CSS is all for mobile, small
 screen devices and you use media queries to scale up. I threw these together in Whimsical, and this will
@@ -352,7 +354,7 @@ be what I work towards for now.
 
 <img alt="timer mockup" src="./doc/timer-mockup.png" width="1021" />
 
-I have no doubt that the settings design is a UX sin of the highest order, I'm gonna see how it 
+I have no doubt that the settings design is a UX sin of the highest order, I'm gonna see how it
 feels first though.
 
 ## 1/26/2022
@@ -378,17 +380,17 @@ I finished up the settings and iterated on the mockups.
 
 <img alt="mockups v2" src="./doc/timer-mockup-2.png" width="903" />
 
-I'm pumped for the table tracking the previous set of chords. That's going to lead me into 
-figuring out how best to represent the required notes for a given chord, IE A#2 vs Bb2 
+I'm pumped for the table tracking the previous set of chords. That's going to lead me into
+figuring out how best to represent the required notes for a given chord, IE A#2 vs Bb2
 
 Still thinking about what sort of stats would be most useful. I feel like there needs to be
 a complimentary activity to the chord symbol practice activity in order to make stats interesting
 / useful. "What kinds of chords do I fail most?", "After practicing the diatonic chords of a given
 key, how much more likely am I to successfully voice those chords?"
 
-Something I might find useful at this point in my piano career is a diatonic chord activity. The user 
+Something I might find useful at this point in my piano career is a diatonic chord activity. The user
 would be presented with some format of the circle of 5ths. They could choose a key, and then they
-could play through the key a few different ways. 
+could play through the key a few different ways.
 
 * Triads or Sevenths
 * Go through the scale in order, backwards, randomly
@@ -400,18 +402,19 @@ be something where we "flip" the card, check the answer? Sounds kind of corny ev
 
 ## 1/29/2022
 
-I was able to massively simplify the voicing validator today by basically just moving some code around and 
+I was able to massively simplify the voicing validator today by basically just moving some code around and
 realizing I could delete a bunch. The transposition of the active notes into an ordered list was unnecessary.
 In the future, if I want to create a mode that accepts anything except the most basic voicing of a chord,
-then I'll need to do something like that again. For now, it's nice and simple to remove all the octave 
-information from the comparator. 
+then I'll need to do something like that again. For now, it's nice and simple to remove all the octave
+information from the comparator.
 
 I'm going to roll my own table for the voicing history stuff. I looked at some table components, in MUI and elsewhere,
 and they are all huge overkill for what I need right now. I'm always a little grossed out by using the table
 libraries, I know they are flexible and need to meet the use cases of a bunch of different domains, but ugh are they
 gross to work with.
 
-The app is coming along however it's still not quite useful enough for me to enjoy using it on my own. Soon, though. SOON.
+The app is coming along however it's still not quite useful enough for me to enjoy using it on my own. Soon, though.
+SOON.
 
 Ha! Just ran into my first flat/sharp bug while putting the table together
 
@@ -420,25 +423,25 @@ Ha! Just ran into my first flat/sharp bug while putting the table together
 A lot of the flat keys are wrong. In moving around some of the validation code I lost the "standardization"
 from flats to sharps for the keyboard. It's a little sneaky because all code that relies on the validator
 will still be fine, so all the chord generation / validation tests passed. This gets by because it only
-fails when coming up with the required notes for a chord that has failed validation. 
+fails when coming up with the required notes for a chord that has failed validation.
 
-I may just copy paste that validation code for now and noodle on how to solve this best. 
+I may just copy paste that validation code for now and noodle on how to solve this best.
 
 ## 1/30/2022
 
 Ah jeez something about the chord required notes code is borked. I get super weird results seemingly
 randomly. I'm going to start adding a ton of diverse, manually validated chords as test cases all over.
 I'm trying a sort of 'tiered' testing strategy where my core tests use the explicit data structures,
-and then higher order tests use the convenience parser / toString code for chords and notes. I may 
+and then higher order tests use the convenience parser / toString code for chords and notes. I may
 regret it but I'm curious to see how it feels.
 
-Activity idea: Arpegios based on interval, or patterns of different intervals. Move up and down a key alternating 
+Activity idea: Arpegios based on interval, or patterns of different intervals. Move up and down a key alternating
 4ths and 5ths or something like that. I'd want to have a cleff display instead of any kind of symbol, and
 it would be neat to auto generate the notes and have it scroll.
 
 Still bug squashing today. I am going through the app and any time I see an invalid chord somewhere, either in a
-different failing test or generated on the homepage, I'm manually checking it's notes and adding it to 
-the test suite. The failures are wracking up but it has gotten pretty easy to add them with the 
+different failing test or generated on the homepage, I'm manually checking it's notes and adding it to
+the test suite. The failures are wracking up but it has gotten pretty easy to add them with the
 dynamic tests.
 
 ## 1/31/2022
@@ -459,12 +462,12 @@ optional field can be a number. I have a few tests failing with the output inclu
 ```
 
 Notes can have octave information or not, and if they have it, it's a number. A decent amount of my code doesn't
-care about octave information so I omit it. This results in either it being undefined or 1, the default value 
+care about octave information so I omit it. This results in either it being undefined or 1, the default value
 for number. Using `toEqual(expected)` in jest isn't pruning these fields like I thought it would.
 
 There is some issue with gathering the required notes for a chord after you let the page run for a bit. Initially
 this bug was what caused me to go back and harden my test suite and refactor the voicing validator, however
-it still persists. My next guess is that something is getting funky with the state of the component. 
+it still persists. My next guess is that something is getting funky with the state of the component.
 
 The issue was with my random chord generator. I allowed for it to generate a chord with a quality of
 undefined, which is not a valid chord at all. How to guard against that? Writing tests for generators
@@ -473,20 +476,21 @@ feels weird.
 
 ## 2/9/2022
 
-UX feedback from interview candidate; list of failed chords is not clear in purpose, she thought that 
+UX feedback from interview candidate; list of failed chords is not clear in purpose, she thought that
 they might have been chords the user has to to play before the timer runs out.
 
 ## 4/1/2022
 
-Woo took a huge break, I started but didn't complete a different project in the meantime. I worked on this 
-app for fun with a coworker and was inspired to try another feature: I'd like to have a scrolling staff 
-to practice sight-reading with. 
+Woo took a huge break, I started but didn't complete a different project in the meantime. I worked on this
+app for fun with a coworker and was inspired to try another feature: I'd like to have a scrolling staff
+to practice sight-reading with.
 
 ## 5/8/2022
 
 Break wasn't over! I fixed some chord related bugs and am moving on to adding some Keys. In my practice sessions we have
-moved on to actually getting into jazz and diatonic chords have come to the forefront of my mind. Things that are swirling
-around in my head now are some way of practicing keys in a fun way. What metrics would be interesting as a student? What 
+moved on to actually getting into jazz and diatonic chords have come to the forefront of my mind. Things that are
+swirling
+around in my head now are some way of practicing keys in a fun way. What metrics would be interesting as a student? What
 exercise is best?
 
 I also know that I'm going to need to be able to render a musical staff. I got some bare bones down, it's not exactly
@@ -504,9 +508,9 @@ pleasing to look at though...
 ```
 
 The notes show up fine and there is something nice about each note on a given line being an actual JSX child, but my
-current problems are overlapping notes and rendering notes "off staff" like middle C for a treble cleff. I looked at 
+current problems are overlapping notes and rendering notes "off staff" like middle C for a treble cleff. I looked at
 some example staffs and noticed that when notes are about to overlap, a note is "shifted" to the left ~50% of it's width
-so that the edges of a note just meet.  
+so that the edges of a note just meet.
 
 For rendering notes off staff, I don't think that will be too hard either. I'm wondering if the dash through a floating
 note could just be some inline css...
@@ -514,14 +518,14 @@ note could just be some inline css...
 ## 5/09/2022
 
 I've started adding key information, started with C major and started working my way around the circle and ran
-into Fm7b5. I have just realized I haven't finished my chord implementation, and that my current structure doesn't 
+into Fm7b5. I have just realized I haven't finished my chord implementation, and that my current structure doesn't
 fit very elegantly into it.
 
 The quick and dirty way will be to just add "Half-Diminished" as a seventh quality type and then ignore whatever
 value "quality" has on a given chord, but that feels kind of lame. I wonder if it would be better to build my
 data structure around the idea of a first, third, fifth, seventh, and so on. Does that make it harder to calculate
-semitones? It certainly seems to mirror the domain language better than just considering major/minor triad + some kind 
-of seventh quality...the thing holding me back at the moment is that I anticipate it will be sort of annoying. 
+semitones? It certainly seems to mirror the domain language better than just considering major/minor triad + some kind
+of seventh quality...the thing holding me back at the moment is that I anticipate it will be sort of annoying.
 
 I suppose I could think of it as having a diminished triad with a major seventh on top but, as far as I know, that
 isn't how musicians would talk about a half diminished seventh.
@@ -529,7 +533,6 @@ isn't how musicians would talk about a half diminished seventh.
 Also, side thought, my test suite is getting sort of unwieldy. I started with parameterized tests that I simply add
 to whenever I come across a bug. That strategy has worked alright, but I think my library is getting to the point where
 I'd like to be able to assert across all diatonic sevenths for all keys, and perhaps all modes of those keys as well.
-
 
 ## 5/16/2022
 
@@ -555,7 +558,7 @@ Lots of progress being made on the Measure component:
 
 I was initially going to go through and lay it out line by line in the JSX but that felt pretty clumsy. In
 particular I couldn't find a good way to apply the "left shift" to notes that overlapped, nor was it very scalable
-when considering that sometimes notes go far beyond the staff vertically. 
+when considering that sometimes notes go far beyond the staff vertically.
 
 I tried again with absolute positioning, and I think this will work well. All the data I need to make any choice
 about how to render a given note is right there and accessible:
@@ -573,9 +576,8 @@ about how to render a given note is right there and accessible:
   })
 ```
 
-It might be a little annoying getting the scale exactly right. I need the note to fully fill a white bar 
+It might be a little annoying getting the scale exactly right. I need the note to fully fill a white bar
 on the staff. Perhaps scale isn't the answer and I should just set the height / width directly...
-
 
 Tada!
 
@@ -600,16 +602,15 @@ some tinkering:
 The only remaining problem is the '42.5%'; I need to appropriately scale that value because if I adjust the height/width
 of the measure at all it doesn't line up quite right anymore.
 
-
 ## 5/21/2022
 
 First pass at accidentals complete;
 
 <img alt="measure component" src="doc/render-measure-3.png" />
 
-Still have to add naturals, fix the improper staggering of the notes, and then properly implement scaling 
+Still have to add naturals, fix the improper staggering of the notes, and then properly implement scaling
 on the x-axis but the end is in sight. Once the measures render, I'll probably start trying to get some kind
-of new game off the ground, like cycling through a key or something like that. I will also have to add it to the 
+of new game off the ground, like cycling through a key or something like that. I will also have to add it to the
 homepage I think, like an option to display the chord as you move through the main game.
 
 ## 5/22/2022
@@ -624,28 +625,30 @@ else if (notes?.[i + 1] !== undefined && genericInterval(n, notes[i + 1]) === 2)
 } 
 ```
 
-Each note checks to see if it's index is in the 'should be shifted pile'. If it's not, it 
+Each note checks to see if it's index is in the 'should be shifted pile'. If it's not, it
 checks to see if the note immediately above it needs to be shifted. This gives the nice effect
 of never shifting the root of any cluster. This change also uncovered some bugs with the note sorting
 code!
 
 ## 5/23/2022
 
-I went to test out my measures and generate a series of chords for a given key. 
+I went to test out my measures and generate a series of chords for a given key.
 
 ```typescript
 const measures = MAJOR_KEYS['D♭'].diatonicChords.map(requiredNotesForChord)
- .map((notes) => layNotesOnKeyboard(notes, 4))
- .map((notes) => <Measure cleff={'treble'} notes={notes}/>)
+  .map((notes) => layNotesOnKeyboard(notes, 4))
+  .map((notes) => <Measure cleff = {'treble'}
+notes = {notes}
+/>)
 ```
 
 and it looked like this!
 
 ![render key bug](./doc/render-measure-4.png)
 
-An obvious problem is that the first chord only has three required notes, which is a bit odd for a seventh. 
+An obvious problem is that the first chord only has three required notes, which is a bit odd for a seventh.
 The second is that none of the notes really match the key, there should be flats instead of sharps.
-Time to begin on being able to transpose notes to a given key. I'm hoping there aren't too many weird 
+Time to begin on being able to transpose notes to a given key. I'm hoping there aren't too many weird
 bugs with this one...
 
 ## 5/26/2022
@@ -663,10 +666,10 @@ keyboard seems to use, which is all sharps. Now when I am trying to render somet
 
 The problem is that if the notes are calculated using the 'standardized' way, we end up with `C#, F, G# and C`. There is
 an additional bug of me not correctly laying out the notes on the staff, so the C# and the C are both on octave 4 which
-causes them to overlap and the C to 'disappear'. 
+causes them to overlap and the C to 'disappear'.
 
-I'm wondering if there are going to be issues with B, C, E and F since you can "shift" physical keys depending on the 
-accidental. 
+I'm wondering if there are going to be issues with B, C, E and F since you can "shift" physical keys depending on the
+accidental.
 
 ## 06/07/2022
 
@@ -680,33 +683,37 @@ the notes could move significantly on the staff. What I am doing is really forma
 key, almost like "key aware formatting" or something like that. My mind is starting to wander towards building in the
 idea of exercises or katas to be able to perform each day. To really nail that down I think I'd have to do a significant
 amount of work on the Measure component to be able to handle all the lengths of different notes in addition to some
-work on the MIDIPiano implementation itself. 
+work on the MIDIPiano implementation itself.
 
-Fun to think about, although I'd prefer to get started on users, logins and dashboards. If I am going to try and monetize this
-somehow, I absolutely need to have a useful and fun free tier. Right now I think my monetization strategy would come in 
-the form of teacher-centric tools, like seeing student progress and giving them assignments. 
+Fun to think about, although I'd prefer to get started on users, logins and dashboards. If I am going to try and
+monetize this
+somehow, I absolutely need to have a useful and fun free tier. Right now I think my monetization strategy would come in
+the form of teacher-centric tools, like seeing student progress and giving them assignments.
 
 ## 06/15/2022
 
-While pairing on this project today I came across a very odd issue; I have multiple paramterized tests in several describe blocks
-in the music theory package. Occasionally tests will "leak" across when I am trying to run a specific test suite, and I 
+While pairing on this project today I came across a very odd issue; I have multiple paramterized tests in several
+describe blocks
+in the music theory package. Occasionally tests will "leak" across when I am trying to run a specific test suite, and I
 believe it happens because of similar naming. The test name template of several sets of parameterized tests is the same,
 for example:
 
 ```typescript
     [["G3", "A#3", "D4", "F4"], "Gm7"],
-    [["G3", "B♭3", "D4", "F4"], "Gm7"],
-  ])(
-    '%s should be a valid voicing of %s',
+  [["G3", "B♭3", "D4", "F4"], "Gm7"],
+])
+(
+  '%s should be a valid voicing of %s',
 ```
 
-and 
+and
 
 ```typescript
 [["G#1", "C1", "D#2", "G2"], {root: "G", accidental: SHARP, quality: "Major", seventh: "Major"} as Chord],
-    [["A#1", "C#1", "F1", "G#1"], {root: "B", accidental: FLAT, quality: "Minor", seventh: "Minor"} as Chord]
-  ])(
-    '%s should be a valid voicing of %s',
+  [["A#1", "C#1", "F1", "G#1"], {root: "B", accidental: FLAT, quality: "Minor", seventh: "Minor"} as Chord]
+])
+(
+  '%s should be a valid voicing of %s',
 ```
 
 In other news, formatting on a key is working! "Laying out" the notes on top of the root of a chord isn't working quite
@@ -716,58 +723,63 @@ perfectly, For Dbmaj7 the C ends up on the bottom, but the notes themselves are 
 
 Alright I'm sick of it, ♭ is gonna be 'b'
 
-I've had a vision of a feature that I'd like to try and build. I think it would be interesting to try and create a 
+I've had a vision of a feature that I'd like to try and build. I think it would be interesting to try and create a
 staff editor in-app that allows the user to place notes on the staff in some kind of ergonomic way. It's hard to imagine
 what that actually looks like, and may end up lending itself to be rendered via Phaser or something like that, but I do
-know that I'll have to crate a musical staff that accepts arbitrary notes. 
+know that I'll have to crate a musical staff that accepts arbitrary notes.
 
 The next iteration of the `Measure` is being able to have multiple sets of notes on it. I've been thinking of the idea
-of 'beats', i.e putting a time signature into a data structure that wraps all the notes we need to render. Whatever the 
-index of the 'beat' is would dictate how far we place the note horizontally in the measure. 
+of 'beats', i.e putting a time signature into a data structure that wraps all the notes we need to render. Whatever the
+index of the 'beat' is would dictate how far we place the note horizontally in the measure.
 
 There are some weird notes that are going to be challenging to render:
- - Grace notes
- - When notes connect from the bass cleff into the treble cleff on a long arpeggio or something like that
- - Connecting / intelligently rendering the connectors of eight notes / sixteenth notes / etc
 
-Once all that is complete, we can move towards actually implementing users and having them persist the sheets they edit. 
-Being able to create different "games" would be very interesting, like what sorts of requirements can the creator attach 
-to their sheet? 
+- Grace notes
+- When notes connect from the bass cleff into the treble cleff on a long arpeggio or something like that
+- Connecting / intelligently rendering the connectors of eight notes / sixteenth notes / etc
+
+Once all that is complete, we can move towards actually implementing users and having them persist the sheets they edit.
+Being able to create different "games" would be very interesting, like what sorts of requirements can the creator attach
+to their sheet?
 
 - Playing at speed?
 - Play x times accurately playing y% of notes?
 - Specific voicings:
-   - 3rd and 5th shells
-   - playing anything other than the most basic root voicing? 
-   - spanning more than an octave? 
-   - Avoid chords with x quality? 
+    - 3rd and 5th shells
+    - playing anything other than the most basic root voicing?
+    - spanning more than an octave?
+    - Avoid chords with x quality?
 
 It's easy then to think of there being a free, community collection of challenges. Maybe teachers could create their own
-curriculums and track their students' progress. Highscores among your friends / class?  
+curriculums and track their students' progress. Highscores among your friends / class?
 
-I can see having to refactor the piano/activeNotes related code in the future as well. I wonder what an event-log of keys
-would be like? If I'm going to support arpeggios in the future I'll need to be able to see a history of notes. Maybe we 
-could have an array of the last 200 notes played or something like that, and "activeNotes" would just be reading 'key-down'
+I can see having to refactor the piano/activeNotes related code in the future as well. I wonder what an event-log of
+keys
+would be like? If I'm going to support arpeggios in the future I'll need to be able to see a history of notes. Maybe we
+could have an array of the last 200 notes played or something like that, and "activeNotes" would just be reading '
+key-down'
 events for the last x notes until we encountered a 'key-up' event
-
 
 ## 9/10/2022
 
 Whew long break. I read a post on hackernews a few weeks ago and some person was talking about how the secret to working
-on side projects is to only work on them when you feel like it, and I seem to be taking that to heart. When I stopped I 
-was in the middle of making a staff component to presumably render a bunch of notes but I am 
+on side projects is to only work on them when you feel like it, and I seem to be taking that to heart. When I stopped I
+was in the middle of making a staff component to presumably render a bunch of notes but I am
 
-
-## 9/12/2022 
+## 9/12/2022
 
 Didn't even finish that last entry, wild. I do miss being in the habit of working on this, I took a detour and checked
 out some python + opencv stuff which was neat, but I don't think it has motivational-legs and thus I am going to return
-to this project. I just finished my very first piano recital this last weekend, I played a rendition of Merry-Go-Round of 
-Life by Joe Hisaishi. I was so nervous that my hands were shaking! I did okay though, definitely a few mistakes and awkward
-pauses, but I'm still satisfied with how it went. 
+to this project. I just finished my very first piano recital this last weekend, I played a rendition of Merry-Go-Round
+of
+Life by Joe Hisaishi. I was so nervous that my hands were shaking! I did okay though, definitely a few mistakes and
+awkward
+pauses, but I'm still satisfied with how it went.
 
-I have refactored the way keys + diatonic chords work, I am not totally on-board with how it currently is because I think
-it's not going to work as well once I try and add extended chords, but for now I'm gonna let it sit. This is basically it:
+I have refactored the way keys + diatonic chords work, I am not totally on-board with how it currently is because I
+think
+it's not going to work as well once I try and add extended chords, but for now I'm gonna let it sit. This is basically
+it:
 
 ```typescript
 const DIATONIC_QUALITIES: Record<KeyQuality, string[]> = {
@@ -799,13 +811,15 @@ export const MAJOR_KEYS: Record<string, Key> = {
 ```
 
 Something that is starting to bug me a bit is how this app is oriented around seventh chords programmatically. Reducing
-the complexity of the chord is fine since it's basically just chopping off a section of a chord, but what about all 
+the complexity of the chord is fine since it's basically just chopping off a section of a chord, but what about all
 the different ways chords come together beyond a root voicing? I feel like a refactor is coming where, instead, I'd like
 the code to think of chords as an assemblage of scale degrees + modifiers. ({1, 3, b5, 7} for example)
 
-This is definitely due to me furthering my understanding of music theory over these last 8 (!!!) months, which is a good thing!
+This is definitely due to me furthering my understanding of music theory over these last 8 (!!!) months, which is a good
+thing!
 
-I'm going to chew on that idea though and press onwards. Refactors have not been too painful thus far, so I am not worried. 
+I'm going to chew on that idea though and press onwards. Refactors have not been too painful thus far, so I am not
+worried.
 In the immediate future, I am going to try and get out some improvements to the main practice app. Specifically I want
 to be able to select a key and restrict all generated chords to ones that "belong" in that key.
 
@@ -820,9 +834,9 @@ const keyForChord = (c: Chord): Key => {
 }
 ```
 
-but that doesn't work well, because there are more roots + qualities than there are keys. Where does something like `B#dim`
+but that doesn't work well, because there are more roots + qualities than there are keys. Where does something
+like `B#dim`
 fit in? Bit of an odd chord, and maybe the answer is that it just doesn't, but we will see what can be discovered.
-
 
 ## 09/20/2022
 
@@ -856,37 +870,45 @@ export const formattedNotesForChord = (c: Chord): Note[] => {
 }
 ```
 
-This is all fine and dandy until you get to a 'weird' chord, my classic choice being `B#dim`. I had to try and add naturals
+This is all fine and dandy until you get to a 'weird' chord, my classic choice being `B#dim`. I had to try and add
+naturals
 to the `formatNotesInKey` function to support this feature and I'm thinking I didn't do it quite right. When testing on
-`B#dim` in the key of `C# major`, I end up getting the notes of `Cnatural, D# and F#`. This is because my "normalization" 
+`B#dim` in the key of `C# major`, I end up getting the notes of `Cnatural, D# and F#`. This is because my "
+normalization"
 code is divorced from the code that then translates those normalized notes into a key-aware context, and thus doesn't
-know how to handle things like B#. I'm guessing it's a safe bet to assume that Fb will provide similar issues. 
+know how to handle things like B#. I'm guessing it's a safe bet to assume that Fb will provide similar issues.
 
-Maybe the solution is treat B# and Fb as normal values for a normalized keyboard? It doesn't sound great when I type it 
-out, especially since with the Fb it breaks the promise that all naturalized notes can only be sharps. 
+Maybe the solution is treat B# and Fb as normal values for a normalized keyboard? It doesn't sound great when I type it
+out, especially since with the Fb it breaks the promise that all naturalized notes can only be sharps.
 
 Ah crap, in my debugging of this particular problem, I discovered that keys CAN have mixed accidentals. I'm not sure if
-this will actually break anything, I just know I have made that assumption even prior to writing the above block of code.
+this will actually break anything, I just know I have made that assumption even prior to writing the above block of
+code.
 
-Double crap, also just came across my first double sharp. These minor keys get weird. Kind of seems tangentially related to my current issue actually
+Double crap, also just came across my first double sharp. These minor keys get weird. Kind of seems tangentially related
+to my current issue actually
 since I really doubt that the addition of double sharp will matter too much. How can I calculate whether or not a note
-is symantically similar to another note? In the `B#dim` case, B# is going to be semantically similar to C, and if that is
-the case, I should leave it alone. 
-
+is symantically similar to another note? In the `B#dim` case, B# is going to be semantically similar to C, and if that
+is
+the case, I should leave it alone.
 
 ## 09/21/2022
 
-Well, it's very late, but I believe I am 95% of the way done with human readable chord formatting. Wow! That was way harder
+Well, it's very late, but I believe I am 95% of the way done with human readable chord formatting. Wow! That was way
+harder
 than I thought it would be, although I suspect that some difficulty is coming from myself. I did have one crash while
-testing before I added some extra logging and I suspect that the input chord was a `A#augM7` which is sort of intense 
-as far as chords go. Tomorrow I'll clean up what I wrote today, and then I will try and get key-specific chord generation
-going before my lesson! 
+testing before I added some extra logging and I suspect that the input chord was a `A#augM7` which is sort of intense
+as far as chords go. Tomorrow I'll clean up what I wrote today, and then I will try and get key-specific chord
+generation
+going before my lesson!
 
 ## 01/30/2023
 
-I got a new job recently and a coworker mentioned Chris Ford's Functional Composition talk in passing. I have since watched
-it twice and believe it to be my favorite technical talk so far. I was reminded of this app, and how it's hit a bit of a 
-stopping point. Having unfinished side projects is a bit of a meme in the software community, but I think in this particular
+I got a new job recently and a coworker mentioned Chris Ford's Functional Composition talk in passing. I have since
+watched
+it twice and believe it to be my favorite technical talk so far. I was reminded of this app, and how it's hit a bit of a
+stopping point. Having unfinished side projects is a bit of a meme in the software community, but I think in this
+particular
 case it is for a few reasons:
 
 * My abstractions in the music theory library have accuracy issues
@@ -898,9 +920,9 @@ Most important issue was probably the last one. IRL my piano goal for this year 
 play any song from the real book in it's basic form. The way I try and practice on my own w/ a metronome is by playing
 various chord progressions in simple form from a set of 'random' keys. I think the minimum feature set I'd like to have
 from my app for me to prefer doing it on the app would be:
-    
+
 * Rendering the chord progression w/ the chord symbol above the staff. This means in the correct key with appropriate
-  accidentals. 
+  accidentals.
 * Tracking progression / days I have done my exercises
 * Some kind of threshold I have to hit to 'complete' the exercise, ex. 4 times flawlessly at 90bpm
 * Some form of error correction. Show me where I made a mistake, if not the exact mistake itself
@@ -908,20 +930,19 @@ from my app for me to prefer doing it on the app would be:
 So, perhaps in direct opposition to my stated problem and goal, I'm going to migrate this project over to NextJS. I do
 not need the Spring backend for this project and the buildpack for Spring takes ~20 minutes or so, it's just overkill
 for serving an app like this. I have been using NextJS for work and have been enjoying it. I do not expect that to take
-a long time. After that I'm going to start pulling in and tinkering with some libraries found on [this list](https://github.com/ciconia/awesome-music)
-I'm probably going to use VexFlow for rendering the Staff and perhaps Midi.js as well, although it doesn't look like 
-it takes any input, just output. A pre-concern I have for vexflow is that the rendering will take too long to provide 
+a long time. After that I'm going to start pulling in and tinkering with some libraries found
+on [this list](https://github.com/ciconia/awesome-music)
+I'm probably going to use VexFlow for rendering the Staff and perhaps Midi.js as well, although it doesn't look like
+it takes any input, just output. A pre-concern I have for vexflow is that the rendering will take too long to provide
 instant feedback while playing, if the staff has to "disappear" to re-render that's going to be a no-go. If that is the
 case that is fine, I don't think that finishing a basic version of the staff will take too long, I just don't want
 to lose motivation while fiddling with annoying CSS bits.
-
 
 The TODO list is as follows:
 
 1. Migrate the repository to NextJS
 2. Create a POC with VexFlow to see if it's a viable staff rendering solution
 3. Begin work on the chord progression feature page
-
 
 *Part 2*
 
@@ -937,12 +958,13 @@ See more info here: https://nextjs.org/docs/messages/react-hydration-error
 This was spooky at first, but the more I read about it the more it completely makes sense. NextJS is trying to render
 everything server-side by default, and Flash Chords never had to worry about that even being possible in the previous
 structure. I suspect that my current issue is because I am rendering practice page content that only appears if you have
-a valid MIDI device, which of course the server will not. 
+a valid MIDI device, which of course the server will not.
 
 If I had just opened the console up, I'd have saved myself quite a bit of time! Here is the message it spits out:
 `Warning: Text content did not match. Server: "Em7" Client: "AM7"`
 
 Related to the above paragraph, this is the constructor for the current PracticePage component:
+
 ```typescript
 export default function PracticePage({
                                        piano,
@@ -960,29 +982,30 @@ instead of just plopping everything in index.
 Well well well, look what we have here:
 ![staff rendering](./doc/rendering-staff.png)
 
-Vexflow is pretty slick and seems plenty fast! In fact, it looks like they provide more than enough styling and 
+Vexflow is pretty slick and seems plenty fast! In fact, it looks like they provide more than enough styling and
 control options for our needs. It wasn't even that hard to convert the existing chord data structure to something
 render-able! I think that is plenty enough work for today, what a good result to end on.
 
-## 1/31/2023 
+## 1/31/2023
 
-Today I'd like to begin on the chord progression page. For this to be useful, I'd like to be able to pick one of many 
+Today I'd like to begin on the chord progression page. For this to be useful, I'd like to be able to pick one of many
 common chord progressions in several keys. There should be a ticker on an adjustable BPM, and I should be able to assert
 whether I played the progression correctly and in time.
 
 ## 2/1/2023
 
-I tricked myself into trying out the chord / required notes / format in key stuff again. I don't like what I currently 
+I tricked myself into trying out the chord / required notes / format in key stuff again. I don't like what I currently
 have it feels very overcomplicated to me. Hopefully the Chris Ford talk provides good inspiration.
 
 My piano lesson was pretty interesting today. I told my teacher of my recent work on the project and we revisited what
 our idea of a chord is. I think I keep running into tangles with the problem of "how do we actually write a voicing for
-a given chord" is because my chords didn't have enough information. I think this time around, I'm going to consider a chord
+a given chord" is because my chords didn't have enough information. I think this time around, I'm going to consider a
+chord
 as requiring a key in order to know what the voicing could be. We will maybe have shells and various kinds of partials
 (like a chord whose only info is a roman numeral, maybe) but in order to actually "render" what the required notes
 of a chord are, I think I'm going to assume a key is available.
 
-## 2/2/2023 
+## 2/2/2023
 
 Refactor is continuing to feel good for the most part. I'm running into another bit of trouble and I think the culprit
 is another domain line I'm trying to blur. Here is the code I'm working on:
@@ -1009,26 +1032,26 @@ const circleMajorKeys = (numAccidentals: number): FKey => {
 
 The conceptual problem I'm trying to solve is how I can know exactly which way to convert a given note on the keyboard
 when building up a key with flats in it. Take F major; if we step through this function with `numAccidentals=-1` and I
-try and standardize the new `keyCenter`, then use the scale intervals to count up the keyboard, I'll hit `A#` eventually.
-`A` will not be in our list of accidentals. What should it do? 
+try and standardize the new `keyCenter`, then use the scale intervals to count up the keyboard, I'll hit `A#`
+eventually.
+`A` will not be in our list of accidentals. What should it do?
 
 I feel like I'm straddling two different ideas and trying to plug them into each other; The idea of a key being built
 on a root pitch and a series of intervals above that pitch, and the idea of a keyboard having a bunch of named pitches
-already. 
+already.
 
-
-Bummer, frustrating end to the day. First I had some WSL issues where my windows-based debugger wouldn't connect to the 
-node interpreter running on WSL, then I started having extremely odd issues running tests in general. Imports would be 
-undefined, console logs not working at all, source maps not lining up for the debugger...perhaps tomorrow all will be 
+Bummer, frustrating end to the day. First I had some WSL issues where my windows-based debugger wouldn't connect to the
+node interpreter running on WSL, then I started having extremely odd issues running tests in general. Imports would be
+undefined, console logs not working at all, source maps not lining up for the debugger...perhaps tomorrow all will be
 well.
-
 
 ## 2/3/2023
 
 Progress past the annoying issues I was having. First, this lovely person posted a workaround for the issue I was having
 here: https://youtrack.jetbrains.com/issue/WEB-59241#focus=Comments-27-6837328.0-0
 
-Second, my problem with the undefined imports was because I was using Scale and casting in a bad way. My scales are classes
+Second, my problem with the undefined imports was because I was using Scale and casting in a bad way. My scales are
+classes
 and I was treating them as interfaces. The fix was to turn code that looked like this:
 
 ```typescript
@@ -1046,9 +1069,9 @@ export const MAJOR_SCALE = new Scale("Major", [2, 2, 1, 2, 2, 2, 1])
 I have done this before on accident while refactoring interfaces / classes, I should probably just up my linter
 to ban any use of `as`. What was confusing about the whole thing was that my imports were resulting in `undefined` in
 the debugger. The crazy dark magic of transpilation / bundling / minifying code is one of my least favorite parts of
-using typescript. I'm not quite sure why I subjectively feel as though it's flakier and harder to work with than something
+using typescript. I'm not quite sure why I subjectively feel as though it's flakier and harder to work with than
+something
 like Java, but I certainly do.
-
 
 ## 2/8/2023
 
@@ -1056,8 +1079,9 @@ I've been heads down for a few days, but I have enough progress to share now. Ch
 
 ![staff progression](./doc/staff-progression.png)
 
-I basically rewrote the entirety of the musical core besides the code in my `Note` module. I think the code is a bit more
-readable + more aligned to the domain this time around. In my first iteration, I think I muddied concepts and mixed 
+I basically rewrote the entirety of the musical core besides the code in my `Note` module. I think the code is a bit
+more
+readable + more aligned to the domain this time around. In my first iteration, I think I muddied concepts and mixed
 separate ideas together because I was not as fluent in the domain as I am now. Here is an example, looking at my first
 iteration's idea of a Chord:
 
@@ -1071,9 +1095,10 @@ export interface Chord {
 }
 ```
 
-The chord here has two properties that I do not think belong in here anymore. The accidental does not belong to the chord
-but rather to the children notes in a given chord. The bass note doesn't make sense here either, I'd just merge that 
-concept with the `root`. 
+The chord here has two properties that I do not think belong in here anymore. The accidental does not belong to the
+chord
+but rather to the children notes in a given chord. The bass note doesn't make sense here either, I'd just merge that
+concept with the `root`.
 
 Here is another problem area, in my opinion:
 
@@ -1092,7 +1117,7 @@ export const requiredNotesForChord = (c: Chord): Note[] => {
 
 To determine what notes are required for a given chord, I 'work backwards' using the chord qualities and by assembling
 an array of semisteps. This time around I did it the opposite way, by treating the set of intervals as fundamental to
-the identity of a chord, and then figuring out the 'higher level abstraction' of quality based on the intervals. 
+the identity of a chord, and then figuring out the 'higher level abstraction' of quality based on the intervals.
 
 Another thing I have massively improved on is my concepts of `Key` vs `Scale`. Here is a snippet of some old Key code:
 
@@ -1111,10 +1136,12 @@ const DIATONIC_QUALITIES: Record<KeyQuality, string[]> = {
 ...
 ```
 
-On the face of this, it's not necessarily inaccurate. It's simply inflexible. I had no concept of scale before and likely
+On the face of this, it's not necessarily inaccurate. It's simply inflexible. I had no concept of scale before and
+likely
 could not have told you a textbook definition of the difference. Now I understand that a key is a union of a scale and a
-note to start that scale from. On top of that, hardcoding the chord qualities for the diatonic scales is working at 
-too high of an abstraction layer. Even writing this code at the time bugged me, I just couldn't think of how to do it better.
+note to start that scale from. On top of that, hardcoding the chord qualities for the diatonic scales is working at
+too high of an abstraction layer. Even writing this code at the time bugged me, I just couldn't think of how to do it
+better.
 
 Now my Key and Scale code looks like this:
 
@@ -1167,31 +1194,35 @@ export const circleKeys = (numAccidentals: number): FKey => {
 ```
 
 I decided to orient my first pass around the circle of fifths, since this app is most likely to be used by newer
-piano students, and they will primarily stick to diatonic keys and chords. I think that I might be overcomplicating 
-the assemblage of a key but that feeling is honestly just due to the literal size of the code. Here, I suspect that 
+piano students, and they will primarily stick to diatonic keys and chords. I think that I might be overcomplicating
+the assemblage of a key but that feeling is honestly just due to the literal size of the code. Here, I suspect that
 I am still blurring domain boundaries by associating this code with the concept of the `KEYBOARD`, but that could just
-be a naming thing since the Keyboard is our most direct relation to the idea of pitch. 
+be a naming thing since the Keyboard is our most direct relation to the idea of pitch.
 
-Since that is all done, I've moved on to working more with Vexflow and figuring out what I want the interface to actually
-look like while a user is going through a chord progression. I know that I want to track their progress through the staff
+Since that is all done, I've moved on to working more with Vexflow and figuring out what I want the interface to
+actually
+look like while a user is going through a chord progression. I know that I want to track their progress through the
+staff
 and show them when they are "right/wrong", but I am not very fast at working with Vexflow yet.
 
 Some ideas:
-    - A timer that moves on a certain BPM and expects you to play the progression on-beat
-    - A way to render a 'ghost' version of the root chord, but render the actual voicing the user plays 
-    - Text entry areas to allow the user to design their own chord progression practice
-    - Switching the chord symbols to roman numerals and vice versa
+- A timer that moves on a certain BPM and expects you to play the progression on-beat
+- A way to render a 'ghost' version of the root chord, but render the actual voicing the user plays
+- Text entry areas to allow the user to design their own chord progression practice
+- Switching the chord symbols to roman numerals and vice versa
 
 Tonight is piano lesson night so we will see if I can make enough progress to share by then.
 
-Some stuff is coming to mind, not sure if I have thought or written about this before. If we have a BPM, what does it mean
-to play a "successful" voicing? Maybe a time window around the "perfect" time that someone should play a note? 
+Some stuff is coming to mind, not sure if I have thought or written about this before. If we have a BPM, what does it
+mean
+to play a "successful" voicing? Maybe a time window around the "perfect" time that someone should play a note?
 
 ## 02/09/2023
 
-I have hit a bit of a block recently with `InteractiveStaff`, I haven't been sure how I want to go about it. I think 
+I have hit a bit of a block recently with `InteractiveStaff`, I haven't been sure how I want to go about it. I think
 I am going to try having it be a component that gets created, "plays out", and returns a final result via a callback. I
-am hoping that style lends itself well for code reusability across the different kinds of practice sessions I want to create.
+am hoping that style lends itself well for code reusability across the different kinds of practice sessions I want to
+create.
 
 Not totally sure how it'll feel in terms of interacting with the UI while sitting at a piano, I should keep in mind that
 having to turn and use a mouse or keyboard or whatever might be a little annoying. Maybe some UI prompts that indicate
@@ -1205,9 +1236,11 @@ callback with a specific id, and making sure that I clean up the ID later. Inste
 have it's own history / piano object to work with.
 
 I wonder if the reason I initially did it that way was for testing. If I remove the global MIDI Piano, I'll be able
-to get rid of the weird id-based listener registration in each component, but then I'll have to use the `WebMidi.MIDIInput`
-object for my testing. Maybe that is okay, it shouldn't be too hard to make a test harness that still allows me to 
-operate at the `Note` level. I'm still going to move ahead with the change since the id stuff is bugging me, I don't think
+to get rid of the weird id-based listener registration in each component, but then I'll have to use
+the `WebMidi.MIDIInput`
+object for my testing. Maybe that is okay, it shouldn't be too hard to make a test harness that still allows me to
+operate at the `Note` level. I'm still going to move ahead with the change since the id stuff is bugging me, I don't
+think
 it's the kind of thing I'd want to have as a pattern if I was running a team. I feel like the cleanup step is too easy
 to forget, and you get weird behavior if you don't know what is wrong, as documented earlier in this journal.
 
@@ -1220,45 +1253,49 @@ I have made some good progress on getting the interactive scroll going:
 I think I am going to start tinkering with getting a beat going, with some kind of
 indication on the staff where the beat is at.
 
-
 Got rid of my deploy step, decided to just fully lean into DigitalOcean's app platform and have it integrate with the
 repository.
 
-
 ## 02/16/2023
 
-I am pleased with the current app as an MVP; I can render music, interact with the circle of fifths in a nice programmatic
+I am pleased with the current app as an MVP; I can render music, interact with the circle of fifths in a nice
+programmatic
 way, and have a pretty good grasp of what is next. For this app to be useful to me, I'd like to be able to create
 exercises for all the different training exercises I do each day. I then want to have some kind of calendar few, similar
 to Github where it gives a rough indication of work over a long period of time.
 
-Each exercise will have some element of "progression", mostly likely for things like upping the tempo and accuracy. 
+Each exercise will have some element of "progression", mostly likely for things like upping the tempo and accuracy.
 
 Some exercise ideas:
+
 * Diatonic chords for each key
 * Inversions, rootless voicings, chord shells, other more restrictive kinds of chord voicings
 * Running up and down scales
 * Melodic cells
 
-My next immediate task is to use the findings from `InteractiveStaff` to create some kind of scrolling staff. I'm not 
+My next immediate task is to use the findings from `InteractiveStaff` to create some kind of scrolling staff. I'm not
 100% sure what this is going to look like yet because I need it to scale according to screen size, animate in several
- ways based on a given BPM, and accept various kinds of notes per measure. I'll also likely need a way to preload measures
+ways based on a given BPM, and accept various kinds of notes per measure. I'll also likely need a way to preload
+measures
 before they enter the screen, and remove measures that have gone past.
 
 ## 02/17/2023
 
 I've hit a bit of a stump. It's tricky to think about how the animation will work while being associated with a variable
-BPM. I have an iOS app that I like to use called `Flowkey` and their staff is pretty interesting; they display a scrolling
+BPM. I have an iOS app that I like to use called `Flowkey` and their staff is pretty interesting; they display a
+scrolling
 staff directly underneath a visualization of a person playing the notes. The staff very slightly speeds up / slows down
 to make sure it stays in sync with the video of the person playing a piece.
 
-I think I'm spinning my wheels trying to think of the easiest way to implement when I should really just start tinkering.
-The Vexflow documentation example of animation uses CSS transitions and I feel averse to trying that but maybe that is 
-the wrong instinct. 
+I think I'm spinning my wheels trying to think of the easiest way to implement when I should really just start
+tinkering.
+The Vexflow documentation example of animation uses CSS transitions and I feel averse to trying that but maybe that is
+the wrong instinct.
 
 I think, for step one, I'm just going to render the diatonic chords of a given key and just move the staff left somehow.
 
-Also, open question, I cannot figure out how to get these staves to render with a given height scale. Is that common among
+Also, open question, I cannot figure out how to get these staves to render with a given height scale. Is that common
+among
 canvas rendering libraries? Do I just reach the height I want by using `scale`? Seems odd
 
 ## 02/20/2023
@@ -1270,7 +1307,7 @@ comfortable with my first plan of attack. I have set the staff up so that it loo
 
 I want to try and create some kind of interface where I can 'slide' the staff to any beat on any measure. I'm thinking
 that I'll be able to do this just by slicing up the width of each staff by the number of beats on it, which will give
-me a range of pixels that a particular 'beat' is active. 
+me a range of pixels that a particular 'beat' is active.
 
 This approach relies on me having consistent spacing for the note formatting w/ Vexflow, but I think I'll be able to
 do that pretty effectively.
@@ -1284,7 +1321,8 @@ IntelliJ struggles to render it now. :(
 --- 
 
 Something I have to start reaching for earlier is creation of custom react hooks. To create my rendering context for
-Vexflow, my initial instinct was to create a React component that had a div with an id, set up the context in a `useEffect`
+Vexflow, my initial instinct was to create a React component that had a div with an id, set up the context in
+a `useEffect`
 block, and then executed some sort of prop-based callback to hand back the context. That idea may still have some merit,
 but I am a much bigger fan of doing it in a hook:
 
@@ -1317,7 +1355,46 @@ export function useVexflowContext(outputId: string, width?: number, height?: num
 }
 ```
 
-I was inspired by seeing the `useWindowSize` hook somewhere. It feels simpler. I do have to figure out a way to keep a 
-closer eye on the amount of times these components render and call their useEffect blocks. Several times now it has actually
+I was inspired by seeing the `useWindowSize` hook somewhere. It feels simpler. I do have to figure out a way to keep a
+closer eye on the amount of times these components render and call their useEffect blocks. Several times now it has
+actually
 been firing wayyyy more often than I would have expected; in the hook I created above, I had accidentally depended on
-`context` alongside `windowWidth, windowHeight`, which caused it to fire infinitely.  
+`context` alongside `windowWidth, windowHeight`, which caused it to fire infinitely.
+
+---
+
+A perhaps interesting and annoying issue I'm running into is the scrubbing of `transition` and `transform` when trying
+to manually apply dynamic styling like so:
+
+```typescript
+    group.style.color = 'red'
+const trans = `transform ${4}s linear;`
+const form = `translate(-${staveWidth}px, 0);`
+group.style.transition = trans
+group.style.transform = form
+console.log(group)
+```
+
+The console log at the end is showing the animation related styling as being wiped out.
+
+`<g class="vf-key-exercise-group" style="color: red;">`
+
+If I add other properties, like `border`, they show up just fine. `transition` and `transform` do not.
+
+---
+
+Despair; I have spent actual hours on this today and the issue was that I had semicolons in the code above. I
+was doing some nasty, arcane stuff with `react-spring`, refs, manual property assignment on objects...it was getting
+bad. 
+
+
+```typescript
+  useEffect(() => {
+    if (staveGroup === undefined) return
+
+    staveGroup.style.transition = `transform ${SECONDS_PER_MEASURE}s linear`
+    staveGroup.style.transform = `translate(-${staveWidth}px, 0)`
+  }, [SECONDS_PER_MEASURE, staveGroup])
+```
+
+Works wonderfully. I'll have to loop the animation somehow and get a hook in to know when we are done, but it animates.
