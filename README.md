@@ -1398,3 +1398,21 @@ bad.
 ```
 
 Works wonderfully. I'll have to loop the animation somehow and get a hook in to know when we are done, but it animates.
+
+## 02/21/2023
+
+I have the above block in it's own `useEffect` because I was trying to create a "clear" working area while I tinkered with
+the problem. Having thought I solved it, I went to remove that block and merge the code with the greater context-related
+`useEffect` block above. When I did so, however, my animations failed to play. I wonder if by setting the context, placing
+it in a new `useEffect` block and depending on the context, I ensure that the elements will 'exist' and be available? I'm
+not really 100% sure why it is working that way.
+
+
+---
+
+I've felt great about today and yesterday, learned a bunch of stuff and I have a loose demo of what I want. Working
+on styling the current "beat" note at the moment. I am starting to think a little about what I'm going to have to do in
+order to sync a bunch of different UI elements to 'land' on the beat. I have played a bit of [Hi-FI Rush](https://store.steampowered.com/app/1817230/HiFi_RUSH/),
+a rhythm game that uses beat as a core mechanic. The entire UI and environment syncs to the beat in a fluid way. I think
+that may be a bit high to strive for with this app, but I am interested in having the 'current-beat-indicator' have some sort
+of visual cue. 

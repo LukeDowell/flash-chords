@@ -69,8 +69,8 @@ export function InteractiveStaff(props: Props) {
 
       const chordVoicing = chordVoicings[i - 1]
       const staveNotes = (chordVoicing && chordVoicing.length > 0)
-        ? notesToStaveNote(chordVoicing, {fillStyle: 'green', chordSymbolText: c.toString()})
-        : notesToStaveNote(placeOnOctave(4, notesInKey(c.notes(), musicKey)), {chordSymbolText: c.toString()})
+        ? notesToStaveNote(chordVoicing, {fillStyle: 'green', chord: c})
+        : notesToStaveNote(placeOnOctave(4, notesInKey(c.notes(), musicKey)), {chord: c})
 
       const voice = new Voice({num_beats: 4, beat_value: 4})
       voice.addTickables([staveNotes])

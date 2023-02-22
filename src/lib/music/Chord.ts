@@ -35,7 +35,7 @@ export class Chord {
   /**
    * The root of a given chord, eg. C or Db or
    */
-  readonly root: Note
+  readonly rootNote: Note
 
   /**
    * The quality of the base triad of this chord. eg. "Major" or "Diminished"
@@ -58,7 +58,7 @@ export class Chord {
               quality: ChordQuality = "Major",
               seventhQuality: SeventhQuality | null = null,
               extensions: Array<[ChordDegree, Third]> = []) {
-    this.root = Note.of(rootNote)
+    this.rootNote = Note.of(rootNote)
     this.quality = quality
     this.seventhQuality = seventhQuality
     this.extensions = extensions
@@ -96,7 +96,7 @@ export class Chord {
   }
 
   notes(): Note[] {
-    const index = KEYBOARD.findIndex((n) => n.equalsWithoutOctave(standardizeNote(this.root)))
+    const index = KEYBOARD.findIndex((n) => n.equalsWithoutOctave(standardizeNote(this.rootNote)))
     if (index === -1) throw new Error("Unable to find note on keyboard!")
     const semitonesFromRoot = this.intervals().map((interval, i) => {
       const previousTotal = _.sum(this.intervals().slice(0, i))
@@ -104,11 +104,11 @@ export class Chord {
     })
 
     return [KEYBOARD[index]].concat(semitonesFromRoot.map(s => KEYBOARD[index + s]))
-      .map(n => new Note(n.root, n.accidental, this.root.octave ? n.octave : undefined))
+      .map(n => new Note(n.root, n.accidental, this.rootNote.octave ? n.octave : undefined))
   }
 
   toString(): string {
-    const root = `${this.root.root}${this.root.accidental?.symbol || ""}`
+    const root = `${this.rootNote.root}${this.rootNote.accidental?.symbol || ""}`
     const triadQuality: string = {
       "Major": "",
       "Minor": "m",
