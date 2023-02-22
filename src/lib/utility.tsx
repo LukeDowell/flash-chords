@@ -53,9 +53,7 @@ export function useVexflowContext(outputId: string, width?: number, height?: num
 
     renderer.resize(contextWidth, contextHeight)
     const ctx = renderer.getContext()
-    // ctx.rect(0, 0, contextWidth, contextHeight)
 
-    console.log('Vexflow Context Changing', ctx)
     setContext(ctx as SVGContext)
     setSize([contextWidth, contextHeight])
   }, [windowWidth, windowHeight, outputId, width, height])

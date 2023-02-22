@@ -1,10 +1,11 @@
-import React, {useEffect, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import {diatonicChords, MusicKey, notesInKey} from "@/lib/music/Circle";
 import {useInterval, useVexflowContext} from "@/lib/utility";
 import {styled} from "@mui/system";
 import {notesToStaveNote} from "@/lib/musicToVex";
 import {ChordSymbol, ModifierContext, Stave, TickContext} from "vexflow";
 import {placeOnOctave} from "@/lib/music/Note";
+import {MIDIPianoContext} from "@/pages/_app.page";
 
 export interface KeyExerciseResult {
   musicKey: MusicKey,
@@ -31,31 +32,31 @@ interface Props {
  */
 export default function KeyExercise({musicKey, onEnd, options}: Props) {
   const [context, [width, height]] = useVexflowContext('key-exercise-vexflow-output')
+  const piano = useContext(MIDIPianoContext)
   const [startTime, setStartTime] = useState<number | undefined>(undefined)
   const [endTime, setEndTime] = useState<number | undefined>(undefined)
   const [staveGroup, setStaveGroup] = useState<SVGElement | undefined>(undefined)
-  const [currentBeat, setCurrentBeat] = useState<number>(0)
 
   const STAVE_WIDTH = 200
   const BPM = options?.bpm || 120
-  const BPS = 60 / BPM
+  const BEAT_DELAY_MS = 60_000 / BPM
 
   useInterval(() => {
-    if (!startTime) return
-    const time = new Date().getTime()
-    const secondsSinceStart = (time - startTime) / 1000
-    const beatsSinceStart = Math.round(secondsSinceStart * BPS * 4) + 1
-    setCurrentBeat(beatsSinceStart)
+    if (!startTime || !staveGroup || endTime) return
+
+    const matrix = new WebKitCSSMatrix(window.getComputedStyle(staveGroup).transform)
+    const currentMeasureIndex = Math.floor(matrix.m41 * -1 / STAVE_WIDTH)
+    const notes = staveGroup.getElementsByClassName("vf-stavenote").item(currentMeasureIndex) as SVGElement
+    if (notes) notes.style.fill = 'green'
   }, 100)
 
   useEffect(() => {
-    const numMeasures = diatonicChords(musicKey).length
-    const measure = Math.round(currentBeat / numMeasures)
-    const beat = currentBeat % numMeasures
-  }, [staveGroup, currentBeat, musicKey])
+    if (context === undefined) return
+    if (startTime && endTime) {
+      setStartTime(undefined)
+      setEndTime(undefined)
+    } else if (startTime && !endTime) return
 
-  useEffect(() => {
-    if (context === undefined || startTime !== undefined) return
     const group: SVGElement = context.openGroup(undefined, 'key-exercise-group')
 
     diatonicChords(musicKey).forEach((chord, i) => {
@@ -84,35 +85,24 @@ export default function KeyExercise({musicKey, onEnd, options}: Props) {
     // Current beat indicator
     context.setLineWidth(20)
     context.setFillStyle('rgba(75, 150, 150, 0.5)')
-    context.fillRect(width / 2, 0, 20, height)
-  }, [context, height, musicKey, startTime, width])
+    context.fillRect(width / 2 + 30, 0, 20, height)
+  }, [context, endTime, height, musicKey, startTime, width])
 
   function start() {
     if (staveGroup === undefined) return
-
     const chords = diatonicChords(musicKey)
-
-    staveGroup.addEventListener('transitionend', (e) => {
-      onEnd?.call(onEnd, {
-        musicKey
-      })
-    })
-
+    staveGroup.addEventListener('transitionend', (e) => onEnd?.call(onEnd, {musicKey}))
     staveGroup.addEventListener('transitionstart', (e) => setStartTime(new Date().getTime()))
-
-    const SECONDS_PER_MEASURE = 4 * BPS
+    const SECONDS_PER_MEASURE = 4 * BEAT_DELAY_MS / 1000
     const transitionTime = SECONDS_PER_MEASURE * (chords.length);
     const translationX = STAVE_WIDTH * (chords.length)
     staveGroup.style.transition = `transform ${transitionTime}s linear`
     staveGroup.style.transform = `translate(-${translationX}px, 0)`
   }
 
-  return <>
-    <p>Current Beat: {currentBeat}</p>
-    <VexflowOutput onClick={() => start()}>
-      <div id={'key-exercise-vexflow-output'}/>
-    </VexflowOutput>
-  </>
+  return <VexflowOutput onClick={() => start()}>
+    <div id={'key-exercise-vexflow-output'}/>
+  </VexflowOutput>
 }
 
 const VexflowOutput = styled('div')({
