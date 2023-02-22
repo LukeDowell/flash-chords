@@ -1416,3 +1416,49 @@ order to sync a bunch of different UI elements to 'land' on the beat. I have pla
 a rhythm game that uses beat as a core mechanic. The entire UI and environment syncs to the beat in a fluid way. I think
 that may be a bit high to strive for with this app, but I am interested in having the 'current-beat-indicator' have some sort
 of visual cue. 
+
+## 02/22/2023
+
+The last thing I'm trying to button up before making an iteration pass over the exercise itself is that I cannot get
+the exercise component to re-render when I change the music key passed into props. I would have guessed that by changing
+props at all, you trigger a rerender, but apparently that is not the case. 
+
+Adding a key prop forces a change: 
+`<KeyExercise key={`${musicKey.root}-${musicKey.scale.name}`} musicKey={musicKey} onEnd={(r) => {`
+
+I wouldn't think you would have to do that though. Maybe the only thing that triggers a rerender is state changes in 
+the DOM? I am assuming that, were I to get a rerender, the `SVGContext` would be wiped out but maybe that's not true...
+
+Ah okay, I get the issue. I grab the SVG context like this:
+
+```typescript
+export default function KeyExercise({musicKey, onEnd, options}: Props) {
+  const [context, [width, height]] = useVexflowContext('key-exercise-vexflow-output')
+...
+```
+
+I'll bet that context isn't actually getting re-created at all, since the `'key-exercise-vexflow-output'` input is staying
+the same, and that element isn't getting wiped off the DOM ever. Let's add a console log and see...
+
+Yep that's the problem. That makes sense I suppose, I'll have to keep that in mind. I kind of like the idea that once it
+is set up, a context is "spent" and I have to create a new component. 
+
+
+---
+
+I was looking around for some audio related libraries so that I could play sound when the user presses a key, and found
+this: [MIDI.js Home Page)](https://galactic.ink/midi-js/) 
+
+I thought I'd take a screenshot and embed it or something, but it should be experienced first hand. 
+
+Pretty cool day, I have a giga basic MVP going!
+
+![progression page mvp](https://i.imgur.com/wVUNi8M.gif)
+
+It's quite bleak, it's silent, there are no visual cues for the beat at all, not to mention any auditory ones. I think
+my next step for this component is going to all be styling. I want, perhaps in order:
+
+1. An audio click for the beat
+2. The beat indicator to be accurate (the notes should land perfectly inside of the blue zone right on the beat)
+3. The beat indicator to pulse to the beat, a-la Hi-FI Rush
+4. Some kind of more interesting animation on notes than a color change

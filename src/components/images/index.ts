@@ -1,9 +1,0 @@
-export {default as AccidentalFlat} from "./AccidentalFlat";
-export {default as AccidentalNatural} from "./AccidentalNatural";
-export {default as AccidentalSharp} from "./AccidentalSharp";
-export {default as BassClef} from "./BassClef";
-export {default as Icon} from "./Icon";
-export {default as QuarterNoteInverse} from "./QuarterNoteInverse";
-export {default as QuarterNote} from "./QuarterNote";
-export {default as TrebleClef} from "./TrebleClef";
-export {default as WholeNote} from "./WholeNote";

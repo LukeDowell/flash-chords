@@ -1,11 +1,13 @@
 import React, {useContext, useEffect, useState} from 'react'
-import {diatonicChords, MusicKey, notesInKey} from "@/lib/music/Circle";
+import {diatonicChords, isValidVoicingForChord, MusicKey, notesInKey} from "@/lib/music/Circle";
 import {useInterval, useVexflowContext} from "@/lib/utility";
 import {styled} from "@mui/system";
 import {notesToStaveNote} from "@/lib/musicToVex";
 import {ChordSymbol, ModifierContext, Stave, TickContext} from "vexflow";
-import {placeOnOctave} from "@/lib/music/Note";
+import {Note, placeOnOctave} from "@/lib/music/Note";
 import {MIDIPianoContext} from "@/pages/_app.page";
+import MIDIPiano from "@/lib/music/MIDIPiano";
+import _ from "lodash";
 
 export interface KeyExerciseResult {
   musicKey: MusicKey,
@@ -18,44 +20,40 @@ interface KeyExerciseOptions {
 interface Props {
   musicKey: MusicKey,
   options?: KeyExerciseOptions
-
-  /** Callback when exercise is complete */
   onEnd?: (r: KeyExerciseResult) => any
 }
 
-/**
- * An exercise is a play-once interactive music game. It will contain
- * some kind of staff, listen to user input, and return a result when
- * the game is complete
- *
- * The key exercise has the user play a key up and down across some number of octaves
- */
 export default function KeyExercise({musicKey, onEnd, options}: Props) {
   const [context, [width, height]] = useVexflowContext('key-exercise-vexflow-output')
-  const piano = useContext(MIDIPianoContext)
+  const piano: MIDIPiano = useContext(MIDIPianoContext)
   const [startTime, setStartTime] = useState<number | undefined>(undefined)
   const [endTime, setEndTime] = useState<number | undefined>(undefined)
   const [staveGroup, setStaveGroup] = useState<SVGElement | undefined>(undefined)
+  const [measureVoicings, setMeasureVoicings] = useState<Array<[number, Note[]]>>([])
 
   const STAVE_WIDTH = 200
+  const BEAT_WIDTH = STAVE_WIDTH / 4
   const BPM = options?.bpm || 120
   const BEAT_DELAY_MS = 60_000 / BPM
+  const SECONDS_PER_MEASURE = 4 * BEAT_DELAY_MS / 1000
 
-  useInterval(() => {
-    if (!startTime || !staveGroup || endTime) return
-
-    const matrix = new WebKitCSSMatrix(window.getComputedStyle(staveGroup).transform)
-    const currentMeasureIndex = Math.floor(matrix.m41 * -1 / STAVE_WIDTH)
-    const notes = staveGroup.getElementsByClassName("vf-stavenote").item(currentMeasureIndex) as SVGElement
-    if (notes) notes.style.fill = 'green'
-  }, 100)
-
+  // Set up piano note listener
   useEffect(() => {
-    if (context === undefined) return
-    if (startTime && endTime) {
-      setStartTime(undefined)
-      setEndTime(undefined)
-    } else if (startTime && !endTime) return
+    if (!staveGroup) return
+    const id = _.uniqueId('key-exercise-')
+    piano.setListener(id, (notes) => {
+      const matrix = new WebKitCSSMatrix(window.getComputedStyle(staveGroup).transform)
+      const currentMeasureIndex = Math.floor(matrix.m41 * -1 / STAVE_WIDTH)
+      if (diatonicChords(musicKey).some(c => isValidVoicingForChord(notes, c))) {
+        setMeasureVoicings([[currentMeasureIndex, notes], ...measureVoicings])
+      }
+    })
+    return () => piano.removeListener(id)
+  }, [measureVoicings, musicKey, piano, staveGroup])
+
+  // Set up stave and render SVGs
+  useEffect(() => {
+    if (context === undefined || startTime) return
 
     const group: SVGElement = context.openGroup(undefined, 'key-exercise-group')
 
@@ -88,12 +86,31 @@ export default function KeyExercise({musicKey, onEnd, options}: Props) {
     context.fillRect(width / 2 + 30, 0, 20, height)
   }, [context, endTime, height, musicKey, startTime, width])
 
+  // Feedback rendering
+  useInterval(() => {
+    if (!startTime || !staveGroup || endTime) return
+
+    const matrix = new WebKitCSSMatrix(window.getComputedStyle(staveGroup).transform)
+    const currentMeasureIndex = Math.floor(matrix.m41 * -1 / STAVE_WIDTH) // Why on earth is it .m41 for X, I don't know anything about matrices
+    const noteElements = staveGroup.getElementsByClassName("vf-stavenote")
+    for (let i = 0; i < noteElements.length - 1; i++) {
+      if (i > currentMeasureIndex) continue
+      const notes = noteElements.item(i) as SVGElement
+      if (notes && measureVoicings.some(([vi, vn]) => i === vi)) notes.style.fill = 'green'
+      else if (notes && i < currentMeasureIndex) notes.style.fill = 'red'
+    }
+  }, 100)
+
   function start() {
     if (staveGroup === undefined) return
     const chords = diatonicChords(musicKey)
-    staveGroup.addEventListener('transitionend', (e) => onEnd?.call(onEnd, {musicKey}))
+
     staveGroup.addEventListener('transitionstart', (e) => setStartTime(new Date().getTime()))
-    const SECONDS_PER_MEASURE = 4 * BEAT_DELAY_MS / 1000
+    staveGroup.addEventListener('transitionend', (e) => {
+      setEndTime(new Date().getTime())
+      onEnd?.call(onEnd, {musicKey})
+    })
+
     const transitionTime = SECONDS_PER_MEASURE * (chords.length);
     const translationX = STAVE_WIDTH * (chords.length)
     staveGroup.style.transition = `transform ${transitionTime}s linear`
