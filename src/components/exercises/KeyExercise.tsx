@@ -32,10 +32,11 @@ export default function KeyExercise({musicKey, onEnd, options}: Props) {
   const [measureVoicings, setMeasureVoicings] = useState<Array<[number, Note[]]>>([])
 
   const STAVE_WIDTH = 200
-  const BEAT_WIDTH = STAVE_WIDTH / 4
+  const NUM_BEATS_PER_MEASURE = 4
+  const BEAT_WIDTH = STAVE_WIDTH / NUM_BEATS_PER_MEASURE
   const BPM = options?.bpm || 120
   const BEAT_DELAY_MS = 60_000 / BPM
-  const SECONDS_PER_MEASURE = 4 * BEAT_DELAY_MS / 1000
+  const SECONDS_PER_MEASURE = NUM_BEATS_PER_MEASURE * BEAT_DELAY_MS / 1000
 
   // Set up piano note listener
   useEffect(() => {
@@ -81,10 +82,11 @@ export default function KeyExercise({musicKey, onEnd, options}: Props) {
     setStaveGroup(group)
 
     // Current beat indicator
+    const indicatorWidth = 20
     context.setLineWidth(20)
     context.setFillStyle('rgba(75, 150, 150, 0.5)')
-    context.fillRect(width / 2 + 30, 0, 20, height)
-  }, [context, endTime, height, musicKey, startTime, width])
+    context.fillRect(width / 2 - indicatorWidth + BEAT_WIDTH, 0, indicatorWidth, height)
+  }, [BEAT_WIDTH, context, endTime, height, musicKey, startTime, width])
 
   // Feedback rendering
   useInterval(() => {
@@ -92,12 +94,15 @@ export default function KeyExercise({musicKey, onEnd, options}: Props) {
 
     const matrix = new WebKitCSSMatrix(window.getComputedStyle(staveGroup).transform)
     const currentMeasureIndex = Math.floor(matrix.m41 * -1 / STAVE_WIDTH) // Why on earth is it .m41 for X, I don't know anything about matrices
+    const currentBeatIndex = Math.floor((matrix.m41 * -1 % STAVE_WIDTH) / BEAT_WIDTH)
+
     const noteElements = staveGroup.getElementsByClassName("vf-stavenote")
-    for (let i = 0; i < noteElements.length - 1; i++) {
+    for (let i = 0; i < noteElements.length; i++) {
       if (i > currentMeasureIndex) continue
       const notes = noteElements.item(i) as SVGElement
       if (notes && measureVoicings.some(([vi, vn]) => i === vi)) notes.style.fill = 'green'
       else if (notes && i < currentMeasureIndex) notes.style.fill = 'red'
+      else if (notes && i === currentMeasureIndex && currentBeatIndex > 0) notes.style.fill = 'red'
     }
   }, 100)
 

@@ -1,7 +1,8 @@
 import React, {useState} from 'react'
 import {styled} from "@mui/material/styles";
 import KeyExercise from "@/components/exercises/KeyExercise";
-import {getKey} from "@/lib/music/Circle";
+import {CIRCLE_OF_FIFTHS, getKey} from "@/lib/music/Circle";
+import _ from "lodash";
 
 const StyledRoot = styled('div')({
   display: 'flex',
@@ -20,8 +21,7 @@ export default function ProgressionPage({}) {
     <p>Times Played: {timesPlayed}</p>
     <KeyExercise key={`${musicKey.root}-${musicKey.scale.name}`} musicKey={musicKey} onEnd={(r) => {
       setTimesPlayed(timesPlayed + 1)
-      // setMusicKey(_.sample(CIRCLE_OF_FIFTHS)!)
-      console.log('Game ended!')
+      setMusicKey(_.sample(CIRCLE_OF_FIFTHS)!)
     }}/>
   </StyledRoot>
 }

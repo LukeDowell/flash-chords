@@ -1462,3 +1462,4 @@ my next step for this component is going to all be styling. I want, perhaps in o
 2. The beat indicator to be accurate (the notes should land perfectly inside of the blue zone right on the beat)
 3. The beat indicator to pulse to the beat, a-la Hi-FI Rush
 4. Some kind of more interesting animation on notes than a color change
+5. "Ghost" notes showing the user what they are currently pressing
