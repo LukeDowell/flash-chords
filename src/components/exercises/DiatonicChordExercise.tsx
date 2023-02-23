@@ -23,7 +23,7 @@ interface Props {
   onEnd?: (r: KeyExerciseResult) => any
 }
 
-export default function KeyExercise({musicKey, onEnd, options}: Props) {
+export default function DiatonicChordExercise({musicKey, onEnd, options}: Props) {
   const [context, [width, height]] = useVexflowContext('key-exercise-vexflow-output')
   const piano: MIDIPiano = useContext(MIDIPianoContext)
   const [startTime, setStartTime] = useState<number | undefined>(undefined)
