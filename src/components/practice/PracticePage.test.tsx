@@ -1,7 +1,7 @@
 import React from 'react';
 import {act, screen, waitFor} from "@testing-library/react";
 import PracticePage from "@/components/practice/PracticePage";
-import {MIDI, MIDI_KEYBOARD_OFFSET} from "@/lib/music/MIDIPiano";
+import {MIDI, MIDI_KEYBOARD_OFFSET} from "@/lib/music/MidiPiano";
 import userEvent from "@testing-library/user-event";
 import {findNoteOnKeyboard, toNote} from "@/lib/music/Note";
 import {midiRender} from "../../jest.setup";

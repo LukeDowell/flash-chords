@@ -1,5 +1,5 @@
 import MidiPianoV2 from './MidiPianoV2'
-import {MIDI, MIDI_KEYBOARD_OFFSET} from "@/lib/music/MIDIPiano";
+import {MIDI, MIDI_KEYBOARD_OFFSET} from "@/lib/music/MidiPiano";
 
 
 describe('a midi piano', () => {

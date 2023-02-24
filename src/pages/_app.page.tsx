@@ -5,11 +5,11 @@ import createEmotionCache from "@/lib/createEmotionCache";
 import {EmotionCache} from "@emotion/cache";
 import {CacheProvider} from "@emotion/react";
 import React, {createContext, useEffect, useState} from "react";
-import MIDIPiano from "@/lib/music/MIDIPiano";
+import MidiPiano from "@/lib/music/MidiPiano";
 
 const clientSideEmotionCache = createEmotionCache()
-export const MIDIPianoContext = createContext(new MIDIPiano())
-export const MidiContext = createContext<WebMidi.MIDIInput | undefined>(undefined)
+export const MidiPianoContext = createContext(new MidiPiano())
+export const MidiInputContext = createContext<WebMidi.MIDIInput | undefined>(undefined)
 
 export default function App({
                               Component,
@@ -18,7 +18,7 @@ export default function App({
                             }: AppProps & { emotionCache: EmotionCache }) {
 
   const [hasLoadedMidi, setHasLoadedMidi] = useState(false)
-  const [midiPiano, setMidiPiano] = useState<MIDIPiano>(new MIDIPiano())
+  const [midiPiano, setMidiPiano] = useState<MidiPiano>(new MidiPiano())
   const [midiContext, setMidiContext] = useState<WebMidi.MIDIInput | undefined>(undefined)
   const [midiAccess, setMidiAccess] = useState<WebMidi.MIDIAccess | undefined>(undefined)
   const [isCompatibleBrowser, setIsCompatibleBrowser] = useState(false)
@@ -35,7 +35,7 @@ export default function App({
         const firstInputKey = m.inputs.keys().next().value
         const firstInput = m.inputs.get(firstInputKey)
         if (firstInput) {
-          const piano = new MIDIPiano(firstInput)
+          const piano = new MidiPiano(firstInput)
           setMidiContext(firstInput)
           setMidiPiano(piano)
           setHasLoadedMidi(true)
@@ -50,11 +50,10 @@ export default function App({
   useEffect(() => {
     if (!midiAccess && !isCompatibleBrowser) {
       setErrorMessage("Your browser does not provide MIDI access, please use Chrome, Safari or Edge on a desktop or android device")
+    } else if (!midiPiano && midiAccess && isCompatibleBrowser) {
+      setErrorMessage("Your browser supports MIDI access, but a MIDI device could not be found")
     }
-    // else if (!midiPiano && midiAccess && isCompatibleBrowser) {
-    //   setErrorMessage("Your browser supports MIDI access, but a MIDI device could not be found")
-    // }
-  }, [isCompatibleBrowser, midiAccess])
+  }, [isCompatibleBrowser, midiAccess, midiPiano])
 
   return <>
     <CacheProvider value={emotionCache}>
@@ -62,11 +61,11 @@ export default function App({
       {errorMessage.length > 0 &&
         <h3>{errorMessage}</h3>
       }
-      <MIDIPianoContext.Provider value={midiPiano}>
-        <MidiContext.Provider value={midiContext}>
+      <MidiPianoContext.Provider value={midiPiano}>
+        <MidiInputContext.Provider value={midiContext}>
           <Component {...pageProps} />
-        </MidiContext.Provider>
-      </MIDIPianoContext.Provider>
+        </MidiInputContext.Provider>
+      </MidiPianoContext.Provider>
     </CacheProvider>
   </>
 }

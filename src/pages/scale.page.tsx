@@ -4,7 +4,16 @@ import _ from "lodash";
 import NotesExercise, {ExerciseResult} from "@/components/exercises/NotesExercise";
 import {MAJOR_SCALE, SCALES} from "@/lib/music/Scale";
 import {findNoteOnKeyboard, KEYBOARD, Note, placeOnOctave} from "@/lib/music/Note";
-import {notesToStaveNote} from "@/lib/musicToVex";
+import {notesToStaveNote} from "@/lib/vexMusic";
+
+const NUM_NOTES_EQUAL_DURATION: Record<number, string> = {
+  1: 'w',
+  2: 'h',
+  4: 'q',
+  8: '8',
+  16: '16',
+  32: '32'
+}
 
 
 interface Props {
@@ -23,8 +32,9 @@ export default function ScalePage({numOctaves, numNotesPerMeasure, bpm}: Props) 
     .flatMap(_ => scale.semitonesFromRoot.map(semi => KEYBOARD[rootIndex + semi]))
     .map(n => n.withOctave(undefined))
 
+
   const measures = _.chain(placeOnOctave(3, scaleNotesWithoutOctave))
-    .map(note => notesToStaveNote([note]))
+    .map(note => notesToStaveNote([note], {duration: numNotesPerMeasure ? NUM_NOTES_EQUAL_DURATION[numNotesPerMeasure] : '8'}))
     .chunk(numNotesPerMeasure || 8)
     .value()
 
@@ -41,7 +51,7 @@ export default function ScalePage({numOctaves, numNotesPerMeasure, bpm}: Props) 
 
     </div>
 
-    <NotesExercise key={`${rootNote}-${scale.name}`} measures={measures} options={{bpm}} onEnd={reset}/>
+    <NotesExercise key={`${rootNote}-${scale.name}`} inputMeasures={measures} options={{bpm}} onEnd={reset}/>
   </StyledRoot>
 }
 

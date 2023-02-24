@@ -11,7 +11,7 @@ type NotesToStaveNoteOptions = {
 export const notesToStaveNote = (notes: Note[], options?: NotesToStaveNoteOptions): StaveNote => {
   if (notes.some(n => n.octave === undefined)) throw new Error('Notes need an octave in order to be placed on the staff')
   const keys = notes.map(n => `${n.root.concat(n.accidental?.symbol || "")}/${n.octave}`)
-  const staveNote = new StaveNote({keys, duration: options?.duration || "w", auto_stem: true});
+  const staveNote = new StaveNote({keys, duration: options?.duration || "w"});
   notes.forEach((n, i) => {
     if (n?.accidental?.symbol) staveNote.addModifier(new Accidental(n.accidental.symbol), i)
   })

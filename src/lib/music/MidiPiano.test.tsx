@@ -1,8 +1,8 @@
 import React, {useContext, useEffect} from 'react'
 import {Note} from "@/lib/music/Note";
-import {MIDI, MIDI_KEYBOARD_OFFSET} from "@/lib/music/MIDIPiano";
+import {MIDI, MIDI_KEYBOARD_OFFSET} from "@/lib/music/MidiPiano";
 import {midiRender} from "../../jest.setup";
-import {MIDIPianoContext} from "@/pages/_app.page";
+import {MidiPianoContext} from "@/pages/_app.page";
 import _ from "lodash";
 import {waitFor} from "@testing-library/react";
 
@@ -11,7 +11,7 @@ describe("a midi piano", () => {
     const mockCallbacks: jest.Mock<(a: Note[]) => void>[] = []
 
     function TestComponent({}) {
-      const piano = useContext(MIDIPianoContext)
+      const piano = useContext(MidiPianoContext)
       useEffect(() => {
         const callback = jest.fn()
         const id = _.uniqueId('test-component-')

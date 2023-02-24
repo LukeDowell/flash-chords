@@ -8,11 +8,13 @@ export const MIDI = {
 
 export const MIDI_KEYBOARD_OFFSET = 21
 
-export default class MIDIPiano {
+export default class MidiPiano {
   private activeNotes: Note[] = []
   private listeners: Map<string, (activeNotes: Note[]) => any> = new Map()
 
   constructor(midiInput?: WebMidi.MIDIInput) {
+    if (!midiInput) return
+
     midiInput?.addEventListener(
       "midimessage",
       (e: WebMidi.MIDIMessageEvent) => {

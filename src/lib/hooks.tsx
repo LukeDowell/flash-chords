@@ -1,5 +1,6 @@
 import {useEffect, useLayoutEffect, useRef, useState} from 'react'
 import {Renderer, SVGContext} from "vexflow";
+import SoundfontPlayer, {InstrumentName, Player} from 'soundfont-player'
 
 export function useInterval(callback: () => void, delay: number | null) {
   const savedCallback = useRef(callback)
@@ -59,4 +60,14 @@ export function useVexflowContext(outputId: string, width?: number, height?: num
   }, [windowWidth, windowHeight, outputId, width, height])
 
   return [context, size]
+}
+
+export function useInstrument(name?: InstrumentName) {
+  const [instrument, setInstrument] = useState<Player | undefined>(undefined)
+
+  useSSRLayoutEffect(() => {
+    SoundfontPlayer.instrument(new AudioContext(), name || 'electric_grand_piano', {}).then(setInstrument)
+  }, [name])
+
+  return instrument
 }

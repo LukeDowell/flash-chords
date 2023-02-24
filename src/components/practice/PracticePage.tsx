@@ -1,6 +1,6 @@
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import CheckIcon from '@mui/icons-material/Check'
-import {useInterval} from "@/lib/utility";
+import {useInterval} from "@/lib/hooks";
 import {Close as CloseIcon, Settings as SettingsIcon} from "@mui/icons-material";
 import {PracticeSettings} from "@/components/settings/PracticeSettings";
 import LogoSvg from '@/components/images/Icon'
@@ -10,7 +10,7 @@ import _ from "lodash";
 import {VoicingHistory, VoicingResult} from "./VoicingHistory";
 import {styled} from "@mui/material/styles";
 import {LinearProgress} from "@mui/material";
-import {MIDIPianoContext} from "@/pages/_app.page";
+import {MidiPianoContext} from "@/pages/_app.page";
 import {
   CIRCLE_OF_FIFTHS,
   diatonicChords,
@@ -80,7 +80,7 @@ export default function PracticePage({
                                        initialKey = getKey('Db', 'Major'),
                                        initialSettings = DEFAULT_PRACTICE_SETTINGS
                                      }: Props) {
-  const piano = useContext(MIDIPianoContext)
+  const piano = useContext(MidiPianoContext)
   const [currentChord, setCurrentChord] = useState<Chord>(initialChord)
   const [currentKey, setCurrentKey] = useState<MusicKey>(initialKey)
   const [timeOfLastSuccess, setTimeOfLastSuccess] = useState(Date.now())

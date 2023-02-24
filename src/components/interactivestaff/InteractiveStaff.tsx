@@ -2,10 +2,10 @@ import React, {useEffect, useState} from "react"
 import {getKey, MusicKey, notesInKey} from "@/lib/music/Circle";
 import {Formatter, Renderer, Stave, Voice} from "vexflow";
 import {Note, placeOnOctave} from "@/lib/music/Note";
-import {useWindowSize} from "@/lib/utility";
+import {useWindowSize} from "@/lib/hooks";
 import {styled} from "@mui/material/styles";
 import {Chord} from "@/lib/music/Chord";
-import {notesToStaveNote} from "@/lib/musicToVex";
+import {notesToStaveNote} from "@/lib/vexMusic";
 
 
 type Result = {

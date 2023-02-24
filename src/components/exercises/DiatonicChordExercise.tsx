@@ -1,12 +1,12 @@
 import React, {useContext, useEffect, useState} from 'react'
 import {diatonicChords, isValidVoicingForChord, MusicKey, notesInKey} from "@/lib/music/Circle";
-import {useInterval, useVexflowContext} from "@/lib/utility";
+import {useInterval, useVexflowContext} from "@/lib/hooks";
 import {styled} from "@mui/system";
-import {notesToStaveNote} from "@/lib/musicToVex";
+import {notesToStaveNote} from "@/lib/vexMusic";
 import {ChordSymbol, ModifierContext, Stave, TickContext} from "vexflow";
 import {Note, placeOnOctave} from "@/lib/music/Note";
-import {MIDIPianoContext} from "@/pages/_app.page";
-import MIDIPiano from "@/lib/music/MIDIPiano";
+import {MidiPianoContext} from "@/pages/_app.page";
+import MidiPiano from "@/lib/music/MidiPiano";
 import _ from "lodash";
 
 export interface KeyExerciseResult {
@@ -25,7 +25,7 @@ interface Props {
 
 export default function DiatonicChordExercise({musicKey, onEnd, options}: Props) {
   const [context, [width, height]] = useVexflowContext('key-exercise-vexflow-output')
-  const piano: MIDIPiano = useContext(MIDIPianoContext)
+  const piano: MidiPiano = useContext(MidiPianoContext)
   const [startTime, setStartTime] = useState<number | undefined>(undefined)
   const [endTime, setEndTime] = useState<number | undefined>(undefined)
   const [staveGroup, setStaveGroup] = useState<SVGElement | undefined>(undefined)
