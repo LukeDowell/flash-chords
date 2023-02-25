@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react'
-import {useInterval, useVexflowContext} from "@/lib/hooks";
-import {styled} from "@mui/system";
+import {useAudio, useInterval, useVexflowContext} from "@/lib/hooks";
+import {css, keyframes, styled} from "@mui/system";
 import {Beam, ChordSymbol, ModifierContext, Stave, StaveNote, TickContext} from "vexflow";
 import {Note} from "@/lib/music/Note";
 import {MidiPianoContext} from "@/pages/_app.page";
@@ -30,6 +30,24 @@ type Measure = {
   voicing: Note[][], // beat index x voicing
 }
 
+const beatAnimation = keyframes`
+  from {
+    transform: scale(1, 1);
+  }
+
+  to {
+    transform: scale(1, .8);
+  }
+`
+
+const VexflowOutput = styled('div')`
+  overflow: hidden;
+  ${beatAnimation};
+  #vf-beat-indicator {
+    transform-origin: center center;
+  }
+`
+
 export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
   const [context, [contextWidth, contextHeight]] = useVexflowContext('notes-exercise-vexflow-output')
   const piano: MidiPiano = useContext(MidiPianoContext)
@@ -38,10 +56,11 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
   const [staveGroup, setStaveGroup] = useState<SVGElement | undefined>(undefined)
   const [measures, setMeasures] = useState<Measure[]>([])
   const [clicker, setClicker] = useState<Player | undefined>(undefined)
+  const audioContext = useAudio()
 
   const STAVE_WIDTH = options?.staveWidth || 300
   const STAVE_MARGIN = STAVE_WIDTH / 10
-  const BPM = options?.bpm || 60
+  const BPM = options?.bpm || 160
   const BEAT_DELAY_MS = 60_000 / BPM
 
   // Set up stave and render SVGs
@@ -59,7 +78,9 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
         const tickContext = new TickContext()
         const modifierContext = new ModifierContext()
         const adjustedWidth = STAVE_WIDTH - (STAVE_MARGIN)
-        const staveNotePosition = (adjustedWidth / staveNotes.length * i) - (parseInt(staveNote.fontSize) * 2.5)
+        // TODO adjust the position of the note based on the duration of all previous notes as a ratio of the measure width
+        const durationAdjustedPosition = adjustedWidth / staveNotes.length * i
+        const staveNotePosition = durationAdjustedPosition - (parseInt(staveNote.fontSize) * 2.5)
         tickContext.addTickable(staveNote)
         tickContext.preFormat().setX(staveNotePosition + STAVE_MARGIN)
         staveNote.getModifiersByType('ChordSymbol')
@@ -82,10 +103,12 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
     // Current beat indicator
     const indicatorWidth = 20
     context.save()
+    context.openGroup(undefined, 'beat-indicator')
     context.setLineWidth(20)
     context.setFillStyle('rgba(75, 150, 150, 0.5)')
-    context.fillRect(contextWidth / 2 - indicatorWidth + STAVE_MARGIN, 0, indicatorWidth, contextHeight)
+    context.fillRect(contextWidth / 2, 0, indicatorWidth, contextHeight)
     context.restore()
+    context.closeGroup()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [context]) // We only ever want to do our redraw when the context changes, nothing else matters
 
@@ -99,10 +122,10 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
     measures.forEach((measure, measureIndex) => {
       measure.staveNotes.forEach((staveNote, beatIndex) => {
         if (measure.voicing[beatIndex]?.length > 0) staveNote.getSVGElement()!.style.fill = 'green'
-        else if (measureIndex <= currentMeasure && currentBeatInMeasure >= beatIndex) {
-          const element = staveNote.getSVGElement()
-          if (element) element.style.fill = 'red'
-        }
+        const element = staveNote.getSVGElement()
+        if (!element) return
+        if (measureIndex < currentMeasure) element.style.fill = 'red'
+        else if (measureIndex <= currentMeasure && currentBeatInMeasure > beatIndex) element.style.fill = 'red'
       })
     })
   }, 100)
@@ -139,9 +162,8 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
     if (staveGroup === undefined) return
 
     let click = clicker
-    if (!click) {
-      const ac = new AudioContext()
-      click = await instrument(ac, 'woodblock', {soundfont: 'FluidR3_GM'})
+    if (!click && audioContext) {
+      click = await instrument(audioContext, 'woodblock', {soundfont: 'FluidR3_GM'})
       setClicker(click)
     }
 
@@ -152,7 +174,6 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
       playClick()
       clickerIntervalId = setInterval(playClick, BEAT_DELAY_MS)
     })
-
     staveGroup.addEventListener('transitionend', (e) => {
       setEndTime(new Date().getTime())
       clearInterval(clickerIntervalId)
@@ -160,21 +181,23 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
       click?.stop()
     })
 
+    const beatIndicator = document.getElementById('vf-beat-indicator')
+    if (beatIndicator) {
+      beatIndicator.style.animation = css`${beatAnimation} ${BEAT_DELAY_MS / 2}ms alternate infinite`.styles
+    }
+
+    // TODO Variable transition time to cross stave margin, beats don't exactly align ATM
     const measureSeconds = 4 * BEAT_DELAY_MS / 1000 // 4/4 feel
     const transitionTime = measureSeconds * (measures.length);
     const translationX = STAVE_WIDTH * (measures.length)
-    staveGroup.style.transition = `transform ${transitionTime}s linear`
-    staveGroup.style.transform = `translate(-${translationX}px, 0)`
+    staveGroup.style.transition = css`transform ${transitionTime}s linear`.styles
+    staveGroup.style.transform = css`translate(-${translationX}px, 0)`.styles
   }
 
   return <VexflowOutput onClick={start}>
     <div id={'notes-exercise-vexflow-output'}/>
   </VexflowOutput>
 }
-
-const VexflowOutput = styled('div')({
-  overflow: 'hidden',
-})
 
 const getCurrentTranslationValue = (staveGroup: SVGElement): number => {
   const matrix = new WebKitCSSMatrix(window.getComputedStyle(staveGroup).transform)
@@ -188,4 +211,10 @@ const getCurrentBeatInMeasure = (staveGroup: SVGElement, measureWidth: number, b
 const getCurrentMeasure = (staveGroup: SVGElement, measureWidth: number): number => {
   const matrix = new WebKitCSSMatrix(window.getComputedStyle(staveGroup).transform)
   return Math.floor(matrix.m41 * -1 / measureWidth)
+}
+
+const queueAnimationsOnElement = (element: Element, animations: Array<[string, number]>): Promise<any> => {
+  return new Promise((resolve, reject) => {
+
+  })
 }

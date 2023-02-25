@@ -2,6 +2,8 @@ import _ from "lodash";
 
 export type Root = "A" | "B" | "C" | "D" | "E" | "F" | "G"
 
+export const ROOTS: Root[] = ["A", "B", "C", "D", "E", "F", "G"]
+
 export class Note {
   readonly root: Root;
   readonly accidental?: Accidental;

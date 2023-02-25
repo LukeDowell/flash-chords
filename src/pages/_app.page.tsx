@@ -6,10 +6,12 @@ import {EmotionCache} from "@emotion/cache";
 import {CacheProvider} from "@emotion/react";
 import React, {createContext, useEffect, useState} from "react";
 import MidiPiano from "@/lib/music/MidiPiano";
+import {useAudio} from "@/lib/hooks";
 
 const clientSideEmotionCache = createEmotionCache()
 export const MidiPianoContext = createContext(new MidiPiano())
 export const MidiInputContext = createContext<WebMidi.MIDIInput | undefined>(undefined)
+export const WebAudioContext = createContext<AudioContext | undefined>(undefined)
 
 export default function App({
                               Component,
@@ -23,6 +25,7 @@ export default function App({
   const [midiAccess, setMidiAccess] = useState<WebMidi.MIDIAccess | undefined>(undefined)
   const [isCompatibleBrowser, setIsCompatibleBrowser] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string>("")
+  const audioContext = useAudio()
 
   useEffect(() => {
     if (hasLoadedMidi) return
@@ -63,7 +66,9 @@ export default function App({
       }
       <MidiPianoContext.Provider value={midiPiano}>
         <MidiInputContext.Provider value={midiContext}>
-          <Component {...pageProps} />
+          <WebAudioContext.Provider value={audioContext}>
+            <Component {...pageProps} />
+          </WebAudioContext.Provider>
         </MidiInputContext.Provider>
       </MidiPianoContext.Provider>
     </CacheProvider>

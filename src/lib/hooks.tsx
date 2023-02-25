@@ -1,6 +1,7 @@
-import {useEffect, useLayoutEffect, useRef, useState} from 'react'
+import {useContext, useEffect, useLayoutEffect, useRef, useState} from 'react'
 import {Renderer, SVGContext} from "vexflow";
 import SoundfontPlayer, {InstrumentName, Player} from 'soundfont-player'
+import {MidiInputContext, WebAudioContext} from "@/pages/_app.page";
 
 export function useInterval(callback: () => void, delay: number | null) {
   const savedCallback = useRef(callback)
@@ -62,12 +63,48 @@ export function useVexflowContext(outputId: string, width?: number, height?: num
   return [context, size]
 }
 
-export function useInstrument(name?: InstrumentName) {
-  const [instrument, setInstrument] = useState<Player | undefined>(undefined)
+// https://github.com/joshwcomeau/use-sound/issues/22#issuecomment-737727148
+const events = ['mousedown', 'touchstart', 'keydown'];
+
+export function useInteraction() {
+  const [ready, setReady] = useState(false)
+  const listener = useRef(() => {
+    if (!ready) setReady(true)
+  })
+
+  useEffect(() => {
+    if (!ready) events.forEach((event) => document.addEventListener(event, listener.current))
+    else events.forEach((event) => document.removeEventListener(event, listener.current))
+  }, [ready]);
+
+  return ready;
+}
+
+export function useAudio(): AudioContext | undefined {
+  const [audio, setAudio] = useState<AudioContext>()
+  const interacted = useInteraction()
 
   useSSRLayoutEffect(() => {
-    SoundfontPlayer.instrument(new AudioContext(), name || 'electric_grand_piano', {}).then(setInstrument)
-  }, [name])
+    const create = async () => new AudioContext()
+    if (interacted) create().then(setAudio)
+  }, [interacted])
+
+  return audio
+}
+
+export function useInstrument(name: InstrumentName = 'electric_grand_piano', listenToMidi?: boolean) {
+  const [instrument, setInstrument] = useState<Player | undefined>(undefined)
+  const audioContext = useContext(WebAudioContext)
+  const midiInput = useContext(MidiInputContext)
+
+  useSSRLayoutEffect(() => {
+    if (!audioContext) return
+
+    SoundfontPlayer.instrument(audioContext, name, {}).then((i) => {
+      setInstrument(i)
+      if (listenToMidi) i.listenToMidi(midiInput)
+    })
+  }, [name, audioContext])
 
   return instrument
 }
