@@ -115,7 +115,7 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
     context.openGroup(undefined, 'beat-indicator')
     context.setLineWidth(20)
     context.setFillStyle('rgba(75, 150, 150, 0.5)')
-    context.fillRect(contextWidth / 2, 0, indicatorWidth, contextHeight)
+    context.fillRect(contextWidth / 2 + (indicatorWidth / 2), 0, indicatorWidth, contextHeight)
     context.restore()
     context.closeGroup()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -185,10 +185,6 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
       setTimeout(() => {
         staveGroup.style.transition = css`transform ${BEAT_DELAY_MS}ms linear`.styles
         staveGroup.style.transform = css`translate(-${getX(measureIndex, beatIndex, 'q')}px, 0)`.styles
-
-        staveGroup.addEventListener('transitionend', () => {
-          console.log(`M: ${measureIndex + 1} B: ${beatIndex + 1}`)
-        })
       }, (BEAT_DELAY_MS * 4 * measureIndex) + (BEAT_DELAY_MS * beatIndex))
     }))
 
