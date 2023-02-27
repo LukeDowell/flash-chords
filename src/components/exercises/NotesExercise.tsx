@@ -178,6 +178,9 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
       if (!currentStaveNote) return
 
       const requiredNotes = currentStaveNote ? staveNoteToNotes(currentStaveNote) : []
+      const requiredNotes = currentStaveNote ? staveNoteToNotes(currentStaveNote) : []
+      const requiredNotes = currentStaveNote ? staveNoteToNotes(currentStaveNote) : []
+      const requiredNotes = currentStaveNote ? staveNoteToNotes(currentStaveNote) : []
       const isValidVoicing = requiredNotes.every(rn => activeNotes.some(an => an.withOctave(undefined).isEquivalent(rn)))
       console.log(`is valid: ${isValidVoicing} -- Notes Required: `, requiredNotes)
       if (isValidVoicing) {
