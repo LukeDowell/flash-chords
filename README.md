@@ -1463,3 +1463,70 @@ my next step for this component is going to all be styling. I want, perhaps in o
 3. The beat indicator to pulse to the beat, a-la Hi-FI Rush
 4. Some kind of more interesting animation on notes than a color change
 5. "Ghost" notes showing the user what they are currently pressing
+
+## 2/27/2023
+
+The `NoteExercise` component has come along faster than I thought it would honestly;
+I suspected that I was going to have more trouble with timing / accuracy of having things sync on 'the beat' but it sort
+of just worked out. 
+
+I found a comment on the web that suggested the best way to 'chain' animations with accuracy is to just stack a series
+of `setTimeout` calls in a loop with your specified delays. That led to this block:
+
+```typescript
+...
+const getX = (measureIndex: number, beatIndex: number, duration: string) => {
+  const adjustedWidth = STAVE_WIDTH - (STAVE_MARGIN * 2)
+  const durationAdjustedPosition = adjustedWidth * durationToFraction(duration) * (beatIndex)
+  return (STAVE_WIDTH * measureIndex) + STAVE_MARGIN + durationAdjustedPosition
+}
+
+measures.forEach((notes, measureIndex) => _.range(0, 4).forEach(beatIndex => {
+  setTimeout(() => {
+    staveGroup.style.transition = css`transform ${BEAT_DELAY_MS}ms linear`.styles
+    staveGroup.style.transform = css`translate(-${getX(measureIndex, beatIndex, 'q')}px, 0)`.styles
+  }, (BEAT_DELAY_MS * 4 * measureIndex) + (BEAT_DELAY_MS * beatIndex))
+}))
+...
+```
+
+which, while working pretty nicely, has the added bonus of giving an easy way to deal with the problem of beats not perfectly
+being spaced 1/4th of a measure in length. This effect fairly noticably speeds up between the last beat of a measure and
+the first beat of the next, but I personally don't find it disorienting.
+
+Perhaps my fear of having issues with time synchronization came down to some of my experience writing video game code in
+a traditional `update()` and `render()` loop. Using the DOM as a state holder for the 'progression' of the stave works
+out very nicely since (mostly) everything else can just be event based. 
+
+---
+
+The next feature set I'd like to tinker with is doing some data visualization on the stats coming out of these exercises.
+If the intent is to improve by doing these exercises daily, there needs to be some interesting and fun visuals of user
+progress. In my opinion it's not interesting enough to expect the user to notice their progress on their own; they are 
+using this app because doing that is either not natural or isn't enjoyable enough already. 
+
+A library I have long been fascinated with is [D3.js](https://d3js.org/), and I think this might be the perfect time
+to give it a spin. 
+
+[This site](http://www.r2d3.us/visual-intro-to-machine-learning-part-1/) in particular has stuck in my mind as one of the
+cooler educational articles I've ever seen. 
+
+Before getting into anything crazy like that though, I think there are some easier fruit to reach for:
+
+1. Accuracy and even-ness over time. Since we have some sweet MIDI input data this could even be split to show velocity
+   as well as how 'on the beat' a user is
+2. Highest BPM without mistakes over time
+3. How many tries does it take to get a perfect run on a new BPM? What is a 'perfect' run?
+4. Accuracy and even-ness can even start to move into key-specific and note-specific metrics, woah
+
+
+A fun side effect of using D3 instead of Chart.js or something is that I'll be able to interact with SVGs that I render
+from `VexFlow`. So, order of business:
+
+1. Finish `NoteExercise`, which atm is by polishing off ghost notes and actually handling user input
+2. Maybe implement some kind of melodic cell component for fun, building on top of `NoteExercise`
+3. Pull in D3 and make my first data viz component, I'd like to shoot for something like 'how off center was each note in that exercise you just played'
+   Might be fun to show that underneath the staff too?
+
+Also, as a parting thought, I have gone giga off the rails with testing. I have been noodling on some kind of test harness
+that checks for `SVGElement` content, since we do that in our production code now anyway. 

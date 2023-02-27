@@ -194,7 +194,7 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
       clicker?.stop()
     }
 
-    setTimeout(onExerciseEnd, (BEAT_DELAY_MS * 3) + (BEAT_DELAY_MS * 4 * measures.length))
+    setTimeout(onExerciseEnd, BEAT_DELAY_MS + (BEAT_DELAY_MS * 4 * measures.length))
 
     const beatIndicator = document.getElementById('vf-beat-indicator')
     if (beatIndicator) {
