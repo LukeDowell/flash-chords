@@ -25,7 +25,6 @@ interface Props {
 }
 
 export default function ScalePage({numOctaves, numNotesPerMeasure, bpm}: Props) {
-  const piano = useContext(MidiPianoContext)
   const instrument = useInstrument('electric_grand_piano', true)
   const [scale, setScale] = useState(MAJOR_SCALE)
   const [rootNote, setRootNote] = useState(Note.of('C'))

@@ -6,7 +6,7 @@ import {Note} from "@/lib/music/Note";
 import {MidiPianoContext} from "@/pages/_app.page";
 import MidiPiano from "@/lib/music/MidiPiano";
 import _ from "lodash";
-import {staveNoteToNotes} from "@/lib/vexMusic";
+import {notesToStaveNote, staveNoteToNotes} from "@/lib/vexMusic";
 
 export interface ExerciseResult {
 }
@@ -64,6 +64,8 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
   const [startTime, setStartTime] = useState<number | undefined>(undefined)
   const [endTime, setEndTime] = useState<number | undefined>(undefined)
   const [staveGroup, setStaveGroup] = useState<SVGElement | undefined>(undefined)
+  const [ghostStave, setGhostStave] = useState<Stave | undefined>(undefined)
+  const [ghostStaveGroup, setGhostStaveGroup] = useState<SVGElement | undefined>(undefined)
   const [measures, setMeasures] = useState<Measure[]>([])
 
   const STAVE_WIDTH = options?.staveWidth || 300
@@ -83,14 +85,12 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
       stave.setContext(context).draw()
 
       const formattedNotes = staveNotes.map((staveNote, i) => {
-        const tickContext = new TickContext()
-        const modifierContext = new ModifierContext()
         const measureWidth = STAVE_WIDTH - (STAVE_MARGIN * 2)
         const measureDuration = staveNotes.slice(0, i).reduce((c, n) => c + durationToFraction(n.getDuration()), 0)
         const notePositionInMeasure = measureWidth * measureDuration
         const staveNotePosition = STAVE_MARGIN + notePositionInMeasure
-        tickContext.addTickable(staveNote)
-        tickContext.preFormat().setX(staveNotePosition)
+        new TickContext().addTickable(staveNote).preFormat().setX(staveNotePosition)
+        const modifierContext = new ModifierContext()
         staveNote.getModifiersByType('ChordSymbol')
           .filter((cs): cs is ChordSymbol => true)
           .forEach(modifierContext.addModifier)
@@ -108,6 +108,18 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
     setMeasures(measures)
     context.closeGroup()
     setStaveGroup(group)
+
+    // Ghost notes stave
+    const ghostStaveX = (contextWidth / 2)
+    const ghost = new Stave(ghostStaveX, 25, STAVE_WIDTH, {
+      left_bar: false,
+      right_bar: false,
+    })
+    ghost.setContext(context).draw()
+    setGhostStave(ghost)
+    const ghostGroup = context.openGroup('ghost-notes')
+    context.closeGroup()
+    setGhostStaveGroup(ghostGroup)
 
     // Current beat indicator
     const indicatorWidth = 20
@@ -144,7 +156,19 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
     if (!staveGroup) return
 
     function midiPianoCallback(activeNotes: Note[]) {
-      if (!staveGroup) return
+      if (!staveGroup || !context) return
+
+      if (ghostStave && ghostStaveGroup) {
+        ghostStaveGroup.querySelectorAll('.vf-stavenote').forEach(e => ghostStaveGroup.removeChild(e))
+        if (activeNotes.length > 0) {
+          const newGroup = context.openGroup('ghost-notes')
+          const notes = notesToStaveNote(activeNotes, {duration: 'w', fillStyle: 'rgba(0, 0, 0, 0.5)'})
+          new TickContext().addTickable(notes).preFormat().setX(-6) // Why does -6 put it squarely in the indicator?
+          notes.setContext(context).setStave(ghostStave).draw()
+          context.closeGroup()
+          setGhostStaveGroup(newGroup)
+        }
+      }
 
       const currentMeasure = getCurrentMeasure(staveGroup, STAVE_WIDTH)
       const currentMeasureBeatWidth = STAVE_WIDTH / (measures[currentMeasure]?.staveNotes.length || 4)
@@ -155,6 +179,7 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
 
       const requiredNotes = currentStaveNote ? staveNoteToNotes(currentStaveNote) : []
       const isValidVoicing = requiredNotes.every(rn => activeNotes.some(an => an.withOctave(undefined).isEquivalent(rn)))
+      console.log(`is valid: ${isValidVoicing} -- Notes Required: `, requiredNotes)
       if (isValidVoicing) {
         const newMeasures = measures.splice(0)
         newMeasures[currentMeasure].voicing[currentBeatInMeasure] = activeNotes
@@ -162,10 +187,10 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
       }
     }
 
-    const id = _.uniqueId('key-exercise-')
+    const id = _.uniqueId('notes-exercise-')
     piano.setListener(id, midiPianoCallback)
     return () => piano.removeListener(id)
-  }, [STAVE_WIDTH, measures, piano, staveGroup])
+  }, [STAVE_MARGIN, STAVE_WIDTH, context, contextWidth, ghostStave, ghostStaveGroup, measures, piano, staveGroup])
 
   const start = async () => {
     if (staveGroup === undefined) return
