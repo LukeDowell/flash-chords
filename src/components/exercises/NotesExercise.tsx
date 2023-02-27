@@ -114,6 +114,7 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
     const ghost = new Stave(ghostStaveX, 25, STAVE_WIDTH, {
       left_bar: false,
       right_bar: false,
+      num_lines: 0
     })
     ghost.setContext(context).draw()
     setGhostStave(ghost)
@@ -140,6 +141,7 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
     const currentMeasure = getCurrentMeasure(staveGroup, STAVE_WIDTH)
     const currentMeasureBeatWidth = STAVE_WIDTH / (measures[currentMeasure]?.staveNotes.length || 4)
     const currentBeatInMeasure = getCurrentBeatInMeasure(staveGroup, STAVE_WIDTH, currentMeasureBeatWidth)
+
     measures.forEach((measure, measureIndex) => {
       measure.staveNotes.forEach((staveNote, beatIndex) => {
         if (measure.voicing[beatIndex]?.length > 0) staveNote.getSVGElement()!.style.fill = 'green'
@@ -178,8 +180,7 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
       if (!currentStaveNote) return
 
       const requiredNotes = currentStaveNote ? staveNoteToNotes(currentStaveNote) : []
-      const isValidVoicing = requiredNotes.every(rn => activeNotes.some(an => an.withOctave(undefined).isEquivalent(rn)))
-      console.log(`is valid: ${isValidVoicing} -- Notes Required: `, requiredNotes)
+      const isValidVoicing = requiredNotes.every(rn => activeNotes.some(an => an.isEquivalent(rn)))
       if (isValidVoicing) {
         const newMeasures = measures.splice(0)
         newMeasures[currentMeasure].voicing[currentBeatInMeasure] = activeNotes
@@ -192,13 +193,12 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
     return () => piano.removeListener(id)
   }, [STAVE_MARGIN, STAVE_WIDTH, context, contextWidth, ghostStave, ghostStaveGroup, measures, piano, staveGroup])
 
-  const start = async () => {
-    if (staveGroup === undefined) return
-    if (startTime) return
+  function start() {
+    if (!staveGroup || startTime) return
 
     setStartTime(new Date().getTime())
-    const playClick = () => clicker?.play('C6', undefined, {duration: 250})
-    setInterval(playClick, BEAT_DELAY_MS)
+    const playClick = () => clicker?.play('C6', undefined, {duration: 150})
+    const clickerId = setInterval(playClick, BEAT_DELAY_MS)
 
     const getX = (measureIndex: number, beatIndex: number, duration: string) => {
       const adjustedWidth = STAVE_WIDTH - (STAVE_MARGIN * 2)
@@ -216,15 +216,13 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
     const onExerciseEnd = () => {
       setEndTime(new Date().getTime())
       onEnd?.call(onEnd, {})
-      clicker?.stop()
+      clearInterval(clickerId)
     }
 
     setTimeout(onExerciseEnd, BEAT_DELAY_MS + (BEAT_DELAY_MS * 4 * measures.length))
 
     const beatIndicator = document.getElementById('vf-beat-indicator')
-    if (beatIndicator) {
-      beatIndicator.style.animation = css`${beatAnimation} ${BEAT_DELAY_MS / 2}ms alternate infinite`.styles
-    }
+    if (beatIndicator) beatIndicator.style.animation = css`${beatAnimation} ${BEAT_DELAY_MS / 2}ms alternate infinite`.styles
   }
 
   return <VexflowOutput onClick={start}>

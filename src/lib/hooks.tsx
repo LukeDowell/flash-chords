@@ -64,7 +64,7 @@ export function useVexflowContext(outputId: string, width?: number, height?: num
 }
 
 // https://github.com/joshwcomeau/use-sound/issues/22#issuecomment-737727148
-const events = ['mousedown', 'touchstart', 'keydown'];
+const events = ['mousedown', 'touchstart', 'keydown', 'mousemove'];
 
 export function useInteraction() {
   const [ready, setReady] = useState(false)
@@ -101,6 +101,7 @@ export function useInstrument(name: InstrumentName = 'electric_grand_piano', lis
     if (!audioContext) return
 
     SoundfontPlayer.instrument(audioContext, name, {}).then((i) => {
+      console.log(`Creating instrument with sample: ${name}`)
       setInstrument(i)
       if (listenToMidi) i.listenToMidi(midiInput)
     })

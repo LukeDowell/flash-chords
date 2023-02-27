@@ -1,12 +1,10 @@
-import React, {useContext, useState} from 'react'
+import React, {useState} from 'react'
 import {styled} from "@mui/material/styles";
 import _ from "lodash";
 import NotesExercise, {ExerciseResult} from "@/components/exercises/NotesExercise";
 import {MAJOR_SCALE, SCALES} from "@/lib/music/Scale";
 import {findNoteOnKeyboard, KEYBOARD, Note, placeOnOctave, ROOTS} from "@/lib/music/Note";
 import {notesToStaveNote} from "@/lib/vexMusic";
-import {MidiPianoContext} from "@/pages/_app.page";
-import {useInstrument} from "@/lib/hooks";
 import {StaveNote} from "vexflow";
 
 const NUM_NOTES_EQUAL_DURATION: Record<number, string> = {
@@ -25,7 +23,6 @@ interface Props {
 }
 
 export default function ScalePage({numOctaves, numNotesPerMeasure, bpm}: Props) {
-  const instrument = useInstrument('electric_grand_piano', true)
   const [scale, setScale] = useState(MAJOR_SCALE)
   const [rootNote, setRootNote] = useState(Note.of('C'))
 
