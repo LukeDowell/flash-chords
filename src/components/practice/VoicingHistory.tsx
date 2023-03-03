@@ -4,54 +4,54 @@ import {NATURAL, Note} from "@/lib/music/Note";
 import {MusicKey, notesInKey} from "@/lib/music/Circle";
 import {Chord} from "@/lib/music/Chord";
 
-const StyledRoot = styled('div')({
-  display: "flex",
-  flexDirection: "column",
-  width: "80%",
-  minWidth: "80%",
+const StyledRoot = styled('div')`
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  min-width: 80%;
 
-  ".header": {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "flex-start",
-    paddingBottom: ".5rem",
-    paddingLeft: "1rem"
-  },
-
-  ".title": {
-    textAlign: "left",
-    flex: "1",
-    fontSize: "3vmax",
-  },
-
-  ".voicings": {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    fontSize: "2.5vmax"
+  .header {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding-bottom: .5rem;
+    padding-left: 1rem
   }
-})
 
-const StyledVoicingRoot = styled('div')({
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "flex-start",
-  alignItems: "center",
-  width: "100%",
-  borderTop: "2px solid black",
-
-  ".chord": {
-    flex: "1",
-    textAlign: "left",
-    paddingLeft: "1rem",
-  },
-
-  ".notes": {
-    flex: "1",
-    textAlign: "left",
+  .title {
+    text-align: left;
+    flex: 1;
+    font-size: 3vmax;
   }
-})
+
+  .voicings {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 2.5vmax;
+  }
+`
+
+const StyledVoicingRoot = styled('div')`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  border-top: 2px solid black;
+
+  .chord {
+    flex: 1;
+    text-align: left;
+    padding-left: 1rem;
+  }
+
+  .notes {
+    flex: 1;
+    text-align: left;
+  }
+`
 
 export interface VoicingResult {
   chord: Chord,

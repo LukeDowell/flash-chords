@@ -3,7 +3,6 @@ import {getKey, MusicKey, notesInKey} from "@/lib/music/Circle";
 import {Formatter, Renderer, Stave, Voice} from "vexflow";
 import {Note, placeOnOctave} from "@/lib/music/Note";
 import {useWindowSize} from "@/lib/hooks";
-import {styled} from "@mui/material/styles";
 import {Chord} from "@/lib/music/Chord";
 import {notesToStaveNote} from "@/lib/vexMusic";
 
@@ -81,7 +80,5 @@ export function InteractiveStaff(props: Props) {
     })
   }, [musicKey, chords, windowWidth, windowHeight, chordVoicings])
 
-  return <VexflowOutput id={'vexflow-output'}/>
+  return <div id={'vexflow-output'}/>
 }
-
-const VexflowOutput = styled('div')({})

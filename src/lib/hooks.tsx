@@ -101,7 +101,6 @@ export function useInstrument(name: InstrumentName = 'electric_grand_piano', lis
     if (!audioContext) return
 
     SoundfontPlayer.instrument(audioContext, name, {}).then((i) => {
-      console.log(`Creating instrument with sample: ${name}`)
       setInstrument(i)
       if (listenToMidi) i.listenToMidi(midiInput)
     })

@@ -1530,3 +1530,5 @@ from `VexFlow`. So, order of business:
 
 Also, as a parting thought, I have gone giga off the rails with testing. I have been noodling on some kind of test harness
 that checks for `SVGElement` content, since we do that in our production code now anyway. 
+
+## 02/27/2023

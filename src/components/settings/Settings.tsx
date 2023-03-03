@@ -1,11 +1,11 @@
 export interface Settings {
-  /** Whether or not the chord voicing is timed */
+  /** Whether the chord voicing is timed */
   timerEnabled: boolean,
 
   /** The amount of time in whole seconds a user has to correctly input a voicing */
   timerMilliseconds: number,
 
-  /** Whether or not chords with the following properties may be generated */
+  /** Whether chords with the following properties may be generated */
   triadsEnabled: boolean,
   seventhsEnabled: boolean,
   flatRootsEnabled: boolean,

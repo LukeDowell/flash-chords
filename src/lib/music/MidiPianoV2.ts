@@ -9,6 +9,7 @@ const MIDI = {
 export const MIDI_KEYBOARD_OFFSET = 21
 
 type NoteEvent = "keydown" | "keyup" | "keypressed"
+type NoteEventCallback = (notes: Note[], midiEvent: WebMidi.MIDIMessageEvent) => any
 
 type NoteHistory = {
   val: Note,
@@ -23,15 +24,13 @@ export default class MidiPianoV2 {
   private _noteHistory: NoteHistory[] = []
 
   constructor(midiInput?: WebMidi.MIDIInput) {
-    midiInput?.addEventListener("midimessage", (e: WebMidi.MIDIMessageEvent) => {
-      const note = KEYBOARD[e.data[1] - MIDI_KEYBOARD_OFFSET]
-      const velocity = e.data[2]
-      const flag = e.data[0]
-      this._processMIDIEvent(note, velocity, flag)
-    })
+    midiInput?.addEventListener("midimessage", this._processMIDIEvent)
   }
 
-  private _processMIDIEvent(note: Note, velocity: number, flag: number) {
+  private _processMIDIEvent(e: WebMidi.MIDIMessageEvent) {
+    const note = KEYBOARD[e.data[1] - MIDI_KEYBOARD_OFFSET]
+    const velocity = e.data[2]
+    const flag = e.data[0]
     // if (flag === MIDI.HEARTBEAT) return
     //
     // if (flag === MIDI.KEY_DOWN && velocity !== 0) this._currentActiveNotes.push(note)

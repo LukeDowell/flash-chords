@@ -7,12 +7,12 @@ export interface Props {
   onSettingsUpdate?: (settings: Settings) => void
 }
 
-const StyledRoot = styled('div')({
-  display: "flex",
-  flexDirection: "column",
-  width: "80%",
-  border: "2px solid black"
-})
+const StyledRoot = styled('div')`
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  border: 2px solid black;
+`
 
 export function PracticeSettings({
                                    settings = DEFAULT_PRACTICE_SETTINGS,

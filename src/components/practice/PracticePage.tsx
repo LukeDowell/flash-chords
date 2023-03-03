@@ -8,7 +8,6 @@ import {DEFAULT_PRACTICE_SETTINGS, Settings} from "@/components/settings/Setting
 import {Note} from "@/lib/music/Note";
 import _ from "lodash";
 import {VoicingHistory, VoicingResult} from "./VoicingHistory";
-import {styled} from "@mui/material/styles";
 import {LinearProgress} from "@mui/material";
 import {MidiPianoContext} from "@/pages/_app.page";
 import {
@@ -21,6 +20,7 @@ import {
 } from "@/lib/music/Circle";
 import {InteractiveStaff} from "@/components/interactivestaff/InteractiveStaff";
 import {Chord} from "@/lib/music/Chord";
+import {styled} from "@mui/system";
 
 export interface Props {
   initialChord?: Chord,
@@ -33,47 +33,51 @@ export const generateChordFromSettings = (settings: Settings): [Chord, MusicKey]
   return [_.sample(diatonicChords(key, _.random(1, 2) % 2 === 0))!!, key]
 }
 
-const StyledRoot = styled('div')({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
 
-  ".prompt-header": {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between ",
-    padding: "0 1rem 0 1rem",
-    width: "100%",
-    ".logo": {
-      width: "4rem",
-      height: "4rem",
-    },
-    ".button": {
-      width: "3rem",
-      height: "4rem",
-      color: "grey"
+const StyledRoot = styled('div')`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .prompt-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 1rem 0 1rem;
+    width: 100%;
+
+    .logo {
+      width: 5rem;
+      height: 5rem;
     }
-  },
 
-  ".timer": {
-    marginTop: 0,
-    width: "50%",
-    height: "1vmax",
-    marginBottom: "5rem"
+    .button {
+      width: 5rem;
+      height: 5rem;
+      color: grey
+    }
   }
-})
 
-const ChordSymbolPrompt = styled('div')({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  flex: "1",
-  ".current-chord-symbol": {
-    fontSize: "10vmax",
-    marginTop: "0",
-    marginBottom: "0"
+  .timer {
+    margin-top: 0;
+    width: 50%;
+    height: 1vmax;
+    margin-bottom: 5rem
   }
-})
+`
+
+const ChordSymbolPrompt = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+
+  .current-chord-symbol {
+    font-size: 10vmax;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+`
 
 export default function PracticePage({
                                        initialChord = new Chord('Db', 'Major'),
@@ -137,7 +141,7 @@ export default function PracticePage({
 
   return <StyledRoot>
     <div className="prompt-header">
-      <LogoSvg height={40} width={40}/>
+      <LogoSvg className={'logo'}/>
       {
         (isSettingsOpen
           && <CloseIcon className="button" onClick={() => setIsSettingsOpen(false)}/>
