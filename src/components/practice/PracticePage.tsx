@@ -1,9 +1,6 @@
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import CheckIcon from '@mui/icons-material/Check'
 import {useInterval} from "@/lib/hooks";
-import {Close as CloseIcon, Settings as SettingsIcon} from "@mui/icons-material";
-import {PracticeSettings} from "@/components/settings/PracticeSettings";
-import LogoSvg from '@/components/images/Icon'
 import {DEFAULT_PRACTICE_SETTINGS, Settings} from "@/components/settings/Settings";
 import {Note} from "@/lib/music/Note";
 import _ from "lodash";
@@ -38,25 +35,6 @@ const StyledRoot = styled('div')`
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  .prompt-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 0 1rem 0 1rem;
-    width: 100%;
-
-    .logo {
-      width: 5rem;
-      height: 5rem;
-    }
-
-    .button {
-      width: 5rem;
-      height: 5rem;
-      color: grey
-    }
-  }
 
   .timer {
     margin-top: 0;
@@ -140,17 +118,6 @@ export default function PracticePage({
   }, 100)
 
   return <StyledRoot>
-    <div className="prompt-header">
-      <LogoSvg className={'logo'}/>
-      {
-        (isSettingsOpen
-          && <CloseIcon className="button" onClick={() => setIsSettingsOpen(false)}/>
-        ) || <SettingsIcon className="button" onClick={() => setIsSettingsOpen(true)}/>
-      }
-    </div>
-    {isSettingsOpen &&
-      <PracticeSettings settings={settings} onSettingsUpdate={setSettings}/>
-    }
     <ChordSymbolPrompt>
       <h2 className="current-chord-symbol">{currentChord.toString()}</h2>
       {shouldDisplaySuccess && <CheckIcon style={{color: "green"}}/>}

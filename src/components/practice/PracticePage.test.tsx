@@ -2,7 +2,6 @@ import React from 'react';
 import {act, screen, waitFor} from "@testing-library/react";
 import PracticePage from "@/components/practice/PracticePage";
 import {MIDI, MIDI_KEYBOARD_OFFSET} from "@/lib/music/MidiPiano";
-import userEvent from "@testing-library/user-event";
 import {findNoteOnKeyboard, toNote} from "@/lib/music/Note";
 import {midiRender} from "../../jest.setup";
 import {getKey} from "@/lib/music/Circle";
@@ -23,26 +22,6 @@ describe("the practice page", () => {
     })
 
     await waitFor(() => expect(screen.getByTestId('CheckIcon')).toBeInTheDocument())
-  })
-
-  it('should show the settings window after clicking the settings button', async () => {
-    const user = userEvent.setup()
-    midiRender(<PracticePage/>)
-
-    await user.click(screen.getByTestId('SettingsIcon'))
-
-    expect(screen.getByText(/Sevenths/)).toBeInTheDocument()
-    expect(screen.getByText(/Triads/)).toBeInTheDocument()
-  })
-
-  it('should show a close icon after opening the settings window', async () => {
-    const user = userEvent.setup()
-    midiRender(<PracticePage/>)
-
-    await user.click(screen.getByTestId('SettingsIcon'))
-
-    expect(screen.getByTestId('CloseIcon')).toBeInTheDocument()
-    expect(screen.queryByTestId('SettingsIcon')).not.toBeInTheDocument()
   })
 
   it('should show the correct notes for a chord if the user fails to enter a valid voicing in time', async () => {

@@ -123,7 +123,7 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
     setGhostStaveGroup(ghostGroup)
 
     // Current beat indicator
-    const indicatorWidth = 20
+    const indicatorWidth = 15
     context.save()
     context.openGroup(undefined, 'beat-indicator')
     context.setLineWidth(20)
@@ -165,7 +165,7 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
         if (activeNotes.length > 0) {
           const newGroup = context.openGroup('ghost-notes')
           const notes = notesToStaveNote(activeNotes, {duration: 'w', fillStyle: 'rgba(0, 0, 0, 0.5)'})
-          new TickContext().addTickable(notes).preFormat().setX(-6) // Why does -6 put it squarely in the indicator?
+          new TickContext().addTickable(notes).preFormat().setX(-10)
           notes.setContext(context).setStave(ghostStave).draw()
           context.closeGroup()
           setGhostStaveGroup(newGroup)
@@ -203,7 +203,7 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
     const getX = (measureIndex: number, beatIndex: number, duration: string) => {
       const adjustedWidth = STAVE_WIDTH - (STAVE_MARGIN * 2)
       const durationAdjustedPosition = adjustedWidth * durationToFraction(duration) * (beatIndex)
-      return (STAVE_WIDTH * measureIndex) + STAVE_MARGIN + durationAdjustedPosition
+      return (STAVE_WIDTH * measureIndex) + STAVE_MARGIN + durationAdjustedPosition + 6
     }
 
     measures.forEach((notes, measureIndex) => _.range(0, 4).forEach(beatIndex => {

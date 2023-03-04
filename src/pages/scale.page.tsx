@@ -2,10 +2,12 @@ import React, {useState} from 'react'
 import {styled} from "@mui/material/styles";
 import _ from "lodash";
 import NotesExercise, {ExerciseResult} from "@/components/exercises/NotesExercise";
-import {MAJOR_SCALE, SCALES} from "@/lib/music/Scale";
+import {MAJOR_SCALE, SCALES, SCALES_FOR_ALL_NOTES} from "@/lib/music/Scale";
 import {findNoteOnKeyboard, KEYBOARD, Note, placeOnOctave, ROOTS} from "@/lib/music/Note";
 import {notesToStaveNote} from "@/lib/vexMusic";
 import {StaveNote} from "vexflow";
+import {Autocomplete, TextField} from "@mui/material";
+import {css} from "@mui/system";
 
 const NUM_NOTES_EQUAL_DURATION: Record<number, string> = {
   1: 'w',
@@ -55,32 +57,48 @@ export default function ScalePage({numOctaves, numNotesPerMeasure, bpm}: Props) 
     .value()
 
   function reset(r: ExerciseResult) {
-    setScale(_.sample(SCALES)!)
-    setRootNote(Note.of(`${_.sample(ROOTS)}`))
+    const noteAndScale = _.sample(SCALES_FOR_ALL_NOTES)!
+    setScale(noteAndScale.scale)
+    setRootNote(noteAndScale.note)
   }
 
   return <StyledRoot>
-    <h1>Scale Page</h1>
-    <p>Current Scale: {`${rootNote} ${scale.name} Scale`}</p>
-    <div className={'buttons'}>
-
+    <div className={'scale-settings'}>
+      <Autocomplete
+        id={'scale-autocomplete'}
+        className={'scale-autocomplete'}
+        options={SCALES_FOR_ALL_NOTES}
+        getOptionLabel={(o) => `${o.note.toString()} ${o.scale.name}`}
+        renderInput={(params) => <TextField {...params} label={"Scale"} />}
+        value={SCALES_FOR_ALL_NOTES.find(ns => _.isEqual(rootNote, ns.note) && _.isEqual(scale, ns.scale))!}
+        onChange={(e, value) => {
+          if (value) {
+            setScale(value.scale)
+            setRootNote(value.note)
+          }
+        }}
+      />
     </div>
-
     <NotesExercise key={`${rootNote}-${scale.name}`} inputMeasures={measures} options={{bpm}} onEnd={reset}/>
   </StyledRoot>
 }
 
-const StyledRoot = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  width: '100vw',
-  height: '100vh',
+const StyledRoot = styled('div')`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100vw;
 
-  '.buttons': {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around'
+  .scale-settings {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 2rem;
   }
-})
+  
+  .scale-autocomplete {
+    width: 40vw;
+    min-width: 200px;
+  }
+`

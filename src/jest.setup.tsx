@@ -12,7 +12,11 @@ import {ReactElement} from "react";
 export const mockRequestMIDIAccess = jest.fn().mockImplementation(() => new Error("Not Implemented!"))
 global.navigator.requestMIDIAccess = mockRequestMIDIAccess;
 
-type PianoNoteEmitter = (e: WebMidi.MIDIMessageEvent) => void
+window.AudioContext = jest.fn().mockImplementation(() => {
+  return {}
+})
+
+export type PianoNoteEmitter = (e: WebMidi.MIDIMessageEvent) => void
 
 export function midiRender(ui: ReactElement, options?: Omit<RenderOptions, 'queries'>): [MidiPiano, PianoNoteEmitter, RenderResult] {
   let pianoNoteEmitter: PianoNoteEmitter = () => {
