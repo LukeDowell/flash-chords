@@ -1,30 +1,28 @@
 import '@/styles/globals.css'
 import type {AppProps} from 'next/app'
-import {CssBaseline, Drawer} from "@mui/material";
+import {Button, CssBaseline, Stack, SwipeableDrawer} from "@mui/material";
 import createEmotionCache from "@/lib/createEmotionCache";
 import {EmotionCache} from "@emotion/cache";
 import {CacheProvider} from "@emotion/react";
 import React, {createContext, useEffect, useState} from "react";
 import MidiPiano from "@/lib/music/MidiPiano";
 import {useAudio} from "@/lib/hooks";
-import {styled} from "@mui/system";
+import {styled, ThemeProvider} from "@mui/system";
 import LogoSvg from "@/components/images/Icon";
-import {Close as CloseIcon, Settings as SettingsIcon} from "@mui/icons-material";
+import {Menu} from "@mui/icons-material";
+import theme from "@/styles/theme";
+import Link from "next/link";
 
-
-const clientSideEmotionCache = createEmotionCache()
-export const MidiPianoContext = createContext(new MidiPiano())
-export const MidiInputContext = createContext<WebMidi.MIDIInput | undefined>(undefined)
-export const WebAudioContext = createContext<AudioContext | undefined>(undefined)
 
 const AppHeader = styled('div')`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 0 1rem 0 1rem;
-  width: available;
+  position: absolute;
 
   .header-image {
+    margin-top: 8px;
     width: 3.5rem;
     height: 3.5rem;
   }
@@ -33,11 +31,24 @@ const AppHeader = styled('div')`
     transition: transform .25s;
     transform: scale(1.1, 1.1);
   }
-
-  .button {
-    color: grey
-  }
 `
+
+const NavDrawer = styled(SwipeableDrawer)`
+  text-align: center;
+  width: 35vw;
+`
+
+const NavButton = styled(Button)`
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 1rem 1rem 0 1rem;
+  width: 30vw;
+`
+
+const clientSideEmotionCache = createEmotionCache()
+export const MidiPianoContext = createContext(new MidiPiano())
+export const MidiInputContext = createContext<WebMidi.MIDIInput | undefined>(undefined)
+export const WebAudioContext = createContext<AudioContext | undefined>(undefined)
 
 type AppPropsWithEmotionCache = AppProps & { emotionCache?: EmotionCache }
 export default function App({
@@ -88,32 +99,45 @@ export default function App({
 
   return <>
     <CacheProvider value={emotionCache}>
-      <CssBaseline/>
-      {errorMessage.length > 0 &&
-        <h3>{errorMessage}</h3>
-      }
-      <AppHeader>
-        <LogoSvg className={'header-image'}/>
-        {
-          isDrawerOpen
-            ? <CloseIcon className={"header-image button"} onClick={() => setIsDrawerOpen(false)}/>
-            : <SettingsIcon className={"header-image button"} onClick={() => setIsDrawerOpen(true)}/>
+      <ThemeProvider theme={theme}>
+        <CssBaseline enableColorScheme={true}/>
+        {errorMessage.length > 0 &&
+          <h3>{errorMessage}</h3>
         }
-      </AppHeader>
-      <MidiPianoContext.Provider value={midiPiano}>
-        <MidiInputContext.Provider value={midiContext}>
-          <WebAudioContext.Provider value={audioContext}>
-            <Component {...pageProps} />
-          </WebAudioContext.Provider>
-        </MidiInputContext.Provider>
-      </MidiPianoContext.Provider>
-      <Drawer
-        data-testid={'SettingsDrawer'}
-        anchor={'bottom'}
-        open={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}>
-        <h1>The drawer!</h1>
-      </Drawer>
+        <AppHeader>
+          <Button
+            aria-label={'open-drawer'}
+            onClick={() => setIsDrawerOpen(!isDrawerOpen)}>
+            <Menu sx={{width: '3.5rem', height: '3.5rem'}}/>
+          </Button>
+          <LogoSvg className={'header-image'}/>
+        </AppHeader>
+        <MidiPianoContext.Provider value={midiPiano}>
+          <MidiInputContext.Provider value={midiContext}>
+            <WebAudioContext.Provider value={audioContext}>
+              <Component {...pageProps} />
+            </WebAudioContext.Provider>
+          </MidiInputContext.Provider>
+        </MidiPianoContext.Provider>
+        <NavDrawer
+          data-testid={'SettingsDrawer'}
+          anchor={'left'}
+          open={isDrawerOpen}
+          onClose={() => setIsDrawerOpen(false)}
+          onOpen={() => setIsDrawerOpen(true)}>
+          <Stack direction={'column'}>
+            <Link href={'/'} onClick={() => setIsDrawerOpen(false)}>
+              <NavButton variant={'contained'}>Home</NavButton>
+            </Link>
+            <Link href={'/progression'} onClick={() => setIsDrawerOpen(false)}>
+              <NavButton variant={'contained'}>Progression</NavButton>
+            </Link>
+            <Link href={'/scale'} onClick={() => setIsDrawerOpen(false)}>
+              <NavButton variant={'contained'}>Scale</NavButton>
+            </Link>
+          </Stack>
+        </NavDrawer>
+      </ThemeProvider>
     </CacheProvider>
   </>
 }

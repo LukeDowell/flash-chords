@@ -2,12 +2,33 @@ import React, {useState} from 'react'
 import {styled} from "@mui/material/styles";
 import _ from "lodash";
 import NotesExercise, {ExerciseResult} from "@/components/exercises/NotesExercise";
-import {MAJOR_SCALE, SCALES, SCALES_FOR_ALL_NOTES} from "@/lib/music/Scale";
-import {findNoteOnKeyboard, KEYBOARD, Note, placeOnOctave, ROOTS} from "@/lib/music/Note";
+import {MAJOR_SCALE, SCALES_FOR_ALL_NOTES} from "@/lib/music/Scale";
+import {findNoteOnKeyboard, KEYBOARD, Note, placeOnOctave} from "@/lib/music/Note";
 import {notesToStaveNote} from "@/lib/vexMusic";
 import {StaveNote} from "vexflow";
 import {Autocomplete, TextField} from "@mui/material";
-import {css} from "@mui/system";
+
+
+const StyledRoot = styled('div')`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100vw;
+
+  .scale-settings {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 2rem;
+    margin-top: 1.15rem;
+  }
+
+  .scale-autocomplete {
+    width: 40vw;
+    min-width: 200px;
+  }
+`
 
 const NUM_NOTES_EQUAL_DURATION: Record<number, string> = {
   1: 'w',
@@ -69,7 +90,7 @@ export default function ScalePage({numOctaves, numNotesPerMeasure, bpm}: Props) 
         className={'scale-autocomplete'}
         options={SCALES_FOR_ALL_NOTES}
         getOptionLabel={(o) => `${o.note.toString()} ${o.scale.name}`}
-        renderInput={(params) => <TextField {...params} label={"Scale"} />}
+        renderInput={(params) => <TextField {...params} label={"Scale"}/>}
         value={SCALES_FOR_ALL_NOTES.find(ns => _.isEqual(rootNote, ns.note) && _.isEqual(scale, ns.scale))!}
         onChange={(e, value) => {
           if (value) {
@@ -82,23 +103,3 @@ export default function ScalePage({numOctaves, numNotesPerMeasure, bpm}: Props) 
     <NotesExercise key={`${rootNote}-${scale.name}`} inputMeasures={measures} options={{bpm}} onEnd={reset}/>
   </StyledRoot>
 }
-
-const StyledRoot = styled('div')`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100vw;
-
-  .scale-settings {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
-    margin-bottom: 2rem;
-  }
-  
-  .scale-autocomplete {
-    width: 40vw;
-    min-width: 200px;
-  }
-`

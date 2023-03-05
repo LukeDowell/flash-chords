@@ -15,7 +15,7 @@ describe('the app wrapper', () => {
     )
   })
 
-  it('should show a settings drawer, and then close it', async () => {
+  it('should show a navigation drawer', async () => {
     render(
       <App
         pageProps={{}}
@@ -25,12 +25,9 @@ describe('the app wrapper', () => {
     )
 
     const user = userEvent.setup()
-    expect(screen.queryByTestId('CloseIcon')).not.toBeInTheDocument()
-    await user.click(screen.getByTestId('SettingsIcon'))
-    expect(screen.getByTestId('CloseIcon')).toBeInTheDocument()
-    expect(screen.getByTestId('SettingsDrawer')).toBeInTheDocument()
-    expect(screen.queryByTestId('SettingsIcon')).not.toBeInTheDocument()
-    await user.click(screen.getByTestId('CloseIcon'))
-    expect(screen.getByTestId('SettingsIcon')).toBeInTheDocument()
+    await user.click(screen.getByTestId('MenuIcon'))
+    expect(screen.queryByText(/Home/)).toBeInTheDocument()
+    expect(screen.queryByText(/Progression/)).toBeInTheDocument()
+    expect(screen.queryByText(/Scale/)).toBeInTheDocument()
   })
 })

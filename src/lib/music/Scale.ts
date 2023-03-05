@@ -34,4 +34,6 @@ export const SCALES = [
 
 export const SCALES_FOR_ALL_NOTES: Array<{ note: Note, scale: Scale }> = ROOTS.flatMap(root => ['#', 'b', ''].map(accidental => `${root}${accidental}`))
   .map(Note.of)
-  .flatMap(note => SCALES.map(scale => { return { note, scale }}))
+  .flatMap(note => SCALES.map(scale => {
+    return {note, scale}
+  }))
