@@ -1532,3 +1532,15 @@ Also, as a parting thought, I have gone giga off the rails with testing. I have 
 that checks for `SVGElement` content, since we do that in our production code now anyway. 
 
 ## 02/27/2023
+
+## 07/24/2023
+
+There is something bizarre about seeing the passage of time through the last date entry on this dev journal. Each time
+I return, I'd never guess that it has been -that-long- since I worked on this project. 
+
+My company is hosting a tech conference in September, and I submitted an entry to talk about working on this app. I think
+music is a fun domain to use to talk about other concepts. We'll see how much progress I make on this repo until that time. :)
+
+Up first is a small widget in the nav bar to choose a MIDI device, and to update when a device is plugged in / unplugged. 
+This is mainly to appease an extremely old PR, whose neglect I feel slightly bad about, and to get me back in the groove 
+of doing React + Next + Typescript .

@@ -3,7 +3,6 @@ import {render, screen} from "@testing-library/react";
 import App from "@/pages/_app.page";
 import userEvent from "@testing-library/user-event";
 
-
 describe('the app wrapper', () => {
   it('should render', () => {
     render(

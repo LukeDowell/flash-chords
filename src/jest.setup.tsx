@@ -9,8 +9,6 @@ import {render, RenderOptions, RenderResult} from "@testing-library/react";
 import {MidiPianoContext} from "@/pages/_app.page";
 import {ReactElement} from "react";
 
-export const mockRequestMIDIAccess = jest.fn().mockImplementation(() => new Error("Not Implemented!"))
-global.navigator.requestMIDIAccess = mockRequestMIDIAccess;
 
 window.AudioContext = jest.fn().mockImplementation(() => {
   return {}
