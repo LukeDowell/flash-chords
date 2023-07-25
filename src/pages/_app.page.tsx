@@ -4,7 +4,7 @@ import {Button, CssBaseline, Stack, SwipeableDrawer} from "@mui/material";
 import createEmotionCache from "@/lib/createEmotionCache";
 import {EmotionCache} from "@emotion/cache";
 import {CacheProvider} from "@emotion/react";
-import React, {createContext, useEffect, useState} from "react";
+import React, {createContext, useState} from "react";
 import MidiPiano from "@/lib/music/MidiPiano";
 import {useAudio} from "@/lib/hooks";
 import {styled, ThemeProvider} from "@mui/system";
@@ -12,6 +12,8 @@ import LogoSvg from "@/components/images/Icon";
 import {Menu} from "@mui/icons-material";
 import theme from "@/styles/theme";
 import Link from "next/link";
+import {MidiInputSelector} from "@/components/midi-input-selector/MidiInputSelector";
+import MIDIInput = WebMidi.MIDIInput;
 
 
 const AppHeader = styled('div')`
@@ -41,7 +43,6 @@ const NavDrawer = styled(SwipeableDrawer)`
 const NavButton = styled(Button)`
   font-size: 1.5rem;
   font-weight: bold;
-  margin: 1rem 1rem 0 1rem;
   width: 30vw;
 `
 
@@ -57,53 +58,20 @@ export default function App({
                               emotionCache = clientSideEmotionCache,
                             }: AppPropsWithEmotionCache) {
 
-  const [hasLoadedMidi, setHasLoadedMidi] = useState(false)
   const [midiPiano, setMidiPiano] = useState<MidiPiano>(new MidiPiano())
   const [midiContext, setMidiContext] = useState<WebMidi.MIDIInput | undefined>(undefined)
-  const [midiAccess, setMidiAccess] = useState<WebMidi.MIDIAccess | undefined>(undefined)
-  const [isCompatibleBrowser, setIsCompatibleBrowser] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string>("")
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const audioContext = useAudio()
 
-  useEffect(() => {
-    if (hasLoadedMidi) return
-    try {
-      navigator.requestMIDIAccess().then((m) => {
-        setIsCompatibleBrowser(true)
-        setMidiAccess(m)
-        if (m.inputs.size === 0) return
-        else setMidiAccess(m) // Update our access to store new inputs
-        const firstInputKey = m.inputs.keys().next().value
-        const firstInput = m.inputs.get(firstInputKey)
-        if (firstInput) {
-          const piano = new MidiPiano(firstInput)
-          setMidiContext(firstInput)
-          setMidiPiano(piano)
-          setHasLoadedMidi(true)
-          setErrorMessage("")
-        } else throw new Error(`${firstInputKey} not a valid MIDI input id!`)
-      })
-    } catch (e: any) {
-      if (e instanceof TypeError) setIsCompatibleBrowser(false)
-    }
-  }, [hasLoadedMidi])
-
-  useEffect(() => {
-    if (!midiAccess && !isCompatibleBrowser) {
-      setErrorMessage("Your browser does not provide MIDI access, please use Chrome, Safari or Edge on a desktop or android device")
-    } else if (!midiPiano && midiAccess && isCompatibleBrowser) {
-      setErrorMessage("Your browser supports MIDI access, but a MIDI device could not be found")
-    }
-  }, [isCompatibleBrowser, midiAccess, midiPiano])
+  function handleInputSelected(id: string, input: MIDIInput) {
+    setMidiContext(input)
+    setMidiPiano(new MidiPiano(input))
+  }
 
   return <>
     <CacheProvider value={emotionCache}>
       <ThemeProvider theme={theme}>
         <CssBaseline enableColorScheme={true}/>
-        {errorMessage.length > 0 &&
-          <h3>{errorMessage}</h3>
-        }
         <AppHeader>
           <Button
             aria-label={'open-drawer'}
@@ -125,7 +93,7 @@ export default function App({
           open={isDrawerOpen}
           onClose={() => setIsDrawerOpen(false)}
           onOpen={() => setIsDrawerOpen(true)}>
-          <Stack direction={'column'}>
+          <Stack direction={'column'} spacing={2} padding={1}>
             <Link href={'/'} onClick={() => setIsDrawerOpen(false)}>
               <NavButton variant={'contained'}>Home</NavButton>
             </Link>
@@ -135,6 +103,7 @@ export default function App({
             <Link href={'/scale'} onClick={() => setIsDrawerOpen(false)}>
               <NavButton variant={'contained'}>Scale</NavButton>
             </Link>
+            <MidiInputSelector onInputSelected={handleInputSelected}/>
           </Stack>
         </NavDrawer>
       </ThemeProvider>
