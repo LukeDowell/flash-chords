@@ -1543,4 +1543,41 @@ music is a fun domain to use to talk about other concepts. We'll see how much pr
 
 Up first is a small widget in the nav bar to choose a MIDI device, and to update when a device is plugged in / unplugged. 
 This is mainly to appease an extremely old PR, whose neglect I feel slightly bad about, and to get me back in the groove 
-of doing React + Next + Typescript .
+of doing React + Next + Typescript
+
+## 07/25/2023
+
+MIDI device selection complete! I think the thing that is still on my mind as a core feature is some kind of report
+card for each exercise. 
+
+## 07/26/2023
+
+Coming back to the code, I'd love to get started on the report card feature, but I don't think the current
+implementation of the exercise is going to make that easy. Way too much rendering and functional logic co-located
+together; it's going to grow and become disgusting super quickly.
+
+I'm going to give re-implementation a shot. This might be a poor idea, but I'd like the kernel of the
+exercise to be basically just data. We have a given collection of notes that we need to hit at a certain time;
+what is the exercise other than a start time and a set of notes? Shouldn't we be able to tell in advance when each note
+gets hit? It will work nicely with the barely-started new version of the MIDI piano interface which will
+be emitting events rather than dumping current keyboard state. 
+
+
+## 07/27/2023
+
+I made a utility that I hope is useful, I can play the piano in tests now!
+
+```typescript
+    const [piano, midiCallback] = midiRender(<Exercise config={config}/>)
+    await new NoteEmitter(midiCallback)
+      .keyPress(['D3', 'D4'])
+      .keyPress(['G3', 'G4'])
+      .keyPress(['C3', 'C4'])
+      .play()
+
+    await waitFor(() => {
+      expect(screen.getByText("complete")).toBeVisible()
+    })
+```
+
+We'll see if this enables me to do a better job on this second pass of the exercises...

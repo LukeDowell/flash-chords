@@ -14,24 +14,24 @@ window.AudioContext = jest.fn().mockImplementation(() => {
   return {}
 })
 
-export type PianoNoteEmitter = (e: WebMidi.MIDIMessageEvent) => void
+type MidiCallback = (e: WebMidi.MIDIMessageEvent) => void
 
-export function midiRender(ui: ReactElement, options?: Omit<RenderOptions, 'queries'>): [MidiPiano, PianoNoteEmitter, RenderResult] {
-  let pianoNoteEmitter: PianoNoteEmitter = () => {
+export function midiRender(ui: ReactElement, options?: Omit<RenderOptions, 'queries'>): [MidiPiano, MidiCallback, RenderResult] {
+  let midiCallback = (e: WebMidi.MIDIMessageEvent) => {
   }
   const mockedMidiInput: Partial<WebMidi.MIDIInput> = {
     addEventListener: jest.fn().mockImplementation(() => {
     })
   }
   mockedMidiInput.addEventListener = jest.fn().mockImplementation((key: string, callback: (e: WebMidi.MIDIMessageEvent) => void) => {
-    pianoNoteEmitter = callback
+    midiCallback = callback
   })
 
   const midiPiano = new MidiPiano(mockedMidiInput as WebMidi.MIDIInput)
 
   return [
     midiPiano,
-    pianoNoteEmitter,
+    midiCallback,
     render(<MidiPianoContext.Provider value={midiPiano}>{ui}</MidiPianoContext.Provider>, options)
   ]
 }
