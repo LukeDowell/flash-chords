@@ -1,4 +1,4 @@
-import {findNoteOnKeyboard, KEYBOARD, Note, standardizeNote} from "@/lib/music/Note";
+import {findNoteOnKeyboard, Note, standardizeNote} from "@/lib/music/Note";
 import {MIDI, MIDI_KEYBOARD_OFFSET} from "@/lib/music/MidiPiano";
 
 export class NoteEmitter {
@@ -12,19 +12,19 @@ export class NoteEmitter {
 
   keyDown(notes: Note[] | string[]) {
     const events = noteToMidiEvent(MIDI.KEY_DOWN, notes)
-    events.forEach(e => this._queuedActions.push(() => {
-      console.log(`KEY_DOWN ${KEYBOARD[e.data[1] - MIDI_KEYBOARD_OFFSET]}`)
-      return Promise.resolve(this._midiHook(e))
-    }))
+    events.forEach(e => {
+      const deferred = () => Promise.resolve(this._midiHook(e))
+      this._queuedActions.push(deferred)
+    })
     return this
   }
 
   keyUp(notes: Note[] | string[]) {
     const events = noteToMidiEvent(MIDI.KEY_UP, notes)
-    events.forEach(e => this._queuedActions.push(() => {
-      console.log(`KEY_UP ${KEYBOARD[e.data[1] - MIDI_KEYBOARD_OFFSET]}`)
-      return Promise.resolve(this._midiHook(e))
-    }))
+    events.forEach(e => {
+      const deferred = () => Promise.resolve(this._midiHook(e))
+      this._queuedActions.push(deferred)
+    })
     return this
   }
 
@@ -35,10 +35,8 @@ export class NoteEmitter {
   }
 
   wait(delay: number) {
-    this._queuedActions.push(() => new Promise((resolve) => {
-      console.log(`waiting ${delay}ms`)
-      setTimeout(resolve, delay)
-    }))
+    const deferred = () => new Promise((resolve) => setTimeout(resolve, delay))
+    this._queuedActions.push(deferred)
     return this
   }
 

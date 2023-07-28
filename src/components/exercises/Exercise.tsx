@@ -24,10 +24,7 @@ export default function Exercise({config}: Props) {
   const [context, [contextWidth, contextHeight]] = useVexflowContext('exercise-vexflow-output')
   const piano: MidiPiano = useContext(MidiPianoContext)
 
-
   return <VexflowOutput>
-    <div>complete</div>
-    <div>:^) test driven development babyyyy</div>
     <div id={'exercise-vexflow-output'}/>
   </VexflowOutput>
 }
