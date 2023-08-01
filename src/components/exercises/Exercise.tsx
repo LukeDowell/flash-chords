@@ -13,7 +13,9 @@ type ExerciseConfiguration = {
 }
 
 interface Props {
-  config: ExerciseConfiguration
+  config: ExerciseConfiguration,
+  onEnd: () => any,
+
 }
 
 const VexflowOutput = styled('div')`

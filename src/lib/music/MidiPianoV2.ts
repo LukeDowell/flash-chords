@@ -1,4 +1,5 @@
 import {KEYBOARD, Note} from "./Note";
+import _ from "lodash";
 
 const MIDI = {
   KEY_DOWN: 144,
@@ -8,33 +9,63 @@ const MIDI = {
 
 export const MIDI_KEYBOARD_OFFSET = 21
 
-type NoteEvent = "keydown" | "keyup" | "keypressed"
-type NoteEventCallback = (notes: Note[], midiEvent: WebMidi.MIDIMessageEvent) => any
 
-type NoteHistory = {
-  val: Note,
+export type NoteEvent = {
+  note: Note,
 
-  event: NoteEvent,
+  velocity: number,
+
+  flag: "keydown" | "keyup",
 
   time: number
 }
 
+export type NoteSubscriber = (event: NoteEvent, currentActiveNotes: Note[], history: NoteEvent[]) => any
+
 export default class MidiPianoV2 {
   private _currentActiveNotes: Note[] = []
-  private _noteHistory: NoteHistory[] = []
+  private readonly _noteHistory: NoteEvent[] = []
+  private _subscribers: Map<string, NoteSubscriber> = new Map()
 
   constructor(midiInput?: WebMidi.MIDIInput) {
-    midiInput?.addEventListener("midimessage", this._processMIDIEvent)
+    midiInput?.addEventListener("midimessage", this._processMIDIEvent.bind(this))
   }
 
-  private _processMIDIEvent(e: WebMidi.MIDIMessageEvent) {
-    const note = KEYBOARD[e.data[1] - MIDI_KEYBOARD_OFFSET]
-    const velocity = e.data[2]
-    const flag = e.data[0]
-    // if (flag === MIDI.HEARTBEAT) return
-    //
-    // if (flag === MIDI.KEY_DOWN && velocity !== 0) this._currentActiveNotes.push(note)
-    // else if (flag === MIDI.KEY_UP || (flag === MIDI.KEY_DOWN && velocity === 0))
-    // else throw new Error(`Unknown MIDI flag ${flag}`)
+  private _processMIDIEvent(midiEvent: WebMidi.MIDIMessageEvent) {
+    const note = KEYBOARD[midiEvent.data[1] - MIDI_KEYBOARD_OFFSET]
+    const velocity = midiEvent.data[2]
+    const midiFlag = midiEvent.data[0]
+
+    if (midiFlag === MIDI.HEARTBEAT) return
+    else if (midiFlag !== MIDI.KEY_DOWN && midiFlag !== MIDI.KEY_UP) return
+
+    const keyFlag: "keyup" | "keydown" = midiFlag === MIDI.KEY_UP || (midiFlag === MIDI.KEY_DOWN && velocity === 0) ? "keyup" : "keydown"
+    if (keyFlag === "keyup") {
+      this._currentActiveNotes = this._currentActiveNotes.filter(n => !_.isEqual(n, note))
+    } else if (keyFlag === "keydown") {
+      this._currentActiveNotes.push(note)
+    }
+
+    const event = {
+      note,
+      velocity,
+      flag: keyFlag,
+      time: new Date().getTime()
+    }
+
+    this._noteHistory.push(event)
+    this._notifySubscribers(event)
+  }
+
+  addSubscriber(key: string, subscriber: NoteSubscriber) {
+    this._subscribers.set(key, subscriber)
+  }
+
+  removeSubscriber(key: string) {
+    this._subscribers.delete(key)
+  }
+
+  private _notifySubscribers(event: NoteEvent) {
+    this._subscribers.forEach((v, k) => v.call(v, event, this._currentActiveNotes, this._noteHistory))
   }
 }

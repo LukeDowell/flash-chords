@@ -10,7 +10,7 @@ export class NoteEmitter {
     this._queuedActions = []
   }
 
-  keyDown(notes: Note[] | string[]) {
+  keyDown(notes: Note[] | string[], velocity: number = 50) {
     const events = noteToMidiEvent(MIDI.KEY_DOWN, notes)
     events.forEach(e => {
       const deferred = () => Promise.resolve(this._midiHook(e))
@@ -47,7 +47,7 @@ export class NoteEmitter {
   }
 }
 
-const noteToMidiEvent = (flag: number, notes: Note[] | string[]): WebMidi.MIDIMessageEvent[] => {
+const noteToMidiEvent = (flag: number, notes: Note[] | string[], velocity: number = 50): WebMidi.MIDIMessageEvent[] => {
   const consolidateType = (n: Note | string): Note => {
     if (typeof n === 'string') return Note.of(n)
     return n
@@ -60,7 +60,7 @@ const noteToMidiEvent = (flag: number, notes: Note[] | string[]): WebMidi.MIDIMe
       const array = new Uint8Array(3)
       array[0] = flag // Flag
       array[1] = i    // Note
-      array[2] = 50   // Velocity
+      array[2] = velocity   // Velocity
       return {
         ...new Event('midi'),
         receivedTime: new Date().getTime(),
