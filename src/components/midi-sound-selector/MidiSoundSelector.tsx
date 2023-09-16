@@ -1,53 +1,28 @@
-import React, {useContext, useEffect, useState} from 'react'
-import {styled} from "@mui/material/styles";
+import React, {useState} from 'react';
+import {FormControl, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent} from "@mui/material";
 import {useInstrument} from "@/lib/hooks";
-import {FormControl, InputLabel, NativeSelect} from '@mui/material';
-import {InstrumentName} from "soundfont-player";
-import {MidiInputContext, MidiPianoContext} from "@/pages/_app.page";
-import _ from "lodash";
 
-const StyledRoot = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  width: '100vw',
-  height: '100vh',
-})
+export const MidiSoundSelector = () => {
+  const [instrumentSample, setInstrumentSample] = useState<string>('electric_grand_piano')
+  const instrument = useInstrument(instrumentSample, true)
 
-export default function InstrumentPage({}) {
-  const [instrumentSample, setInstrumentSample] = useState<InstrumentName>('electric_grand_piano')
-  const instrument = useInstrument(instrumentSample)
-  const midiInput = useContext(MidiInputContext)
-  const piano = useContext(MidiPianoContext)
-
-  useEffect(() => {
-    if (!instrument || !midiInput) return
-    instrument.listenToMidi(midiInput)
-
-    const id = _.uniqueId('instrument-page-')
-    piano.setListener(id, (notes) => {
-      console.log('played ', notes)
-    })
-
-    return () => piano.removeListener(id)
-  }, [instrument, midiInput, piano])
-
-  return <StyledRoot>
-    <h1>Instrument Page</h1>
-    <FormControl>
-      <InputLabel variant={"standard"} htmlFor={"uncontrolled-native"}>Instrument</InputLabel>
-      <NativeSelect
-        value={instrumentSample}
-        inputProps={{
-          onChange: (e) => {
-            setInstrumentSample(e.target.value as InstrumentName)
-          }
-        }}
-      >
-        {SAMPLES.map(s => <option key={s} value={s}>{s.replaceAll('_', ' ')}</option>)}
-      </NativeSelect>
-    </FormControl>
-  </StyledRoot>
+  return <FormControl>
+    <InputLabel id="midi-sound-label">MIDI Instrument</InputLabel>
+    <Select
+      defaultValue={"None"}
+      value={instrumentSample}
+      onChange={(e: SelectChangeEvent) => setInstrumentSample(e.target.value)}
+      input={<OutlinedInput label="MIDI Instrument"/>}
+    >
+      {
+        SAMPLES.map((sample) => (
+          <MenuItem key={sample} value={sample}>
+            {sample}
+          </MenuItem>
+        ))
+      }
+    </Select>
+  </FormControl>
 }
 
 const SAMPLES = [

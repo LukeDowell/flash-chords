@@ -1,7 +1,8 @@
 import {useContext, useEffect, useLayoutEffect, useRef, useState} from 'react'
 import {Renderer, SVGContext} from "vexflow";
-import SoundfontPlayer, {InstrumentName, Player} from 'soundfont-player'
-import {MidiInputContext, WebAudioContext} from "@/pages/_app.page";
+import SoundfontPlayer, {Soundfont} from 'smplr'
+import {MidiInputContext, MidiPianoContext, WebAudioContext} from "@/pages/_app.page";
+import _ from "lodash";
 
 export function useInterval(callback: () => void, delay: number | null) {
   const savedCallback = useRef(callback)
@@ -92,18 +93,24 @@ export function useAudio(): AudioContext | undefined {
   return audio
 }
 
-export function useInstrument(name: InstrumentName = 'electric_grand_piano', listenToMidi?: boolean) {
-  const [instrument, setInstrument] = useState<Player | undefined>(undefined)
+export function useInstrument(name = 'electric_grand_piano', listenToMidi?: boolean) {
+  const [instrument, setInstrument] = useState<Soundfont | undefined>(undefined)
   const audioContext = useContext(WebAudioContext)
-  const midiInput = useContext(MidiInputContext)
+  const piano = useContext(MidiPianoContext)
 
   useSSRLayoutEffect(() => {
-    if (!audioContext) return
+    if (!audioContext || !piano) return
 
-    SoundfontPlayer.instrument(audioContext, name, {}).then((i) => {
-      setInstrument(i)
-      if (listenToMidi) i.listenToMidi(midiInput)
+    const player = new Soundfont(audioContext, { instrument: name })
+    const listenerId = _.uniqueId(`instrument-${name}`)
+    piano.setListener(listenerId, () => {
+
     })
+
+    return () => {
+      piano.removeListener(listenerId)
+      player.stop()
+    }
   }, [name, audioContext])
 
   return instrument
