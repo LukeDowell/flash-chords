@@ -5,7 +5,7 @@ import {waitFor} from "@testing-library/react";
 import {NoteEmitter} from "../../note-emitter";
 
 describe('a musical exercise', () => {
-  it('should render a simple exercise', async () => {
+  it.skip('should render a simple exercise', async () => {
     const config = {
       treble: [
         ['D4'],

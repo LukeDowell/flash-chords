@@ -34,6 +34,7 @@ export const generateChordFromSettings = (settings: Settings): [Chord, MusicKey]
 const StyledRoot = styled('div')`
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
 
   .timer {
@@ -41,6 +42,14 @@ const StyledRoot = styled('div')`
     width: 50%;
     height: 1vmax;
     margin-bottom: 5rem
+  }
+
+  #vexflow-output {
+    min-height: 280px;
+  }
+
+  #vexflow-output svg {
+    overflow: visible;
   }
 `
 

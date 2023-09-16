@@ -14,6 +14,7 @@ window.AudioContext = jest.fn().mockImplementation(() => {
   return {}
 })
 
+
 type MidiCallback = (e: WebMidi.MIDIMessageEvent) => void
 
 export function midiRender(ui: ReactElement, options?: Omit<RenderOptions, 'queries'>): [MidiPiano, MidiCallback, RenderResult] {

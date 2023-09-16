@@ -21,6 +21,7 @@ export default function InstrumentPage({}) {
   const piano = useContext(MidiPianoContext)
 
   useEffect(() => {
+    console.log(`ins inp`, midiInput)
     if (!instrument || !midiInput) return
     instrument.listenToMidi(midiInput)
 

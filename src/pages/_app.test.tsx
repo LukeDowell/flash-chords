@@ -3,7 +3,15 @@ import {render, screen} from "@testing-library/react";
 import App from "@/pages/_app.page";
 import userEvent from "@testing-library/user-event";
 
+
 describe('the app wrapper', () => {
+  beforeEach(() => {
+    global.navigator.requestMIDIAccess = jest.fn().mockImplementation(() => {
+      return new Promise(() => {
+      });
+    })
+  })
+
   it('should render', () => {
     render(
       <App
