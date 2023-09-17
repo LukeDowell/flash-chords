@@ -5,7 +5,6 @@ import createEmotionCache from "@/lib/createEmotionCache";
 import {EmotionCache} from "@emotion/cache";
 import {CacheProvider} from "@emotion/react";
 import React, {createContext, useState} from "react";
-import MidiPiano from "@/lib/music/MidiPiano";
 import {useAudio} from "@/lib/hooks";
 import {styled, ThemeProvider} from "@mui/system";
 import LogoSvg from "@/components/images/Icon";
@@ -13,6 +12,8 @@ import {Menu} from "@mui/icons-material";
 import theme from "@/styles/theme";
 import Link from "next/link";
 import {MidiInputSelector} from "@/components/midi-input-selector/MidiInputSelector";
+import MidiPiano from "@/lib/music/MidiPiano";
+import {MidiSoundSelector} from "@/components/midi-sound-selector/MidiSoundSelector";
 import MIDIInput = WebMidi.MIDIInput;
 
 
@@ -50,6 +51,7 @@ const clientSideEmotionCache = createEmotionCache()
 export const MidiPianoContext = createContext(new MidiPiano())
 export const MidiInputContext = createContext<WebMidi.MIDIInput | undefined>(undefined)
 export const WebAudioContext = createContext<AudioContext | undefined>(undefined)
+export const InstrumentContext = createContext<string>("electric_grand_piano")
 
 type AppPropsWithEmotionCache = AppProps & { emotionCache?: EmotionCache }
 export default function App({
@@ -61,6 +63,7 @@ export default function App({
   const [midiPiano, setMidiPiano] = useState<MidiPiano>(new MidiPiano())
   const [midiContext, setMidiContext] = useState<WebMidi.MIDIInput | undefined>(undefined)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [sample, setSample] = useState('electric_grand_piano')
   const audioContext = useAudio()
 
   function handleInputSelected(id: string, input: MIDIInput) {
@@ -83,7 +86,9 @@ export default function App({
         <MidiPianoContext.Provider value={midiPiano}>
           <MidiInputContext.Provider value={midiContext}>
             <WebAudioContext.Provider value={audioContext}>
-              <Component {...pageProps} />
+              <InstrumentContext.Provider value={sample}>
+                <Component {...pageProps} />
+              </InstrumentContext.Provider>
             </WebAudioContext.Provider>
           </MidiInputContext.Provider>
         </MidiPianoContext.Provider>
@@ -104,6 +109,7 @@ export default function App({
               <NavButton variant={'contained'}>Scale</NavButton>
             </Link>
             <MidiInputSelector onInputSelected={handleInputSelected}/>
+            <MidiSoundSelector onSampleSelected={setSample}/>
           </Stack>
         </NavDrawer>
       </ThemeProvider>

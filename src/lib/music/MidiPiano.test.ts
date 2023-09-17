@@ -1,4 +1,4 @@
-import MidiPianoV2, {NoteSubscriber} from './MidiPianoV2'
+import MidiPiano, {NoteSubscriber} from './MidiPiano'
 import {NoteEmitter} from "../../note-emitter";
 import _ from "lodash";
 
@@ -13,7 +13,7 @@ describe('a midi piano', () => {
       })
     }
 
-    const midiPiano = new MidiPianoV2(mockedMidiInput as WebMidi.MIDIInput)
+    const midiPiano = new MidiPiano(mockedMidiInput as WebMidi.MIDIInput)
     const noteEmitter = new NoteEmitter(midiCallback)
     const listener: jest.Mock<NoteSubscriber> = jest.fn()
     midiPiano.addSubscriber(_.uniqueId('midi-piano-test'), listener)
@@ -36,7 +36,7 @@ describe('a midi piano', () => {
       })
     }
 
-    const midiPiano = new MidiPianoV2(mockedMidiInput as WebMidi.MIDIInput)
+    const midiPiano = new MidiPiano(mockedMidiInput as WebMidi.MIDIInput)
     const noteEmitter = new NoteEmitter(midiCallback)
     const listener: jest.Mock<NoteSubscriber> = jest.fn()
     midiPiano.addSubscriber(_.uniqueId('midi-piano-test'), listener)

@@ -3,7 +3,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {useVexflowContext} from "@/lib/hooks";
 import {MidiInputContext} from "@/pages/_app.page";
 import {MusicKey} from "@/lib/music/Circle";
-import MidiPianoV2, {NoteEvent, NoteSubscriber} from "@/lib/music/MidiPianoV2";
+import MidiPiano, {NoteEvent, NoteSubscriber} from "@/lib/music/MidiPiano";
 import _ from "lodash";
 import {Note} from "@/lib/music/Note";
 
@@ -35,10 +35,10 @@ export default function Exercise({
                                  }: Props) {
   const [context, [contextWidth, contextHeight]] = useVexflowContext('exercise-vexflow-output')
   const midiInput = useContext(MidiInputContext)
-  const [midiPiano, setMidiPiano] = useState<MidiPianoV2 | undefined>(undefined)
+  const [midiPiano, setMidiPiano] = useState<MidiPiano | undefined>(undefined)
 
   useEffect(() => {
-    const piano = new MidiPianoV2(midiInput)
+    const piano = new MidiPiano(midiInput)
     setMidiPiano(piano)
     const subscriberId = _.uniqueId('exercise')
     piano.addSubscriber(subscriberId, noteSubscriber)

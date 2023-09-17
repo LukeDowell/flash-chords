@@ -4,9 +4,9 @@ import {css, keyframes, styled} from "@mui/system";
 import {Beam, ChordSymbol, ModifierContext, Stave, StaveNote, TickContext} from "vexflow";
 import {Note} from "@/lib/music/Note";
 import {MidiPianoContext} from "@/pages/_app.page";
-import MidiPiano from "@/lib/music/MidiPiano";
 import _ from "lodash";
 import {notesToStaveNote, staveNoteToNotes} from "@/lib/vexMusic";
+import {NoteEvent} from "@/lib/music/MidiPiano";
 
 export interface ExerciseResult {
 }
@@ -60,7 +60,7 @@ const VexflowOutput = styled('div')`
 export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
   const [context, [contextWidth, contextHeight]] = useVexflowContext('notes-exercise-vexflow-output')
   const clicker = useInstrument('woodblock')
-  const piano: MidiPiano = useContext(MidiPianoContext)
+  const piano = useContext(MidiPianoContext)
   const [startTime, setStartTime] = useState<number | undefined>(undefined)
   const [endTime, setEndTime] = useState<number | undefined>(undefined)
   const [staveGroup, setStaveGroup] = useState<SVGElement | undefined>(undefined)
@@ -157,7 +157,7 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
   useEffect(() => {
     if (!staveGroup) return
 
-    function midiPianoCallback(activeNotes: Note[]) {
+    function midiPianoCallback(noteEvent: NoteEvent, activeNotes: Note[]) {
       if (!staveGroup || !context) return
 
       if (ghostStave && ghostStaveGroup) {
@@ -189,15 +189,15 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
     }
 
     const id = _.uniqueId('notes-exercise-')
-    piano.setListener(id, midiPianoCallback)
-    return () => piano.removeListener(id)
+    piano.addSubscriber(id, midiPianoCallback)
+    return () => piano.removeSubscriber(id)
   }, [STAVE_MARGIN, STAVE_WIDTH, context, contextWidth, ghostStave, ghostStaveGroup, measures, piano, staveGroup])
 
   function start() {
     if (!staveGroup || startTime) return
 
     setStartTime(new Date().getTime())
-    const playClick = () => clicker?.play('C6', undefined, {duration: 150})
+    const playClick = () => clicker?.start({note: 'C6', duration: 0.15})
     const clickerId = setInterval(playClick, BEAT_DELAY_MS)
 
     const getX = (measureIndex: number, beatIndex: number, duration: string) => {

@@ -1,17 +1,23 @@
 import React, {useState} from 'react';
 import {FormControl, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent} from "@mui/material";
-import {useInstrument} from "@/lib/hooks";
 
-export const MidiSoundSelector = () => {
+export interface Props {
+  onSampleSelected: (sample: string) => any;
+}
+
+export const MidiSoundSelector = ({onSampleSelected}: Props) => {
   const [instrumentSample, setInstrumentSample] = useState<string>('electric_grand_piano')
-  const instrument = useInstrument(instrumentSample, true)
 
   return <FormControl>
     <InputLabel id="midi-sound-label">MIDI Instrument</InputLabel>
     <Select
       defaultValue={"None"}
       value={instrumentSample}
-      onChange={(e: SelectChangeEvent) => setInstrumentSample(e.target.value)}
+      onChange={(e: SelectChangeEvent) => {
+        const sample = e.target.value
+        setInstrumentSample(sample)
+        onSampleSelected(sample)
+      }}
       input={<OutlinedInput label="MIDI Instrument"/>}
     >
       {

@@ -1,12 +1,12 @@
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import CheckIcon from '@mui/icons-material/Check'
-import {useInterval} from "@/lib/hooks";
+import {useInstrument, useInterval} from "@/lib/hooks";
 import {DEFAULT_PRACTICE_SETTINGS, Settings} from "@/components/settings/Settings";
 import {Note} from "@/lib/music/Note";
 import _ from "lodash";
 import {VoicingHistory, VoicingResult} from "./VoicingHistory";
 import {LinearProgress} from "@mui/material";
-import {MidiPianoContext} from "@/pages/_app.page";
+import {InstrumentContext, MidiPianoContext} from "@/pages/_app.page";
 import {
   CIRCLE_OF_FIFTHS,
   diatonicChords,
@@ -18,6 +18,7 @@ import {
 import {InteractiveStaff} from "@/components/interactivestaff/InteractiveStaff";
 import {Chord} from "@/lib/music/Chord";
 import {styled} from "@mui/system";
+import {NoteEvent} from "@/lib/music/MidiPiano";
 
 export interface Props {
   initialChord?: Chord,
@@ -72,6 +73,8 @@ export default function PracticePage({
                                        initialSettings = DEFAULT_PRACTICE_SETTINGS
                                      }: Props) {
   const piano = useContext(MidiPianoContext)
+  const sample = useContext(InstrumentContext)
+  const instrument = useInstrument(sample, true)
   const [currentChord, setCurrentChord] = useState<Chord>(initialChord)
   const [currentKey, setCurrentKey] = useState<MusicKey>(initialKey)
   const [timeOfLastSuccess, setTimeOfLastSuccess] = useState(Date.now())
@@ -91,7 +94,7 @@ export default function PracticePage({
   }, [currentChord, settings])
 
   useEffect(() => {
-    const callback = (activeNotes: Note[]) => {
+    const callback = (noteEvent: NoteEvent, activeNotes: Note[]) => {
       if (isValidVoicingForChord(activeNotes, currentChord)) {
         setShouldDisplaySuccess(true)
         setTimeOfLastSuccess(Date.now())
@@ -105,8 +108,8 @@ export default function PracticePage({
     };
 
     const id = _.uniqueId('practice-page-')
-    piano.setListener(id, callback)
-    return () => piano.removeListener(id)
+    piano.addSubscriber(id, callback)
+    return () => piano.removeSubscriber(id)
   }, [currentChord, piano, generateNewChord, voicingResults, currentKey])
 
   useInterval(() => {

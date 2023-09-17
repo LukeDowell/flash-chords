@@ -1,7 +1,7 @@
 import {useContext, useEffect, useLayoutEffect, useRef, useState} from 'react'
 import {Renderer, SVGContext} from "vexflow";
-import SoundfontPlayer, {Soundfont} from 'smplr'
-import {MidiInputContext, MidiPianoContext, WebAudioContext} from "@/pages/_app.page";
+import {Soundfont} from 'smplr'
+import {MidiPianoContext, WebAudioContext} from "@/pages/_app.page";
 import _ from "lodash";
 
 export function useInterval(callback: () => void, delay: number | null) {
@@ -93,25 +93,37 @@ export function useAudio(): AudioContext | undefined {
   return audio
 }
 
-export function useInstrument(name = 'electric_grand_piano', listenToMidi?: boolean) {
+export function useInstrument(sample = 'electric_grand_piano', listenToMidi?: boolean) {
   const [instrument, setInstrument] = useState<Soundfont | undefined>(undefined)
   const audioContext = useContext(WebAudioContext)
   const piano = useContext(MidiPianoContext)
 
   useSSRLayoutEffect(() => {
-    if (!audioContext || !piano) return
+    if (!audioContext) return
+    console.log('new player with ', sample)
+    const player = new Soundfont(audioContext, {instrument: sample})
+    const listenerId = _.uniqueId(`instrument-${sample}`)
 
-    const player = new Soundfont(audioContext, { instrument: name })
-    const listenerId = _.uniqueId(`instrument-${name}`)
-    piano.setListener(listenerId, () => {
-
-    })
-
-    return () => {
-      piano.removeListener(listenerId)
-      player.stop()
+    if (listenToMidi) {
+      piano.addSubscriber(listenerId, (noteEvent) => {
+        const {note, midiNote, velocity, flag, time} = noteEvent
+        switch (flag) {
+          case "keydown":
+            audioContext.resume().then(() => player.start({note: midiNote, velocity}))
+            break
+          case "keyup":
+            player.stop({stopId: midiNote})
+            break
+        }
+      })
     }
-  }, [name, audioContext])
+
+    setInstrument(player)
+    return () => {
+      piano.removeSubscriber(listenerId)
+      setInstrument(undefined)
+    }
+  }, [sample, audioContext])
 
   return instrument
 }

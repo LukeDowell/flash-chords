@@ -6,8 +6,8 @@ import {notesToStaveNote} from "@/lib/vexMusic";
 import {ChordSymbol, ModifierContext, Stave, TickContext} from "vexflow";
 import {Note, placeOnOctave} from "@/lib/music/Note";
 import {MidiPianoContext} from "@/pages/_app.page";
-import MidiPiano from "@/lib/music/MidiPiano";
 import _ from "lodash";
+import MidiPiano, {NoteEvent} from "@/lib/music/MidiPiano";
 
 export interface KeyExerciseResult {
   musicKey: MusicKey,
@@ -42,14 +42,14 @@ export default function DiatonicChordExercise({musicKey, onEnd, options}: Props)
   useEffect(() => {
     if (!staveGroup) return
     const id = _.uniqueId('key-exercise-')
-    piano.setListener(id, (notes) => {
+    piano.addSubscriber(id, (noteEvent: NoteEvent, activeNotes: Note[]) => {
       const matrix = new WebKitCSSMatrix(window.getComputedStyle(staveGroup).transform)
       const currentMeasureIndex = Math.floor(matrix.m41 * -1 / STAVE_WIDTH)
-      if (diatonicChords(musicKey).some(c => isValidVoicingForChord(notes, c))) {
-        setMeasureVoicings([[currentMeasureIndex, notes], ...measureVoicings])
+      if (diatonicChords(musicKey).some(c => isValidVoicingForChord(activeNotes, c))) {
+        setMeasureVoicings([[currentMeasureIndex, activeNotes], ...measureVoicings])
       }
     })
-    return () => piano.removeListener(id)
+    return () => piano.removeSubscriber(id)
   }, [measureVoicings, musicKey, piano, staveGroup])
 
   // Set up stave and render SVGs

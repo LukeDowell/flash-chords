@@ -4,10 +4,10 @@
 // Used for __tests__/testing-library.js
 // Learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect'
-import MidiPiano from "@/lib/music/MidiPiano";
 import {render, RenderOptions, RenderResult} from "@testing-library/react";
 import {MidiPianoContext} from "@/pages/_app.page";
 import {ReactElement} from "react";
+import MidiPiano from "@/lib/music/MidiPiano";
 
 
 window.AudioContext = jest.fn().mockImplementation(() => {

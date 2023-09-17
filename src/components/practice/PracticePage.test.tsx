@@ -1,11 +1,12 @@
 import React from 'react';
 import {act, screen, waitFor} from "@testing-library/react";
 import PracticePage from "@/components/practice/PracticePage";
-import {MIDI, MIDI_KEYBOARD_OFFSET} from "@/lib/music/MidiPiano";
 import {findNoteOnKeyboard, toNote} from "@/lib/music/Note";
 import {midiRender} from "../../jest.setup";
 import {getKey} from "@/lib/music/Circle";
 import {Chord} from "@/lib/music/Chord";
+import {NoteEmitter} from "../../note-emitter";
+import {MIDI, MIDI_KEYBOARD_OFFSET} from "@/lib/music/MidiPiano";
 
 
 describe("the practice page", () => {
@@ -14,11 +15,13 @@ describe("the practice page", () => {
   })
 
   it('should display feedback when the user correctly voices a chord', async () => {
-    const [midiPiano, _, screen] = midiRender(<PracticePage initialChord={new Chord('C', 'Major')}
-                                                            initialKey={getKey('C', 'Major')}/>)
+    const [midiPiano, midiCallback, screen] = midiRender(<PracticePage initialChord={new Chord('C', 'Major')}
+                                                                       initialKey={getKey('C', 'Major')}/>)
 
-    await act(() => {
-      midiPiano['listeners'].forEach((c) => c.call(c, ["C2", "E2", "G2"].map(toNote)))
+    await act(async () => {
+      await new NoteEmitter(midiCallback)
+        .keyDown(['C4', 'E4', 'G4'])
+        .play()
     })
 
     await waitFor(() => expect(screen.getByTestId('CheckIcon')).toBeInTheDocument())
