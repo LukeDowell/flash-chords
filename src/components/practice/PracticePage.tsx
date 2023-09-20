@@ -6,7 +6,6 @@ import {Note} from "@/lib/music/Note";
 import _ from "lodash";
 import {VoicingHistory, VoicingResult} from "./VoicingHistory";
 import {LinearProgress} from "@mui/material";
-import {InstrumentContext, MidiPianoContext} from "@/pages/_app.page";
 import {
   CIRCLE_OF_FIFTHS,
   diatonicChords,
@@ -19,6 +18,7 @@ import {InteractiveStaff} from "@/components/interactivestaff/InteractiveStaff";
 import {Chord} from "@/lib/music/Chord";
 import {styled} from "@mui/system";
 import {NoteEvent} from "@/lib/music/MidiPiano";
+import {InstrumentContext, MidiPianoContext} from "@/app/layout";
 
 export interface Props {
   initialChord?: Chord,

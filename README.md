@@ -1581,3 +1581,99 @@ I made a utility that I hope is useful, I can play the piano in tests now!
 ```
 
 We'll see if this enables me to do a better job on this second pass of the exercises...
+
+## 09/18/2023
+
+Ok lots of little cleanup items over the last few days to try and make the site a little more usable. The site was actually
+broken, no devices were being detected, which is a huge bummer because that means my tests do not give me confidence 
+that the site is actually working. The issue was in the `MidiDeviceSelector`, and my tests did not match reality.
+
+I had also set up the `useEffect` block in a way that caused it to run in a loop. Perhaps there are utilities to help
+catch when I do that? I kind of expected to see some developer output since I'm running in dev mode, and since it's so
+easy to do on accident.
+
+I'd like to get some kind of full-integration test with a 'real' (fake) device via WebDriverIO or something to that effect.
+I'd also like to not get bogged down writing perfect tests when I have so many feature ideas to work on, AND when I have
+user requests via opened Issues on the project itself. 
+
+I have some extremely light WIP around the way I'd like Exercises to take shape, but before I work on that I think I'm 
+going to create a better settings page, and add some LocalStorage stuff so that it persists user choices on these settings.
+
+I also need to have some kind of popup or warning message for people accessing the site from an unsupported browser. There
+is a future where we support iOS via this weird jazz plugin noted on the wedmidijs site. I'm very hesitant to use that
+library, but we will see how annoying it is to work with that plugin, and also why is it such a weird looking plugin?
+
+While I implement the settings + localstorage features I'm going to see if there is a satisfying way to avoid adding
+to this giant nest of Contexts in our app page:
+
+```typescript
+<MidiPianoContext.Provider value={midiPiano}>
+  <MidiInputContext.Provider value={midiContext}>
+    <WebAudioContext.Provider value={audioContext}>
+      <InstrumentContext.Provider value={sample}>
+        <Component {...pageProps} />
+      </InstrumentContext.Provider>
+    </WebAudioContext.Provider>
+  </MidiInputContext.Provider>
+</MidiPianoContext.Provider>
+```
+
+My initial thought is to just have one larger settings object that is provided, but I'm wondering if there are consequences
+to that. 
+
+## 09/20/2023
+
+I have migrated all of the `page/` routing code to the new `app/` directory for NextJS 13. I have two remaining issues,
+but neither of them seem blocking. First, and probably most important, I get this error on the server:
+
+```
+Import trace for requested module:
+__barrel_optimize__?names=createTheme!=!./node_modules/@mui/material/index.js
+./src/styles/theme.ts
+./src/app/ThemeRegistry.tsx
+./src/app/layout.tsx
+
+__barrel_optimize__?names=createTheme!=!./node_modules/@mui/material/index.js
+The requested module '__barrel_optimize__?names=createTheme&wildcard!=!./generateUtilityClass' contains conflicting star exports for the name '__esModule' with the 
+previous requested module '__barrel_optimize__?names=createTheme&wildcard!=!./utils'
+
+Import trace for requested module:
+__barrel_optimize__?names=createTheme!=!./node_modules/@mui/material/index.js
+./src/styles/theme.ts
+./src/app/ThemeRegistry.tsx
+./src/app/layout.tsx
+```
+
+I pretty much have 0 idea what is going on there, seems like it's related to the emotion cache stuff, but I have no idea.
+Styling still seems to work, so for now I am going to ignore it.
+
+The other issue I get is when running the `RootLayout` tests:
+
+```
+  console.error
+    Warning: validateDOMNesting(...): <html> cannot appear as a child of <div>.
+        at html
+        at children (/home/luke/workspace/flashchords/src/app/layout.tsx:55:37)
+```
+
+This is a huge bummer because as far as I can tell, there is no way HTML is a child of div. Here is the rendering code,
+super normal looking:
+
+```typescript
+  it('should render', () => {
+    render(<RootLayout/>)
+  })
+```
+
+The component itself begins like this:
+
+```typescript
+return (
+    <html lang="en">
+    <body>
+    <ThemeRegistry options={{key: 'mui'}}>
+...
+```
+
+I'm wondering if there is some injection happening for the emotion stuff. I'll have to see if I can enable some debugging
+to dump the DOM of the element under test and see what is going on...

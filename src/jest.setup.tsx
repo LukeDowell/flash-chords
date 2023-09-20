@@ -5,7 +5,7 @@
 // Learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect'
 import {render, RenderOptions, RenderResult} from "@testing-library/react";
-import {MidiPianoContext} from "@/pages/_app.page";
+import {MidiPianoContext} from "@/app/layout";
 import {ReactElement} from "react";
 import MidiPiano from "@/lib/music/MidiPiano";
 

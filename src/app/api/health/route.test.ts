@@ -1,5 +1,5 @@
 import {createMocks} from 'node-mocks-http'
-import handler from "@/pages/api/health.page";
+import handler from "@/app/api/health/route";
 
 describe('the health check endpoint', () => {
   it('should return a 200 healthy', async () => {

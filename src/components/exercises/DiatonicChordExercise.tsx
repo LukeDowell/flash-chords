@@ -5,7 +5,7 @@ import {styled} from "@mui/system";
 import {notesToStaveNote} from "@/lib/vexMusic";
 import {ChordSymbol, ModifierContext, Stave, TickContext} from "vexflow";
 import {Note, placeOnOctave} from "@/lib/music/Note";
-import {MidiPianoContext} from "@/pages/_app.page";
+import {MidiPianoContext} from "@/app/layout";
 import _ from "lodash";
 import MidiPiano, {NoteEvent} from "@/lib/music/MidiPiano";
 

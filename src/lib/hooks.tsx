@@ -1,8 +1,8 @@
 import {useContext, useEffect, useLayoutEffect, useRef, useState} from 'react'
 import {Renderer, SVGContext} from "vexflow";
 import {Soundfont} from 'smplr'
-import {MidiPianoContext, WebAudioContext} from "@/pages/_app.page";
 import _ from "lodash";
+import {MidiPianoContext, WebAudioContext} from "@/app/layout";
 
 export function useInterval(callback: () => void, delay: number | null) {
   const savedCallback = useRef(callback)
@@ -100,7 +100,6 @@ export function useInstrument(sample = 'electric_grand_piano', listenToMidi?: bo
 
   useSSRLayoutEffect(() => {
     if (!audioContext) return
-    console.log('new player with ', sample)
     const player = new Soundfont(audioContext, {instrument: sample})
     const listenerId = _.uniqueId(`instrument-${sample}`)
 

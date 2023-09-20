@@ -15,10 +15,10 @@ const customJestConfig = {
   testMatch: ['**/*.test.[jt]s?(x)'],
   moduleNameMapper: { // Matching paths listed in tsconfig.json
     "@/components/(.*)": ["<rootDir>/src/components/$1"],
-    "@/pages/(.*)": ["<rootDir>/src/pages/$1"],
     "@/styles/(.*)": ["<rootDir>/src/styles/$1"],
     "@/lib/(.*)": ["<rootDir>/src/lib/$1"],
     "@/public/(.*)": ["<rootDir>/public/$1"],
+    "@/app/(.*)": ["<rootDir>/src/app/$1"]
   }
 }
 

@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  compiler: {
+    emotion: true
+  },
   reactStrictMode: true,
-  pageExtensions: ["api.ts", "page.tsx"]
 }
 
 module.exports = nextConfig

@@ -3,7 +3,7 @@ import {useInstrument, useInterval, useVexflowContext} from "@/lib/hooks";
 import {css, keyframes, styled} from "@mui/system";
 import {Beam, ChordSymbol, ModifierContext, Stave, StaveNote, TickContext} from "vexflow";
 import {Note} from "@/lib/music/Note";
-import {MidiPianoContext} from "@/pages/_app.page";
+import {MidiPianoContext} from "@/app/layout";
 import _ from "lodash";
 import {notesToStaveNote, staveNoteToNotes} from "@/lib/vexMusic";
 import {NoteEvent} from "@/lib/music/MidiPiano";
