@@ -1,3 +1,5 @@
+'use client'
+
 import * as React from 'react'
 import {styled} from "@mui/material/styles"
 import {NATURAL, Note} from "@/lib/music/Note";

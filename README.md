@@ -1682,3 +1682,44 @@ to dump the DOM of the element under test and see what is going on...
 
 The front end environment is cursed. I needed to add `import 'whatwg-fetch'` to my `jest.setup.tsx` file to get fetch
 to work in the jsdom testing environment.
+
+The other issues from the migration are mostly resolved. The barrel optimization traces posted above were from the 
+`ThemeRegistry`, I still don't really know what was going on with that but I wasn't even using my own theme so I removed
+that code and the errors went away. 
+
+The `html` in `div` thing was what I thought, React Testing Library by default wraps all components under test in a `div`. 
+Instead of battling with that I just extracted basically everything out of the root layout and am going to deal with 
+that error existing. 
+
+The last remaining question I have is why putting `use client` in my RootLayout fixes this build error:
+
+
+```
+> flashchords@0.1.0 build
+> next build             
+
+ ✓ Creating an optimized production build   
+ ✓ Compiled successfully                    
+ ✓ Linting and checking validity of types   
+   Collecting page data ...TypeError: o.createContext is not a function            
+    at 32808 (/home/luke/workspace/flashchords/.next/server/chunks/986.js:38:83601)
+    at t (/home/luke/workspace/flashchords/.next/server/webpack-runtime.js:1:143)  
+    at 23528 (/home/luke/workspace/flashchords/.next/server/chunks/97.js:1:1164)
+    at Function.t (/home/luke/workspace/flashchords/.next/server/webpack-runtime.js:1:143)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async collectGenerateParams (/home/luke/workspace/flashchords/node_modules/next/dist/build/utils.js:859:17)
+    at async /home/luke/workspace/flashchords/node_modules/next/dist/build/utils.js:1075:17
+    at async Span.traceAsyncFn (/home/luke/workspace/flashchords/node_modules/next/dist/trace/trace.js:105:20)
+
+> Build error occurred
+Error: Failed to collect page data for /_not-found
+    at /home/luke/workspace/flashchords/node_modules/next/dist/build/utils.js:1195:15
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  type: 'Error'
+}
+```
+
+The docs say that the root layout needs to be a Server Component, and yet, putting the client component directive at 
+the top of the component fixes that issue. [This](https://github.com/vercel/next.js/discussions/50955) linked problem 
+seems to indicate that it is related to MUI which makes sense only because it's always MUI. Perhaps I should look at
+component libraries that don't cause so many issues...

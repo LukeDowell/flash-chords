@@ -2,7 +2,7 @@ import {useContext, useEffect, useLayoutEffect, useRef, useState} from 'react'
 import {Renderer, SVGContext} from "vexflow";
 import {Soundfont} from 'smplr'
 import _ from "lodash";
-import {MidiPianoContext, WebAudioContext} from "@/app/layout";
+import {MidiPianoContext, WebAudioContext} from "@/lib/contexts";
 
 export function useInterval(callback: () => void, delay: number | null) {
   const savedCallback = useRef(callback)

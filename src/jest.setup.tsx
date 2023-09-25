@@ -5,16 +5,15 @@
 // Learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect'
 import {render, RenderOptions, RenderResult} from "@testing-library/react";
-import {MidiPianoContext} from "@/app/layout";
 import {ReactElement} from "react";
 import MidiPiano from "@/lib/music/MidiPiano";
 import 'whatwg-fetch'
+import {MidiPianoContext} from './lib/contexts';
 
 
 window.AudioContext = jest.fn().mockImplementation(() => {
   return {}
 })
-
 
 type MidiCallback = (e: WebMidi.MIDIMessageEvent) => void
 
