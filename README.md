@@ -1677,3 +1677,8 @@ return (
 
 I'm wondering if there is some injection happening for the emotion stuff. I'll have to see if I can enable some debugging
 to dump the DOM of the element under test and see what is going on...
+
+## 09/25/2023
+
+The front end environment is cursed. I needed to add `import 'whatwg-fetch'` to my `jest.setup.tsx` file to get fetch
+to work in the jsdom testing environment.
