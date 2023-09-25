@@ -1,3 +1,5 @@
+'use client'
+
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import CheckIcon from '@mui/icons-material/Check'
 import {useInstrument, useInterval} from "@/lib/hooks";
@@ -18,7 +20,7 @@ import {InteractiveStaff} from "@/components/interactivestaff/InteractiveStaff";
 import {Chord} from "@/lib/music/Chord";
 import {styled} from "@mui/system";
 import {NoteEvent} from "@/lib/music/MidiPiano";
-import {InstrumentContext, MidiPianoContext} from "@/app/layout";
+import {InstrumentContext, MidiPianoContext} from "@/lib/contexts";
 
 export interface Props {
   initialChord?: Chord,

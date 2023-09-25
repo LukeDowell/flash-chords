@@ -20,14 +20,14 @@
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.11.9",
-    "@mui/material": "^5.14.8",
+    "@mui/material": "^5.14.10",
     "lodash": "^4.17.21",
     "next": "^13.5.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "smplr": "^0.8.1",
     "swr": "^2.0.0",
-    "vexflow": "^4.1.0",
+    "vexflow": "^4.2.3",
     "whatwg-fetch": "^3.6.19"
   },
   "devDependencies": {

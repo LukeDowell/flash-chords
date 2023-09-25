@@ -16,7 +16,6 @@ const StyledRoot = styled('div')({
 })
 
 export default function HomePage() {
-
   const initialChord = new Chord("Db", 'Major')
   const initialKey = getKey('Db', 'Major')
 

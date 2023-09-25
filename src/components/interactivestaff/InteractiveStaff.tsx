@@ -1,3 +1,5 @@
+'use client'
+
 import React, {useEffect, useState} from "react"
 import {getKey, MusicKey, notesInKey} from "@/lib/music/Circle";
 import {Formatter, Renderer, Stave, Voice} from "vexflow";

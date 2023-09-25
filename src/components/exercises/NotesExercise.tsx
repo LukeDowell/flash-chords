@@ -1,9 +1,11 @@
+'use client'
+
 import React, {useContext, useEffect, useState} from 'react'
 import {useInstrument, useInterval, useVexflowContext} from "@/lib/hooks";
 import {css, keyframes, styled} from "@mui/system";
 import {Beam, ChordSymbol, ModifierContext, Stave, StaveNote, TickContext} from "vexflow";
 import {Note} from "@/lib/music/Note";
-import {MidiPianoContext} from "@/app/layout";
+import {MidiPianoContext} from "@/lib/contexts";
 import _ from "lodash";
 import {notesToStaveNote, staveNoteToNotes} from "@/lib/vexMusic";
 import {NoteEvent} from "@/lib/music/MidiPiano";
