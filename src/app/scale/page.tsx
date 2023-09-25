@@ -41,18 +41,15 @@ const NUM_NOTES_EQUAL_DURATION: Record<number, string> = {
   32: '32'
 }
 
-interface Props {
-  numOctaves?: number
-  numNotesPerMeasure?: number
-  bpm?: number
-}
-
-export default function ScalePage({numOctaves, numNotesPerMeasure, bpm}: Props) {
+export default function ScalePage() {
+  const numOctaves = 3
+  const numNotesPerMeasure = 8
+  const bpm = 60
   const [scale, setScale] = useState(MAJOR_SCALE)
   const [rootNote, setRootNote] = useState(Note.of('C'))
 
   const rootIndex = findNoteOnKeyboard(rootNote.withOctave(1))
-  const scaleNotesWithoutOctave = _.range(0, numOctaves || 3)
+  const scaleNotesWithoutOctave = _.range(0, numOctaves)
     .flatMap(_ => scale.semitonesFromRoot.map(semi => KEYBOARD[rootIndex + semi]))
     .map(n => n.withOctave(undefined))
 
@@ -60,7 +57,7 @@ export default function ScalePage({numOctaves, numNotesPerMeasure, bpm}: Props) 
   const scaleNotesGoingDown = _.reverse(placeOnOctave(3, [rootNote, ...scaleNotesWithoutOctave]))
   scaleNotes.push(...scaleNotesGoingDown)
 
-  const measureSize = numNotesPerMeasure || 8;
+  const measureSize = numNotesPerMeasure
   const measures = _.chain(scaleNotes)
     .map(note => notesToStaveNote([note], {duration: NUM_NOTES_EQUAL_DURATION[measureSize]}))
     .chunk(measureSize)
