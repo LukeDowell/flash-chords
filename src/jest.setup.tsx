@@ -8,6 +8,7 @@ import {render, RenderOptions, RenderResult} from "@testing-library/react";
 import {MidiPianoContext} from "@/app/layout";
 import {ReactElement} from "react";
 import MidiPiano from "@/lib/music/MidiPiano";
+import 'whatwg-fetch'
 
 
 window.AudioContext = jest.fn().mockImplementation(() => {
