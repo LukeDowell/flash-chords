@@ -2,7 +2,7 @@
 
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import CheckIcon from '@mui/icons-material/Check'
-import {useInstrument, useInterval} from "@/lib/hooks";
+import {useInstrument, useInterval} from "@/lib/react/hooks";
 import {DEFAULT_PRACTICE_SETTINGS, Settings} from "@/components/settings/Settings";
 import {Note} from "@/lib/music/Note";
 import _ from "lodash";
@@ -20,7 +20,7 @@ import {InteractiveStaff} from "@/components/interactivestaff/InteractiveStaff";
 import {Chord} from "@/lib/music/Chord";
 import {styled} from "@mui/system";
 import {NoteEvent} from "@/lib/music/MidiPiano";
-import {InstrumentContext, MidiPianoContext} from "@/lib/contexts";
+import {InstrumentContext, MidiPianoContext} from "@/lib/react/contexts";
 
 export interface Props {
   initialChord?: Chord,

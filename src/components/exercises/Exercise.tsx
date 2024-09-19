@@ -1,7 +1,7 @@
 import {styled} from "@mui/system";
 import React, {useContext, useEffect, useState} from "react";
-import {useVexflowContext} from "@/lib/hooks";
-import {MidiInputContext} from "@/lib/contexts";
+import {useVexflowContext} from "@/lib/react/hooks";
+import {MidiInputContext} from "@/lib/react/contexts";
 import {MusicKey} from "@/lib/music/Circle";
 import MidiPiano, {NoteEvent, NoteSubscriber} from "@/lib/music/MidiPiano";
 import _ from "lodash";

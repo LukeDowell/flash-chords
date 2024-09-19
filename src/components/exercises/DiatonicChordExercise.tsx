@@ -2,12 +2,12 @@
 
 import React, {useContext, useEffect, useState} from 'react'
 import {diatonicChords, isValidVoicingForChord, MusicKey, notesInKey} from "@/lib/music/Circle";
-import {useInterval, useVexflowContext} from "@/lib/hooks";
+import {useInterval, useVexflowContext} from "@/lib/react/hooks";
 import {styled} from "@mui/system";
 import {notesToStaveNote} from "@/lib/vexMusic";
 import {ChordSymbol, ModifierContext, Stave, TickContext} from "vexflow";
 import {Note, placeOnOctave} from "@/lib/music/Note";
-import {MidiPianoContext} from "@/lib/contexts";
+import {MidiPianoContext} from "@/lib/react/contexts";
 import _ from "lodash";
 import MidiPiano, {NoteEvent} from "@/lib/music/MidiPiano";
 

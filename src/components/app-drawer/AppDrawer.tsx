@@ -8,9 +8,10 @@ import {MidiInputSelector} from "@/components/midi-input-selector/MidiInputSelec
 import {MidiSoundSelector} from "@/components/midi-sound-selector/MidiSoundSelector";
 import React, {useState} from "react";
 import MidiPiano from "@/lib/music/MidiPiano";
-import {useAudio} from "@/lib/hooks";
+import {useAudio} from "@/lib/react/hooks";
 import {styled} from "@mui/system";
-import {InstrumentContext, MidiInputContext, MidiPianoContext, WebAudioContext} from "@/lib/contexts";
+import {InstrumentContext, MidiInputContext, MidiPianoContext, WebAudioContext} from "@/lib/react/contexts";
+
 import MIDIInput = WebMidi.MIDIInput;
 
 const AppHeader = styled('div')`

@@ -1,15 +1,17 @@
 // Optional: configure or set up a testing framework before each test.
 // If you delete this file, remove `setupFilesAfterEnv` from `jest.config.js`
 
-// Used for __tests__/testing-library.js
-// Learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom/extend-expect'
+import '@testing-library/jest-dom'
 import {render, RenderOptions, RenderResult} from "@testing-library/react";
 import {ReactElement} from "react";
 import MidiPiano from "@/lib/music/MidiPiano";
 import 'whatwg-fetch'
-import {MidiPianoContext} from './lib/contexts';
+import {MidiPianoContext} from '@/lib/react/contexts';
 
+declare var window: {
+  webkitAudioContext: typeof AudioContext;
+  AudioContext: typeof AudioContext
+} & Window & typeof globalThis;
 
 window.AudioContext = jest.fn().mockImplementation(() => {
   return {}

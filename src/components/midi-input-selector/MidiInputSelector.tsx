@@ -75,7 +75,7 @@ export const MidiInputSelector = ({onInputSelected}: Props) => {
       value={selectedInput}
       onChange={(e: SelectChangeEvent) => handleInputSelected(e.target.value)}
       input={<OutlinedInput label="MIDI Input"/>}
-    >
+      variant={"filled"}>
       {
         inputs.map((input) => (
           <MenuItem key={input.name || input.id} value={input.name || input.id}>

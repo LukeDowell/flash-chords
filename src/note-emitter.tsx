@@ -1,6 +1,9 @@
 import {findNoteOnKeyboard, Note, standardizeNote} from "@/lib/music/Note";
 import {MIDI, MIDI_KEYBOARD_OFFSET} from "@/lib/music/MidiPiano";
 
+/**
+ * For tests
+ */
 export class NoteEmitter {
   private readonly _midiHook: (e: WebMidi.MIDIMessageEvent) => any
   private readonly _queuedActions: Array<() => Promise<any>>

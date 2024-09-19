@@ -120,7 +120,7 @@ describe('Musical Notes', () => {
   ])(
     `%s notes placed on octave %s should be %s`,
     (notes: string[], octave: number, expectedNotes: string[]) => {
-      const placedNotes = placeOnOctave(4, notes.map(toNote))
+      const placedNotes = placeOnOctave(octave, notes.map(toNote))
       expect(placedNotes).toStrictEqual(expectedNotes.map(toNote))
     }
   )

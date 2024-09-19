@@ -1,4 +1,4 @@
-import {MAJOR_SCALE, WHOLE_TONE_SCALE} from '@/lib/music/Scale'
+import {MAJOR_SCALE, Scale, WHOLE_TONE_SCALE} from '@/lib/music/Scale'
 
 describe('a musical scale', () => {
   it('should know whether or not it is diatonic', () => {

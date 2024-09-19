@@ -1,5 +1,5 @@
 import {MidiInputSelector} from "@/components/midi-input-selector/MidiInputSelector";
-import {fireEvent, render, screen, waitFor} from "@testing-library/react";
+import {act, fireEvent, render, screen, waitFor} from "@testing-library/react";
 import MIDIInput = WebMidi.MIDIInput;
 
 
@@ -16,7 +16,7 @@ describe('midi input selector', () => {
     })
 
     render(<MidiInputSelector/>)
-    fireEvent.mouseDown(screen.getByRole('button'))
+    fireEvent.mouseDown(screen.getByRole('combobox'))
 
     await waitFor(() => expect(screen.getByRole('option').textContent).toBe(expectedInputName))
   })
