@@ -1723,3 +1723,22 @@ The docs say that the root layout needs to be a Server Component, and yet, putti
 the top of the component fixes that issue. [This](https://github.com/vercel/next.js/discussions/50955) linked problem 
 seems to indicate that it is related to MUI which makes sense only because it's always MUI. Perhaps I should look at
 component libraries that don't cause so many issues...
+
+
+## 09/19/2024
+
+A year later! Good grief. I spent some time updating versions for everything and cleaning up a lil bit. I am going to
+be in-between jobs for a month, and I'm hoping to spend that month working on this every day (at least a little bit).
+
+For the month, my main interests are going to be getting this working on an iPad, and making the exercise views feel
+a little bit more fun. 
+
+For the exercise view in particular, I was thinking that it's a little boring having the staff slowly slide across the
+screen based on the metronome. It might feel a little more fun, especially to intermediate-advanced players, to have
+it be snappier and unrestricted. Why cant the staff move as fast as you can? Afterwards, you can get a report on how
+evenly you played everything. 
+
+As for getting it running on an iPad, I'm still a little boned by the fact that I want this to be a web app. I could
+theoretically move this to some kind of native wrapper, and I might, but I think that is a little bit of a distraction.
+There is this wild Jazz-plugin that I am sure I mentioned somewhere above in the last few years (!!!) but I have yet to
+try it out.
