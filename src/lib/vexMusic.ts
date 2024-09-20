@@ -31,3 +31,7 @@ export const chordToChordSymbol = (c: Chord): ChordSymbol => {
     .setFontSize(18)
     .setHorizontal('center')
 }
+
+export const noteToEasyScore = (note: Note): string => {
+  return note.toString()
+}

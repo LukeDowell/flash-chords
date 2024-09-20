@@ -10,7 +10,6 @@ export interface MusicKey {
   notes: Note[]
 }
 
-
 const ROOT_NOTES: Root[] = ["A", "B", "C", "D", "E", "F", "G"]
 
 /**
@@ -75,7 +74,7 @@ export const CIRCLE_OF_FIFTHS = _.chain(_.range(-7, 7))
 export const getKey = (root: string, scale: ScaleType = "Major"): MusicKey => {
   const key = CIRCLE_OF_FIFTHS.find((k) => root === k.root.toString() && k.scale.name === scale);
   if (!key) throw Error(`Unable to find key: ${root.concat(scale)}`)
-  return key
+  return key!!
 }
 
 export const diatonicChords = (key: MusicKey, seventh: boolean = false): Chord[] => {
