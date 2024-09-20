@@ -3,7 +3,7 @@
 import React, {useState} from 'react'
 import {styled} from "@mui/material/styles";
 import _ from "lodash";
-import NotesExercise, {ExerciseResult} from "@/components/exercises/NotesExercise";
+import {ExerciseResult} from "@/components/exercises/NotesExercise";
 import {MAJOR_SCALE, SCALES_FOR_ALL_NOTES} from "@/lib/music/Scale";
 import {findNoteOnKeyboard, KEYBOARD, Note, placeOnOctave} from "@/lib/music/Note";
 import {notesToStaveNote} from "@/lib/vexMusic";

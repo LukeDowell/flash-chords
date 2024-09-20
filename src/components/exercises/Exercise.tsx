@@ -7,7 +7,6 @@ import _ from "lodash";
 import {Note} from "@/lib/music/Note";
 import {Vex, Voice} from "vexflow";
 import {MusicKey} from "@/lib/music/Circle";
-import {noteToEasyScore} from "@/lib/vexMusic";
 
 const VexflowOutput = styled('div')`
     overflow: hidden;
@@ -43,13 +42,13 @@ export default function Exercise(props: Props) {
 
     let trebleVoice: Voice[] = []
     if (props.trebleNotes.length > 0) {
-      const easyScoreNotes = score.notes(props.trebleNotes, { clef: 'treble' })
+      const easyScoreNotes = score.notes(props.trebleNotes, {clef: 'treble'})
       trebleVoice = [score.voice(easyScoreNotes)]
     }
 
     let bassVoice: Voice[] = []
     if (props.bassNotes.length > 0) {
-      const easyScoreNotes = score.notes(props.bassNotes, { clef: 'bass' })
+      const easyScoreNotes = score.notes(props.bassNotes, {clef: 'bass'})
       bassVoice = [score.voice(easyScoreNotes)]
     }
 

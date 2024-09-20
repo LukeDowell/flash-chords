@@ -32,7 +32,10 @@ export const SCALES = [
   PENTATONIC_SCALE, BLUES_SCALE, WHOLE_TONE_SCALE
 ]
 
-export const SCALES_FOR_ALL_NOTES: Array<{ note: Note, scale: Scale }> = ROOTS.flatMap(root => ['#', 'b', ''].map(accidental => `${root}${accidental}`))
+export const SCALES_FOR_ALL_NOTES: Array<{
+  note: Note,
+  scale: Scale
+}> = ROOTS.flatMap(root => ['#', 'b', ''].map(accidental => `${root}${accidental}`))
   .map(Note.of)
   .flatMap(note => SCALES.map(scale => {
     return {note, scale}
