@@ -10,8 +10,7 @@ describe('midi input selector', () => {
       return Promise.resolve({
         addEventListener: jest.fn(),
         inputs: new Map<string, MIDIInput>([
-          ["fake-id", {name: expectedInputName} as MIDIInput]
-        ])
+          ["fake-id", {name: expectedInputName} as MIDIInput]])
       })
     })
 
