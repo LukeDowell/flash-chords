@@ -5,19 +5,26 @@ import {MidiInputContext} from "@/lib/react/contexts";
 import MidiPiano, {NoteEvent, NoteSubscriber} from "@/lib/music/MidiPiano";
 import _ from "lodash";
 import {Note} from "@/lib/music/Note";
-import {Vex, Voice} from "vexflow";
 import {MusicKey} from "@/lib/music/Circle";
+import {renderVex} from "@/lib/vexRenderer";
 
 const VexflowOutput = styled('div')`
     overflow: hidden;
 `
 
 interface Props {
+  // The key this exercise will be in
   musicKey: MusicKey,
-  bassNotes: string,
-  trebleNotes: string
+  bassVoice: string,
+  trebleVoice: string,
 }
 
+/**
+ * Generic exercise that will complete when players have played all provided notes
+ *
+ * @param props
+ * @constructor
+ */
 export default function Exercise(props: Props) {
   // const [context, [contextWidth, contextHeight]] = useVexflowContext('exercise-vexflow-output')
   const midiInput = useContext(MidiInputContext)
@@ -33,37 +40,9 @@ export default function Exercise(props: Props) {
   }, [midiInput])
 
   useEffect(() => {
-    const outputDiv = document.getElementById('exercise-vexflow-output') as HTMLDivElement
-    if (outputDiv) outputDiv.innerHTML = ''
-
-    const vf = new Vex.Flow.Factory({renderer: {elementId: 'exercise-vexflow-output', width: windowWidth, height: 300}})
-    const score = vf.EasyScore()
-    const system = vf.System()
-
-    let trebleVoice: Voice[] = []
-    if (props.trebleNotes.length > 0) {
-      const easyScoreNotes = score.notes(props.trebleNotes, {clef: 'treble'})
-      trebleVoice = [score.voice(easyScoreNotes)]
-    }
-
-    let bassVoice: Voice[] = []
-    if (props.bassNotes.length > 0) {
-      const easyScoreNotes = score.notes(props.bassNotes, {clef: 'bass'})
-      bassVoice = [score.voice(easyScoreNotes)]
-    }
-
-    // TODO doesn't seem to automatically add more measures, we will have to slice it ourselves
-    system.addStave({voices: trebleVoice})
-      .addClef('treble')
-      .addTimeSignature('4/4')
-
-    system.addStave({voices: bassVoice})
-      .addClef('bass')
-      .addTimeSignature('4/4')
-
-    system.addConnector()
-    vf.draw()
-  }, [windowWidth]);
+    const renderConfig = {width: windowWidth, trebleVoice: props.trebleVoice, bassVoice: props.bassVoice}
+    renderVex('exercise-vexflow-output', renderConfig)
+  }, [windowWidth, props]);
 
   const noteSubscriber: NoteSubscriber = (event: NoteEvent, currentActiveNotes: Note[], history: NoteEvent[]) => {
     const {note, velocity, flag, time} = event

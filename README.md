@@ -1742,3 +1742,75 @@ As for getting it running on an iPad, I'm still a little boned by the fact that 
 theoretically move this to some kind of native wrapper, and I might, but I think that is a little bit of a distraction.
 There is this wild Jazz-plugin that I am sure I mentioned somewhere above in the last few years (!!!) but I have yet to
 try it out.
+
+
+## 09/20/2024
+
+I'm working through a new exercise component, and I'm considering adding the concept of 'duration' to the `Note` class.
+From a domain perspective, does that make sense? The only time duration comes into the app is when we are trying to 
+generate a multi dimensional collection of notes in order to present them to the player, and honestly at this point it's 
+also just because Vexflow forces us to provide a duration. 
+
+Ideally, I'd like to be able to avoid doing this manually at all. In order to get the amount of varied exercises I am
+hoping for, I am going to need to be able to create them from some kind of DSL. Maybe something like this:
+
+```json
+{
+  "title": "Simple Melody",
+  "tags": [,"Right Hand Only", "Melody"],
+  "exercise": [ // recipe for creating the content of the exercise, list of measures
+    [ // measure one
+      "sd5q", // 5th scale degree quarter note
+      "sd4q", // 4th scale degree quarter note
+      "sdb7e", // flat 7th scale degree eighth
+      "sdb6e", // flat 6th scale degree eighth 
+      "sdb6e", // flat 6th scale degree eighth 
+    ]
+  ]
+}
+```
+
+Already it's a little annoying. Maybe I can instead just augment Vexflow's EasyScore grammar with any additional features
+I'd like. 
+
+
+## 09/22/2024
+
+I'm still working on the new exercise. I've tried a few different configurations out, and I think I am getting closer
+to settling on something that will be generic enough to handle the first several exercises, and something that is easy
+enough to use. 
+
+I have also been noodling on a "skill tree" concept for gamification. Khan Academy used to have this amazing galaxy-tree
+view of all the skills that they had lessons on. In order to get to "Calculus I", you had to progress up the math tree,
+handling arithmetic, geometry, and algebra for example. DuoLingo had (or had, haven't used it in a while) a feature
+I like as well, where some skills in the tree would decay, and by doing a daily exercise, you could regain any of the
+depleted amount.
+
+I think of working on piano technique a little bit like "eating vegetables". This is definitely unfair to vegetables, but
+practicing scales is something I have to do in order to get to what I really want, which is to be able to play music
+I enjoy. Not only just able to play, but to play better and to learn quicker as well. When I think of gamification for 
+this app, I'd like to better show and track that long-term progress. With that in mind, I probably want to do something
+between duolingo's 3-star system and runescape's grind-fest. 
+
+
+## 09/23/2024
+
+I'm feeling a little frustrated with Vexflow. The domain terminology is clashing with my internal model of how I'd 
+describe sheet music. I have been butting my head against a wall with the new exercise component; I wanted to use
+Vexflow's high level API to format notes and draw stems and accidentals and such, but I also wanted to have enough control
+to animate the staff and set the position of each measure as need be. There is a component of Vexflow called a 'System',
+that, due to it's name, I assumed was some higher-level organizational concept that would apply to several measures. Nope,
+turns out System wants to be a small set of one or more staves? I'm not really sure, when I try to add a grand staff's 
+worth of staves to a system, the formatting goes nuts. 
+
+In any case, here we are:
+
+![new exercise rendering](./doc/new-exercise-rendering.png)
+
+I think I'm going to skip on breaking this up into newlines right now, because if the vision is that someone can use 
+this on their iPad or phone or whatever, we will need to deal with small screens.
+
+Next steps for the snappy exercise component:
+* Player feedback. Show greyed out notes the user is playing, just like the old component
+* Beat indicator. For this go around, I'd like to keep the music -mostly- static, and instead draw at different 
+    locations on the screen.

@@ -130,5 +130,5 @@ export default function DiatonicChordExercise({musicKey, onEnd, options}: Props)
 }
 
 const VexflowOutput = styled('div')`
-  overflow: hidden;
+    overflow: hidden;
 `
