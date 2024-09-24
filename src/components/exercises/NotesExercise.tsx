@@ -41,22 +41,22 @@ const durationToFraction = (duration: string) => {
 }
 
 const beatAnimation = keyframes`
-  from {
-    transform: scale(1, 1);
-  }
+    from {
+        transform: scale(1, 1);
+    }
 
-  to {
-    transform: scale(1, .8);
-  }
+    to {
+        transform: scale(1, .8);
+    }
 `
 
 const VexflowOutput = styled('div')`
-  overflow: hidden;
-  ${beatAnimation};
+    overflow: hidden;
+    ${beatAnimation};
 
-  #vf-beat-indicator {
-    transform-origin: center center;
-  }
+    #vf-beat-indicator {
+        transform-origin: center center;
+    }
 `
 
 export default function NotesExercise({inputMeasures, onEnd, options}: Props) {

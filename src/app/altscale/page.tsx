@@ -1,88 +1,57 @@
 'use client'
 
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {styled} from "@mui/material/styles";
 import _ from "lodash";
-import NotesExercise, {ExerciseResult} from "@/components/exercises/NotesExercise";
 import {MAJOR_SCALE, SCALES_FOR_ALL_NOTES} from "@/lib/music/Scale";
 import {findNoteOnKeyboard, KEYBOARD, Note, placeOnOctave} from "@/lib/music/Note";
-import {notesToStaveNote} from "@/lib/vexMusic";
-import {StaveNote} from "vexflow";
+import {noteToEasyScore} from "@/lib/vexMusic";
 import {Autocomplete, TextField} from "@mui/material";
 import Exercise from "@/components/exercises/Exercise";
 import {getKey} from "@/lib/music/Circle";
 
 
 const StyledRoot = styled('div')`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100vw;
-
-  .scale-settings {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-around;
-    margin-bottom: 2rem;
-    margin-top: 1.15rem;
-  }
+    width: 100vw;
 
-  .scale-autocomplete {
-    width: 40vw;
-    min-width: 200px;
-  }
+    .scale-settings {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+        margin-bottom: 2rem;
+        margin-top: 1.15rem;
+    }
+
+    .scale-autocomplete {
+        width: 40vw;
+        min-width: 200px;
+    }
 `
 
-const NUM_NOTES_EQUAL_DURATION: Record<number, string> = {
-  1: 'w',
-  2: 'h',
-  4: 'q',
-  8: '8',
-  16: '16',
-  32: '32'
-}
-
-export default function ScalePage() {
+export default function AltScalePage() {
   const numOctaves = 3
-  const numNotesPerMeasure = 8
-  const bpm = 60
   const [scale, setScale] = useState(MAJOR_SCALE)
   const [rootNote, setRootNote] = useState(Note.of('C'))
+  const [bassVoice, setBassVoice] = useState('')
+  const [trebleVoice, setTrebleVoice] = useState('')
 
-  const rootIndex = findNoteOnKeyboard(rootNote.withOctave(1))
-  const scaleNotesWithoutOctave = _.range(0, numOctaves)
-    .flatMap(_ => scale.semitonesFromRoot.map(semi => KEYBOARD[rootIndex + semi]))
-    .map(n => n.withOctave(undefined))
+  useEffect(() => {
+    const rootIndex = findNoteOnKeyboard(rootNote.withOctave(1))
+    const scaleNotesWithoutOctave = _.range(0, numOctaves)
+      .flatMap(_ => scale.semitonesFromRoot.map(semi => KEYBOARD[rootIndex + semi]))
+      .map(n => n.withOctave(undefined))
 
-  const scaleNotes = placeOnOctave(3, [rootNote, ...scaleNotesWithoutOctave])
-  const scaleNotesGoingDown = _.reverse(placeOnOctave(3, [rootNote, ...scaleNotesWithoutOctave]))
-  scaleNotes.push(...scaleNotesGoingDown)
+    const scaleNotes = placeOnOctave(3, [rootNote, ...scaleNotesWithoutOctave])
+    const scaleNotesGoingDown = _.reverse(placeOnOctave(3, [rootNote, ...scaleNotesWithoutOctave]))
+    scaleNotes.push(...scaleNotesGoingDown)
 
-  const measureSize = numNotesPerMeasure
-  const measures = _.chain(scaleNotes)
-    .map(note => notesToStaveNote([note], {duration: NUM_NOTES_EQUAL_DURATION[measureSize]}))
-    .chunk(measureSize)
-    .map(notesInMeasure => {
-      if (notesInMeasure.length !== numNotesPerMeasure) {
-        const numNotes = notesInMeasure.length
-        const remainingNotes = measureSize - numNotes
-        const addRest = (duration: string) => notesInMeasure.push(new StaveNote({keys: ["b/4"], duration}))
-        if (numNotes === remainingNotes) addRest('hr')
-        else if (remainingNotes === measureSize / 4) addRest('qr')
-        else if (remainingNotes === measureSize / 8) addRest('8r')
-        else if (remainingNotes === measureSize / 16) addRest('16r')
-        else if (remainingNotes === measureSize / 32) addRest('32r')
-      }
-      return notesInMeasure
-    })
-    .value()
-
-  function reset(r: ExerciseResult) {
-    const noteAndScale = _.sample(SCALES_FOR_ALL_NOTES)!
-    setScale(noteAndScale.scale)
-    setRootNote(noteAndScale.note)
-  }
+    setBassVoice(scaleNotes.map((n) => n.withOctave(n.octave! - 1)).map((n) => noteToEasyScore(n, "q")).join(', '))
+    setTrebleVoice(scaleNotes.map((n) => noteToEasyScore(n, "8")).join(', '))
+  }, [scale, rootNote])
 
   return <StyledRoot>
     <div className={'scale-settings'}>
@@ -101,6 +70,8 @@ export default function ScalePage() {
         }}
       />
     </div>
-    <Exercise musicKey={getKey('C')} bassNotes={'C3/q, C#3/q, D3/q, D#3/q'} trebleNotes={'C4/q, C#4/q, D4/q, D#4/q'}/>
+    {(bassVoice.length > 0 || trebleVoice.length > 0) &&
+      <Exercise musicKey={getKey('C')} bassVoice={bassVoice} trebleVoice={trebleVoice}/>
+    }
   </StyledRoot>
 }

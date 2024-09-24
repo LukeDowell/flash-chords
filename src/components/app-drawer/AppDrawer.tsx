@@ -11,7 +11,6 @@ import MidiPiano from "@/lib/music/MidiPiano";
 import {useAudio} from "@/lib/react/hooks";
 import {styled} from "@mui/system";
 import {InstrumentContext, MidiInputContext, MidiPianoContext, WebAudioContext} from "@/lib/react/contexts";
-
 import MIDIInput = WebMidi.MIDIInput;
 
 const AppHeader = styled('div')`

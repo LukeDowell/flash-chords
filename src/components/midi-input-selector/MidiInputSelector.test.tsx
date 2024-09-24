@@ -1,5 +1,5 @@
 import {MidiInputSelector} from "@/components/midi-input-selector/MidiInputSelector";
-import {act, fireEvent, render, screen, waitFor} from "@testing-library/react";
+import {fireEvent, render, screen, waitFor} from "@testing-library/react";
 import MIDIInput = WebMidi.MIDIInput;
 
 

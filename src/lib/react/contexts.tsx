@@ -1,4 +1,4 @@
-import React, {createContext} from "react";
+import {createContext} from "react";
 import MidiPiano from "@/lib/music/MidiPiano";
 
 export const MidiPianoContext = createContext(new MidiPiano())
