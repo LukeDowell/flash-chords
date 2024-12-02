@@ -20,7 +20,7 @@
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.13.5",
     "@mui/icons-material": "^6.1.6",
-    "@mui/material": "^6.1.6",
+    "@mui/material": "^6.1.9",
     "@mui/material-nextjs": "^6.1.7",
     "lodash": "^4.17.21",
     "next": "^15.0.3",
