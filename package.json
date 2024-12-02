@@ -21,7 +21,7 @@
     "@emotion/styled": "^11.13.5",
     "@mui/icons-material": "^6.1.9",
     "@mui/material": "^6.1.6",
-    "@mui/material-nextjs": "^6.1.7",
+    "@mui/material-nextjs": "^6.1.9",
     "lodash": "^4.17.21",
     "next": "^15.0.3",
     "react": "^18.3.1",
