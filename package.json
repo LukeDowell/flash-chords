@@ -23,7 +23,7 @@
     "@mui/material": "^6.4.7",
     "@mui/material-nextjs": "^6.4.3",
     "lodash": "^4.17.21",
-    "next": "^15.2.3",
+    "next": "^15.2.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "smplr": "^0.16.1",
