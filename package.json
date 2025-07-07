@@ -28,7 +28,7 @@
     "react-dom": "^18.3.1",
     "smplr": "^0.16.1",
     "swr": "^2.3.3",
-    "vexflow": "^4.2.5",
+    "vexflow": "^5.0.0",
     "whatwg-fetch": "^3.6.20"
   },
   "devDependencies": {
