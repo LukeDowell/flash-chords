@@ -48,6 +48,6 @@
     "node-mocks-http": "^1.17.2",
     "ts-jest": "^29.2.6",
     "typescript": "5.9.2",
-    "typescript-plugin-css-modules": "^5.1.0"
+    "typescript-plugin-css-modules": "^5.2.0"
   }
 }
