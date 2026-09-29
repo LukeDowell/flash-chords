@@ -1,5 +1,6 @@
 'use client'
 
+import "@/lib/midi/capacitor-provider";
 import {Button, Stack, SwipeableDrawer} from "@mui/material";
 import {Menu} from "@mui/icons-material";
 import LogoSvg from "@/components/images/Icon";

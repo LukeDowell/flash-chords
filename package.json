@@ -6,6 +6,7 @@
     "dev": "next dev -p 3005",
     "build": "next build",
     "export": "npm run build && next export -o _static",
+    "build:mobile": "BUILD_TARGET=mobile next build",
     "start": "next start -H 0.0.0.0 -p ${PORT:-8080}",
     "lint": "next lint",
     "test": "jest --watch",
@@ -15,10 +16,14 @@
     "node": ">=18"
   },
   "dependencies": {
+    "@capacitor/cli": "^8.5.2",
+    "@capacitor/core": "^8.5.2",
+    "@capacitor/ios": "^8.5.2",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.14.0",
+    "@eugabrielsilva/capacitor-midi-device": "^8.0.1",
     "@mui/icons-material": "^6.4.7",
     "@mui/material": "^6.4.7",
     "@mui/material-nextjs": "^6.4.3",
