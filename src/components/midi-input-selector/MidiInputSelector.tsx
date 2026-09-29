@@ -10,6 +10,7 @@ import {
   Select,
   SelectChangeEvent
 } from "@mui/material";
+import {getMidiAccess} from "@/lib/midi/midi-access";
 import MIDIConnectionEvent = WebMidi.MIDIConnectionEvent;
 import MIDIInput = WebMidi.MIDIInput;
 
@@ -25,7 +26,7 @@ export const MidiInputSelector = ({onInputSelected}: Props) => {
 
   useEffect(() => {
     const abortController = new AbortController()
-    navigator.requestMIDIAccess().then((midiAccess) => {
+    getMidiAccess().then((midiAccess) => {
       midiAccess.addEventListener(
         'statechange',
         (connectionEvent: MIDIConnectionEvent) => {
@@ -40,7 +41,7 @@ export const MidiInputSelector = ({onInputSelected}: Props) => {
   })
 
   useEffect(() => {
-    navigator.requestMIDIAccess().then((midiAccess) => {
+    getMidiAccess().then((midiAccess) => {
       const tempInputs: MIDIInput[] = []
       for (let [id, input] of midiAccess.inputs) {
         tempInputs.push(input)
