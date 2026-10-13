@@ -84,7 +84,7 @@ export default function AppDrawer({children}: Props) {
       open={isDrawerOpen}
       onClose={() => setIsDrawerOpen(false)}
       onOpen={() => setIsDrawerOpen(true)}>
-      <Stack direction={'column'} spacing={2} padding={1}>
+      <Stack direction={'column'} spacing={2} sx={{padding: 1}}>
         <Link href={'/'} onClick={() => setIsDrawerOpen(false)}>
           <NavButton variant={'contained'}>Home</NavButton>
         </Link>

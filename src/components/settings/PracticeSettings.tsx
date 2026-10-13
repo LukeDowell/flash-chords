@@ -31,12 +31,14 @@ export function PracticeSettings({
         id="filled-number"
         label="Timer Countdown Seconds"
         type="text"
-        InputLabelProps={{
-          shrink: true,
-        }}
-        inputProps={{
-          inputMode: "numeric",
-          pattern: "[0-9]*"
+        slotProps={{
+          inputLabel: {
+            shrink: true,
+          },
+          htmlInput: {
+            inputMode: "numeric",
+            pattern: "[0-9]*"
+          }
         }}
         variant="filled"
         placeholder={String(settings?.timerMilliseconds / 1000)}

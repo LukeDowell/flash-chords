@@ -201,7 +201,7 @@ export default function PracticePage({
       <h2 className="current-chord-symbol">{currentChord.toString()}</h2>
       {shouldDisplaySuccess && <CheckIcon style={{color: "green"}}/>}
     </ChordSymbolPrompt>
-    <Stack direction="row" spacing={1} marginBottom={2}>
+    <Stack direction="row" spacing={1} sx={{marginBottom: 2}}>
       {currentChord.notes().map((chordNote, i) => {
         const label = notesInKey([chordNote], currentKey)[0].withOctave(undefined).toString()
         const isHeld = activeNotes.some(an => an.equalsWithoutOctave(chordNote))
