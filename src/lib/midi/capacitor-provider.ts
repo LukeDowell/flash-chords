@@ -28,16 +28,23 @@ class CapacitorMidiInput extends EventTarget {
 
   fireMessage(bytes: number[]) {
     const data = new Uint8Array(bytes)
-    const event = {data, receivedTime: performance.now()} as unknown as WebMidi.MIDIMessageEvent
+    // Listeners read .data directly off the event, so the MIDI bytes must live
+    // on the dispatched event itself rather than inside a wrapper event.
+    const event = Object.assign(new Event('midimessage'), {
+      data,
+      receivedTime: performance.now(),
+    }) as Event & WebMidi.MIDIMessageEvent
     this.onmidimessage?.(event)
-    this.dispatchEvent(new MessageEvent('midimessage', {data: event}))
+    this.dispatchEvent(event)
   }
 
   addEventListener(type: string, listener: EventListenerOrEventListenerObject | null, options?: AddEventListenerOptions | boolean) {
     super.addEventListener(type, listener, options)
     if (type === 'midimessage' && !this._opened) {
       this._opened = true
-      void this._access.openInput(this)
+      this._access.openInput(this).catch(() => {
+        this._opened = false
+      })
     }
   }
 
@@ -67,15 +74,23 @@ class CapacitorMidiAccess extends EventTarget {
 
   private async _refreshDevices() {
     const {value: names} = await CapacitorMIDIDevice.listMIDIDevices()
+    // Consumers (MidiPiano) hold references to these inputs across refreshes,
+    // so instances for unchanged devices must survive a rebuild.
+    const previous = new Map(this.inputs)
     this.inputs.clear()
     names.forEach((name, i) => {
-      this.inputs.set(String(i), new CapacitorMidiInput(this, i, name))
+      const id = String(i)
+      const existing = previous.get(id)
+      this.inputs.set(id, existing && existing.name === name ? existing : new CapacitorMidiInput(this, i, name))
     })
   }
 
   async openInput(input: CapacitorMidiInput) {
     if (this._activeInputId === input.id) return
-    if (this._msgHandle) await this._msgHandle.remove()
+    if (this._msgHandle) {
+      await this._msgHandle.remove()
+      this._msgHandle = undefined
+    }
     await CapacitorMIDIDevice.openDevice({deviceNumber: Number(input.id)})
     this._activeInputId = input.id
     this._msgHandle = await CapacitorMIDIDevice.addListener('MIDI_MSG_EVENT', (message: MidiMessage) => {

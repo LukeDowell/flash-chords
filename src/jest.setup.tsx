@@ -7,6 +7,11 @@ import {ReactElement} from "react";
 import MidiPiano from "@/lib/music/MidiPiano";
 import 'whatwg-fetch'
 import {MidiPianoContext} from '@/lib/react/contexts';
+import {resetMidiAccessCache} from '@/lib/midi/midi-access';
+
+// midi-access caches the web MIDIAccess promise at module level; tests swap
+// navigator.requestMIDIAccess per test, so the cache must not leak between them
+beforeEach(() => resetMidiAccessCache())
 
 
 // Allows us to ignore audio content in our tests while still using jsdom
