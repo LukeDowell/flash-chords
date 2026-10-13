@@ -28,6 +28,20 @@ export const MidiInputSelector = ({onInputSelected}: Props) => {
   // a joined string of ids is stable across renders with the same devices
   const inputIds = inputs.map(i => i.id).sort().join(',')
 
+  const handleInputSelected = (selectedName: string, availableInputs: MIDIInput[] = inputs) => {
+    let inputProbably = Array.from(availableInputs).find((input) => input.name === selectedName)
+    if (inputProbably === undefined) {
+      inputProbably = Array.from(availableInputs).find((input) => input.id === selectedName)
+    }
+    if (inputProbably === undefined) {
+      setErrorMessage('Selected ID that does not exist!')
+      return
+    }
+    setSelectedInput(selectedName)
+    setErrorMessage('')
+    onInputSelected?.call(onInputSelected, selectedName, inputProbably)
+  }
+
   useEffect(() => {
     const abortController = new AbortController()
     getMidiAccess().then((midiAccess) => {
@@ -59,20 +73,6 @@ export const MidiInputSelector = ({onInputSelected}: Props) => {
       }
     }).catch(() => setErrorMessage(MIDI_UNAVAILABLE_MESSAGE))
   }, [inputIds, selectedInput])
-
-  const handleInputSelected = (selectedName: string, availableInputs: MIDIInput[] = inputs) => {
-    let inputProbably = Array.from(availableInputs).find((input) => input.name === selectedName)
-    if (inputProbably === undefined) {
-      inputProbably = Array.from(availableInputs).find((input) => input.id === selectedName)
-    }
-    if (inputProbably === undefined) {
-      setErrorMessage('Selected ID that does not exist!')
-      return
-    }
-    setSelectedInput(selectedName)
-    setErrorMessage('')
-    onInputSelected?.call(onInputSelected, selectedName, inputProbably)
-  }
 
   return <FormControl error={errorMessage !== ''}>
     <InputLabel id="midi-input-label">MIDI Input</InputLabel>

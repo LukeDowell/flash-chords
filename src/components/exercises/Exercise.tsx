@@ -31,22 +31,22 @@ export default function Exercise(props: Props) {
   const [midiPiano, setMidiPiano] = useState<MidiPiano | undefined>(undefined)
   const [windowWidth, windowHeight] = useWindowSize()
 
+  const noteSubscriber: NoteSubscriber = (event: NoteEvent, currentActiveNotes: Note[], history: NoteEvent[]) => {
+    const {note, velocity, flag, time} = event
+  }
+
   useEffect(() => {
     const piano = new MidiPiano(midiInput)
     setMidiPiano(piano)
     const subscriberId = _.uniqueId('exercise')
     piano.addSubscriber(subscriberId, noteSubscriber)
-    return () => piano.removeSubscriber(subscriberId)
+    return () => piano.destroy()
   }, [midiInput])
 
   useEffect(() => {
     const renderConfig = {width: windowWidth, trebleVoice: props.trebleVoice, bassVoice: props.bassVoice}
     renderVex('exercise-vexflow-output', renderConfig)
   }, [windowWidth, props]);
-
-  const noteSubscriber: NoteSubscriber = (event: NoteEvent, currentActiveNotes: Note[], history: NoteEvent[]) => {
-    const {note, velocity, flag, time} = event
-  }
 
   return <VexflowOutput>
     <div id={'exercise-vexflow-output'}/>

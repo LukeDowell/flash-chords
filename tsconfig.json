@@ -16,13 +16,14 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "jsxImportSource": "@emotion/react",
     "incremental": true,
     "baseUrl": "./",
     "sourceMap": true,
     "types": [
-      "@testing-library/jest-dom", "webmidi"
+      "@testing-library/jest-dom",
+      "webmidi"
     ],
     "sourceRoot": "/home/luke/workspace/flashchords/src",
     "paths": {
@@ -57,7 +58,8 @@
     "jest.setup.js",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

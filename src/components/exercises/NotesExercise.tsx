@@ -114,9 +114,9 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
     // Ghost notes stave
     const ghostStaveX = (contextWidth / 2)
     const ghost = new Stave(ghostStaveX, 25, STAVE_WIDTH, {
-      left_bar: false,
-      right_bar: false,
-      num_lines: 0
+      leftBar: false,
+      rightBar: false,
+      numLines: 0
     })
     ghost.setContext(context).draw()
     setGhostStave(ghost)
@@ -133,7 +133,6 @@ export default function NotesExercise({inputMeasures, onEnd, options}: Props) {
     context.fillRect(contextWidth / 2 + (indicatorWidth / 2), 0, indicatorWidth, contextHeight)
     context.restore()
     context.closeGroup()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [context]) // We only ever want to do our redraw when the context changes, nothing else matters
 
   // Feedback rendering

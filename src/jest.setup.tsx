@@ -24,6 +24,13 @@ window.AudioContext = jest.fn().mockImplementation(() => {
   return {}
 })
 
+// vexflow 5 clones its metrics with structuredClone, which the jsdom test
+// environment doesn't provide; node's v8 serializer covers the same data
+if (typeof globalThis.structuredClone === 'undefined') {
+  const v8 = require('v8')
+  globalThis.structuredClone = (value: unknown) => v8.deserialize(v8.serialize(value))
+}
+
 /*
  This is the 'pre' step for mocking midi access requests, jest spy wont work here because
  we are clearing mocks between tests and also because the property isn't even present

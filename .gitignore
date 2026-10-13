@@ -48,3 +48,6 @@ next-env.d.ts
 *.csr
 
 _static
+
+# Playwright MCP screenshots
+.playwright-mcp/

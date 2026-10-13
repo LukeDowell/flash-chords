@@ -128,7 +128,7 @@ export default function PracticePage({
   const instrument = useInstrument(sample, true)
   const [currentChord, setCurrentChord] = useState<Chord>(initialChord)
   const [currentKey, setCurrentKey] = useState<MusicKey>(initialKey)
-  const [timeOfLastSuccess, setTimeOfLastSuccess] = useState(Date.now())
+  const [timeOfLastSuccess, setTimeOfLastSuccess] = useState(() => Date.now())
   const [shouldDisplaySuccess, setShouldDisplaySuccess] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [timerProgress, setTimerProgress] = useState(100)

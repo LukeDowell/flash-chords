@@ -1,4 +1,4 @@
-import {Renderer, StemmableNote, Vex} from "vexflow";
+import {Factory, Renderer, StemmableNote} from "vexflow";
 import {splitIntoMeasures} from "@/lib/vexMusic";
 import _ from "lodash";
 
@@ -32,7 +32,7 @@ export function renderVex(elementId: string, config: RenderVexConfig = {}) {
   const outputDiv = document.getElementById(elementId) as HTMLDivElement
   if (outputDiv) outputDiv.innerHTML = ''
 
-  const vf = new Vex.Flow.Factory({
+  const vf = new Factory({
     renderer: {
       backend: Renderer.Backends.SVG, elementId: elementId, width: vexWidth, height: 1400
     },
@@ -51,8 +51,8 @@ export function renderVex(elementId: string, config: RenderVexConfig = {}) {
       x: i * 300,
       width: 300,
       formatOptions: {
-        align_rests: true,
-        auto_beam: true,
+        alignRests: true,
+        autoBeam: true,
       },
     })
 

@@ -73,7 +73,7 @@ export function InteractiveStaff(props: Props) {
         ? notesToStaveNote(chordVoicing, {fillStyle: 'green', chord: c})
         : notesToStaveNote(placeOnOctave(4, notesInKey(c.notes(), musicKey)), {chord: c})
 
-      const voice = new Voice({num_beats: 4, beat_value: 4})
+      const voice = new Voice({numBeats: 4, beatValue: 4})
       voice.addTickables([staveNotes])
 
       new Formatter().joinVoices([voice]).format([voice], staveWidth)

@@ -2,7 +2,7 @@
 
 import React from "react";
 import AppDrawer from "@/components/app-drawer/AppDrawer";
-import {AppRouterCacheProvider} from "@mui/material-nextjs/v14-appRouter";
+import {AppRouterCacheProvider} from "@mui/material-nextjs/v16-appRouter";
 import {Roboto} from "next/font/google";
 import {ThemeProvider} from "@mui/material";
 import theme from '@/styles/theme'

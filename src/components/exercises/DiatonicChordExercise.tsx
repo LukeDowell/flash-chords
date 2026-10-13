@@ -120,6 +120,9 @@ export default function DiatonicChordExercise({musicKey, onEnd, options}: Props)
 
     const transitionTime = SECONDS_PER_MEASURE * (chords.length);
     const translationX = STAVE_WIDTH * (chords.length)
+    // staveGroup is a DOM node held in state; mutating its style here starts
+    // the scroll animation, which is outside what the hooks lint can model
+    // eslint-disable-next-line react-hooks/immutability
     staveGroup.style.transition = `transform ${transitionTime}s linear`
     staveGroup.style.transform = `translate(-${translationX}px, 0)`
   }
