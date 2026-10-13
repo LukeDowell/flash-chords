@@ -69,14 +69,46 @@ export class Chord {
       .flatMap((n, i, array) => i === array.length - 1 ? [] : stepsBetween(n, array[i + 1]))
       .value()
 
-    const thirds: Third[] = intervals.slice(0, 2).filter((n): n is Third => n >= 3 || n <= 4)
-    const quality = _.invert(FChordQualities)[thirds.toString()] as ChordQuality
+    const thirds: Third[] = intervals.filter((n): n is Third => n >= 3 && n <= 4)
+    if (thirds.length !== intervals.length || thirds.length < 2) {
+      throw new Error(`notes do not stack in thirds: ${notes.join(", ")}`)
+    }
 
-    return new Chord(notes[0].withOctave(0).toString(), quality)
+    const quality = _.invert(FChordQualities)[thirds.slice(0, 2).toString()] as ChordQuality | undefined
+    if (!quality) throw new Error(`unknown triad quality for notes: ${notes.join(", ")}`)
+
+    let seventhQuality: SeventhQuality | null = null
+    if (thirds.length > 2) {
+      if (quality === "Diminished") seventhQuality = thirds[2] === MAJOR_THIRD ? "Half-Diminished" : "Fully-Diminished"
+      else seventhQuality = thirds[2] === MAJOR_THIRD ? "Major" : "Minor"
+    }
+
+    return new Chord(notes[0].withOctave(0).toString(), quality, seventhQuality)
   }
 
   static fromSymbol(s: string): Chord {
-    return new Chord('C', 'Major')
+    const match = s.match(/^([A-G](?:#{1,2}|b{1,2})?)(.*)$/)
+    if (!match) throw new Error(`unparseable chord symbol: ${s}`)
+    const [, root, suffix] = match
+
+    const qualities: Record<string, [ChordQuality, SeventhQuality | null]> = {
+      "": ["Major", null],
+      "m": ["Minor", null],
+      "aug": ["Augmented", null],
+      "dim": ["Diminished", null],
+      "maj7": ["Major", "Major"],
+      "7": ["Major", "Minor"],
+      "m7": ["Minor", "Minor"],
+      "m(maj7)": ["Minor", "Major"],
+      "augmaj7": ["Augmented", "Major"],
+      "aug7": ["Augmented", "Minor"],
+      "ø7": ["Diminished", "Half-Diminished"],
+      "°7": ["Diminished", "Fully-Diminished"],
+    }
+
+    const quality = qualities[suffix]
+    if (!quality) throw new Error(`unparseable chord symbol: ${s}`)
+    return new Chord(root, quality[0], quality[1])
   }
 
   /**
@@ -116,6 +148,15 @@ export class Chord {
       "Diminished": "dim"
     }[this.quality]
 
-    return `${root}${triadQuality}`
+    if (!this.seventhQuality) return `${root}${triadQuality}`
+
+    const seventhSuffix: string = {
+      "Major": {"Major": "maj7", "Minor": "m(maj7)", "Augmented": "augmaj7", "Diminished": "ø7"}[this.quality],
+      "Minor": {"Major": "7", "Minor": "m7", "Augmented": "aug7", "Diminished": "°7"}[this.quality],
+      "Half-Diminished": "ø7",
+      "Fully-Diminished": "°7",
+    }[this.seventhQuality]
+
+    return `${root}${seventhSuffix}`
   }
 }

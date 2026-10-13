@@ -18,11 +18,15 @@ interface Props {
   onInputSelected?: (id: string, input: MIDIInput) => any
 }
 
+const MIDI_UNAVAILABLE_MESSAGE = 'Unable to access MIDI devices. Web MIDI requires a Chromium browser such as Chrome or Edge.'
+
 export const MidiInputSelector = ({onInputSelected}: Props) => {
   const [inputs, setInputs] = useState<MIDIInput[]>([])
   const [selectedInput, setSelectedInput] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState<string>('')
-  const inputIds = inputs.map(i => i.id).sort() // MIDIInputs are complex objects, and the useEffect equality check gets messed up
+  // MIDIInputs are complex objects, and the useEffect equality check gets messed up;
+  // a joined string of ids is stable across renders with the same devices
+  const inputIds = inputs.map(i => i.id).sort().join(',')
 
   useEffect(() => {
     const abortController = new AbortController()
@@ -30,15 +34,14 @@ export const MidiInputSelector = ({onInputSelected}: Props) => {
       midiAccess.addEventListener(
         'statechange',
         (connectionEvent: MIDIConnectionEvent) => {
-          console.log('connectionEvent', connectionEvent)
           setSelectedInput('')
           setInputs([])
         },
         {signal: abortController.signal}
       )
-    })
+    }).catch(() => setErrorMessage(MIDI_UNAVAILABLE_MESSAGE))
     return () => abortController.abort('cleanup')
-  })
+  }, [])
 
   useEffect(() => {
     getMidiAccess().then((midiAccess) => {
@@ -50,15 +53,17 @@ export const MidiInputSelector = ({onInputSelected}: Props) => {
       setInputs(tempInputs)
       setErrorMessage('')
       if (selectedInput === '' && tempInputs.length > 0) {
-        handleInputSelected(tempInputs[0].name || tempInputs[0].id)
+        // Pass tempInputs rather than relying on the inputs state, which is
+        // still the pre-refresh (possibly empty) list in this render's closure
+        handleInputSelected(tempInputs[0].name || tempInputs[0].id, tempInputs)
       }
-    })
+    }).catch(() => setErrorMessage(MIDI_UNAVAILABLE_MESSAGE))
   }, [inputIds, selectedInput])
 
-  const handleInputSelected = (selectedName: string) => {
-    let inputProbably = Array.from(inputs).find((input) => input.name === selectedName)
+  const handleInputSelected = (selectedName: string, availableInputs: MIDIInput[] = inputs) => {
+    let inputProbably = Array.from(availableInputs).find((input) => input.name === selectedName)
     if (inputProbably === undefined) {
-      inputProbably = Array.from(inputs).find((input) => input.id === selectedName)
+      inputProbably = Array.from(availableInputs).find((input) => input.id === selectedName)
     }
     if (inputProbably === undefined) {
       setErrorMessage('Selected ID that does not exist!')
@@ -85,6 +90,6 @@ export const MidiInputSelector = ({onInputSelected}: Props) => {
         ))
       }
     </Select>
-    {errorMessage !== '' && <FormHelperText>Error</FormHelperText>}
+    {errorMessage !== '' && <FormHelperText>{errorMessage}</FormHelperText>}
   </FormControl>
 }

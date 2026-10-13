@@ -2,12 +2,14 @@
 
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import CheckIcon from '@mui/icons-material/Check'
+import SettingsIcon from '@mui/icons-material/Settings'
 import {useInstrument, useInterval} from "@/lib/react/hooks";
 import {DEFAULT_PRACTICE_SETTINGS, Settings} from "@/components/settings/Settings";
+import {PracticeSettings} from "@/components/settings/PracticeSettings";
 import {Note} from "@/lib/music/Note";
 import _ from "lodash";
 import {VoicingHistory, VoicingResult} from "./VoicingHistory";
-import {LinearProgress} from "@mui/material";
+import {Alert, Chip, Drawer, IconButton, LinearProgress, Stack} from "@mui/material";
 import {
   CIRCLE_OF_FIFTHS,
   diatonicChords,
@@ -20,7 +22,7 @@ import {InteractiveStaff} from "@/components/interactivestaff/InteractiveStaff";
 import {Chord} from "@/lib/music/Chord";
 import {styled} from "@mui/system";
 import {NoteEvent} from "@/lib/music/MidiPiano";
-import {InstrumentContext, MidiPianoContext} from "@/lib/react/contexts";
+import {InstrumentContext, MidiInputContext, MidiPianoContext} from "@/lib/react/contexts";
 
 export interface Props {
   initialChord?: Chord,
@@ -28,9 +30,55 @@ export interface Props {
   initialSettings?: Partial<Settings>
 }
 
+const isChordAllowed = (chord: Chord, settings: Settings): boolean => {
+  const accidentalMod = chord.rootNote.accidental?.mod || 0
+  if (accidentalMod < 0 && !settings.flatRootsEnabled) return false
+  if (accidentalMod > 0 && !settings.sharpRootsEnabled) return false
+
+  switch (chord.seventhQuality) {
+    case "Major": // Cmaj7 / Cm(maj7)
+      return chord.quality === "Major" ? settings.majorEnabled : settings.minorEnabled
+    case "Minor": // C7 / Cm7
+      return chord.quality === "Major" ? settings.dominantEnabled : settings.minorEnabled
+    case "Half-Diminished":
+      return settings.halfDiminishedEnabled
+    case "Fully-Diminished":
+      return settings.diminishedEnabled
+  }
+
+  switch (chord.quality) {
+    case "Major":
+      return settings.majorEnabled
+    case "Minor":
+      return settings.minorEnabled
+    case "Augmented":
+      return settings.augmentedEnabled
+    case "Diminished":
+      return settings.diminishedEnabled
+  }
+}
+
+/** How many previous voicings render on the staff; VexFlow redraws every stave
+ * on each note event, so an unbounded history lags long practice sessions */
+export const STAFF_HISTORY_LIMIT = 8
+
+export const staffHistory = (voicingResults: VoicingResult[]): VoicingResult[] =>
+  voicingResults.slice(-STAFF_HISTORY_LIMIT).reverse()
+
 export const generateChordFromSettings = (settings: Settings): [Chord, MusicKey] => {
-  const key = _.sample(CIRCLE_OF_FIFTHS)!!
-  return [_.sample(diatonicChords(key, _.random(1, 2) % 2 === 0))!!, key]
+  const candidates: Array<[Chord, MusicKey]> = CIRCLE_OF_FIFTHS.flatMap(key => {
+    const chords: Chord[] = []
+    if (settings.triadsEnabled) chords.push(...diatonicChords(key, false))
+    if (settings.seventhsEnabled) chords.push(...diatonicChords(key, true))
+    return chords.filter(c => isChordAllowed(c, settings)).map((c): [Chord, MusicKey] => [c, key])
+  })
+
+  // Overly restrictive settings fall back to any diatonic chord rather than breaking the practice loop
+  if (candidates.length === 0) {
+    const key = _.sample(CIRCLE_OF_FIFTHS)!!
+    return [_.sample(diatonicChords(key))!!, key]
+  }
+  return _.sample(candidates)!!
 }
 
 
@@ -75,6 +123,7 @@ export default function PracticePage({
                                        initialSettings = DEFAULT_PRACTICE_SETTINGS
                                      }: Props) {
   const piano = useContext(MidiPianoContext)
+  const midiInput = useContext(MidiInputContext)
   const sample = useContext(InstrumentContext)
   const instrument = useInstrument(sample, true)
   const [currentChord, setCurrentChord] = useState<Chord>(initialChord)
@@ -85,6 +134,7 @@ export default function PracticePage({
   const [timerProgress, setTimerProgress] = useState(100)
   const [settings, setSettings] = useState({...DEFAULT_PRACTICE_SETTINGS, ...initialSettings})
   const [voicingResults, setVoicingResults] = useState<VoicingResult[]>([])
+  const [activeNotes, setActiveNotes] = useState<Note[]>([])
 
   const generateNewChord = useCallback(() => {
     let [newChord, newKey] = generateChordFromSettings(settings)
@@ -96,17 +146,18 @@ export default function PracticePage({
   }, [currentChord, settings])
 
   useEffect(() => {
-    const callback = (noteEvent: NoteEvent, activeNotes: Note[]) => {
-      if (isValidVoicingForChord(activeNotes, currentChord)) {
+    const callback = (noteEvent: NoteEvent, currentActiveNotes: Note[]) => {
+      if (isValidVoicingForChord(currentActiveNotes, currentChord)) {
         setShouldDisplaySuccess(true)
         setTimeOfLastSuccess(Date.now())
         setVoicingResults([...voicingResults, {
           chord: currentChord,
           key: currentKey,
-          validNotes: notesInKey(activeNotes, currentKey)
+          validNotes: notesInKey(currentActiveNotes, currentKey)
         }])
+        setActiveNotes([])
         generateNewChord()
-      }
+      } else setActiveNotes(currentActiveNotes.slice())
     };
 
     const id = _.uniqueId('practice-page-')
@@ -132,13 +183,49 @@ export default function PracticePage({
   }, 100)
 
   return <StyledRoot>
+    <IconButton aria-label="open-settings"
+                style={{alignSelf: 'flex-end'}}
+                onClick={() => setIsSettingsOpen(true)}>
+      <SettingsIcon/>
+    </IconButton>
+    <Drawer anchor="right"
+            open={isSettingsOpen}
+            onClose={() => setIsSettingsOpen(false)}>
+      <PracticeSettings settings={settings} onSettingsUpdate={setSettings}/>
+    </Drawer>
+    {!midiInput &&
+      <Alert severity="info">
+        Connect a MIDI keyboard, then pick it under &quot;MIDI Input&quot; in the menu (top left) to start playing
+      </Alert>}
     <ChordSymbolPrompt>
       <h2 className="current-chord-symbol">{currentChord.toString()}</h2>
       {shouldDisplaySuccess && <CheckIcon style={{color: "green"}}/>}
     </ChordSymbolPrompt>
+    <Stack direction="row" spacing={1} marginBottom={2}>
+      {currentChord.notes().map((chordNote, i) => {
+        const label = notesInKey([chordNote], currentKey)[0].withOctave(undefined).toString()
+        const isHeld = activeNotes.some(an => an.equalsWithoutOctave(chordNote))
+        return <Chip key={label}
+                     data-testid={`note-feedback-${label}-${isHeld ? 'held' : 'missing'}`}
+                     label={label}
+                     size="small"
+                     color={isHeld ? 'success' : 'default'}
+                     variant={isHeld ? 'filled' : 'outlined'}/>
+      })}
+      {_.uniqBy(activeNotes.filter(an => !currentChord.notes().some(cn => an.equalsWithoutOctave(cn))),
+        an => an.withOctave(undefined).toString())
+        .map(wrongNote => {
+          const label = notesInKey([wrongNote], currentKey)[0].withOctave(undefined).toString()
+          return <Chip key={label}
+                       data-testid={`note-feedback-${label}-wrong`}
+                       label={label}
+                       size="small"
+                       color="error"/>
+        })}
+    </Stack>
     <InteractiveStaff musicKey={currentKey}
-                      chords={[currentChord].concat(_.reverse(voicingResults.slice()).map(v => v.chord))}
-                      chordVoicings={_.reverse(voicingResults.slice()).map(v => v.validNotes)}
+                      chords={[currentChord].concat(staffHistory(voicingResults).map(v => v.chord))}
+                      chordVoicings={staffHistory(voicingResults).map(v => v.validNotes)}
     />
     {settings?.timerEnabled && <LinearProgress className="timer" variant="determinate" value={timerProgress}/>}
     <VoicingHistory voicingResults={voicingResults}/>

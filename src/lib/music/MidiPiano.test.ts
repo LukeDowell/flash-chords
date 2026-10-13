@@ -1,4 +1,4 @@
-import MidiPiano, {NoteSubscriber} from './MidiPiano'
+import MidiPiano, {MIDI, NoteSubscriber} from './MidiPiano'
 import {NoteEmitter} from "../../note-emitter";
 import _ from "lodash";
 
@@ -48,5 +48,41 @@ describe('a midi piano', () => {
     expect(listener.mock.calls[0][0].flag).toEqual('keyup')
     expect(listener.mock.calls[1][0].note.toString()).toEqual('G#6')
     expect(listener.mock.calls[1][0].flag).toEqual('keyup')
+  })
+
+  it('should ignore note events outside the range of the keyboard', async () => {
+    let midiCallback = (e: WebMidi.MIDIMessageEvent) => {
+    }
+    const mockedMidiInput: Partial<WebMidi.MIDIInput> = {
+      addEventListener: jest.fn().mockImplementation((key: string, callback: (e: WebMidi.MIDIMessageEvent) => void) => {
+        midiCallback = callback
+      })
+    }
+
+    const midiPiano = new MidiPiano(mockedMidiInput as WebMidi.MIDIInput)
+    const listener: jest.Mock<NoteSubscriber> = jest.fn()
+    midiPiano.addSubscriber(_.uniqueId('midi-piano-test'), listener)
+
+    midiCallback({data: Uint8Array.of(MIDI.KEY_DOWN, 5, 100)} as WebMidi.MIDIMessageEvent)
+    midiCallback({data: Uint8Array.of(MIDI.KEY_DOWN, 120, 100)} as WebMidi.MIDIMessageEvent)
+
+    expect(listener).not.toHaveBeenCalled()
+  })
+
+  it('should stop listening to its midi input when destroyed', async () => {
+    let midiCallback = (e: WebMidi.MIDIMessageEvent) => {
+    }
+    const mockedMidiInput: Partial<WebMidi.MIDIInput> = {
+      addEventListener: jest.fn().mockImplementation((key: string, callback: (e: WebMidi.MIDIMessageEvent) => void) => {
+        midiCallback = callback
+      }),
+      removeEventListener: jest.fn()
+    }
+
+    const midiPiano = new MidiPiano(mockedMidiInput as WebMidi.MIDIInput)
+    midiPiano.destroy()
+
+    const registeredHandler = (mockedMidiInput.addEventListener as jest.Mock).mock.calls[0][1]
+    expect(mockedMidiInput.removeEventListener).toHaveBeenCalledWith('midimessage', registeredHandler)
   })
 })

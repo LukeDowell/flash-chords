@@ -1,6 +1,5 @@
 'use client'
 
-import "@/lib/midi/capacitor-provider";
 import {Button, Stack, SwipeableDrawer} from "@mui/material";
 import {Menu} from "@mui/icons-material";
 import LogoSvg from "@/components/images/Icon";
@@ -56,6 +55,7 @@ export default function AppDrawer({children}: Props) {
   const audioContext = useAudio()
 
   function handleInputSelected(id: string, input: MIDIInput) {
+    midiPiano.destroy()
     setMidiContext(input)
     setMidiPiano(new MidiPiano(input))
   }
@@ -93,6 +93,9 @@ export default function AppDrawer({children}: Props) {
         </Link>
         <Link href={'/scale'} onClick={() => setIsDrawerOpen(false)}>
           <NavButton variant={'contained'}>Scale</NavButton>
+        </Link>
+        <Link href={'/altscale'} onClick={() => setIsDrawerOpen(false)}>
+          <NavButton variant={'contained'}>Grand Staff</NavButton>
         </Link>
         <MidiInputSelector onInputSelected={handleInputSelected}/>
         <MidiSoundSelector onSampleSelected={setSample}/>

@@ -28,9 +28,19 @@ export default class MidiPiano {
   private _currentActiveNotes: Note[] = []
   private readonly _noteHistory: NoteEvent[] = []
   private _subscribers: Map<string, NoteSubscriber> = new Map()
+  private readonly _midiInput?: WebMidi.MIDIInput
+  private readonly _boundProcessMIDIEvent: (e: WebMidi.MIDIMessageEvent) => void
 
   constructor(midiInput?: WebMidi.MIDIInput) {
-    midiInput?.addEventListener("midimessage", this._processMIDIEvent.bind(this))
+    this._midiInput = midiInput
+    this._boundProcessMIDIEvent = this._processMIDIEvent.bind(this)
+    midiInput?.addEventListener("midimessage", this._boundProcessMIDIEvent)
+  }
+
+  /** Unregisters from the MIDI input. Call before abandoning this instance (eg. switching devices) */
+  destroy() {
+    this._midiInput?.removeEventListener("midimessage", this._boundProcessMIDIEvent as EventListener)
+    this._subscribers.clear()
   }
 
   private _processMIDIEvent(midiEvent: WebMidi.MIDIMessageEvent) {
@@ -41,6 +51,7 @@ export default class MidiPiano {
 
     if (midiFlag === MIDI.HEARTBEAT) return
     else if (midiFlag !== MIDI.KEY_DOWN && midiFlag !== MIDI.KEY_UP) return
+    else if (!note) return
 
     const keyFlag: "keyup" | "keydown" = midiFlag === MIDI.KEY_UP || (midiFlag === MIDI.KEY_DOWN && velocity === 0) ? "keyup" : "keydown"
     if (keyFlag === "keyup") {
