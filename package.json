@@ -15,7 +15,7 @@
     "node": ">=20.9"
   },
   "dependencies": {
-    "@capacitor/cli": "^8.5.2",
+    "@capacitor/cli": "^8.6.0",
     "@capacitor/core": "^8.5.2",
     "@capacitor/ios": "^8.5.2",
     "@emotion/cache": "^11.14.0",
